@@ -1,6 +1,7 @@
 type Collection = {
+  group: string;
   name: string;
-  uri: string;
+  itemId: string;
 };
 
 export type { Collection };

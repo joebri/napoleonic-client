@@ -19,7 +19,6 @@ export default gql`
         descriptionShort
         id
         publicId
-        regiment
         regiments
         tags
         title

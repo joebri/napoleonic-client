@@ -6,12 +6,12 @@ import Pagination from '@mui/material/Pagination';
 import { useLazyQuery } from '@apollo/client';
 import { useSearchParams } from 'react-router-dom';
 import _debounce from 'lodash/debounce';
+import _isEqual from 'lodash/isEqual';
 
 import { classes } from './Gallery.style';
-import { AppContext } from '../../pages/appContext';
+import { useAppContext } from '../../AppContext';
 import { ItemCardList } from '../../components/ItemCardList';
-import { Tag } from '../../interfaces/tag.interface';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { Tag } from '../../types/Tag.type';
 // import readItemsByArtistsQuery from './queries/readItemsByArtistsQuery';
 // import readItemsByRegimentsQuery from './queries/readItemsByRegimentsQuery';
 import readItemsByTagsQuery from './queries/readItemsByTagsQuery';
@@ -20,11 +20,10 @@ import { LoadStatus } from '../../enums/loadStatus.enum';
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
-  // const [localStorageTags] = useLocalStorage<any>('tags', []);
-  const { sortField, tags } = useContext(AppContext);
+  const { sortField, tags, setTags, pageNumber, setPageNumber } =
+    useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-  const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   const [requestedPageNumber, setRequestedPageNumber] = useState('');
 
@@ -36,22 +35,71 @@ const Gallery = () => {
 
   const getQueryDetails = () => {
     const queryArtists = searchParams.get('artists');
+    const queryBattles = searchParams.get('battles');
     const queryRegiments = searchParams.get('regiments');
+    const queryCollection = searchParams.get('collection');
     const queryTags = searchParams.get('tags');
 
     if (queryArtists) {
-      const artists = queryArtists.split('~');
+      const artists = queryArtists.split('||');
       return { type: 'artists', artists, regiments: [], tagNames: [] };
     }
 
+    if (queryBattles) {
+      const battles = queryBattles.split('||');
+      return {
+        type: 'battles',
+        artists: [],
+        battles,
+        regiments: [],
+        tagNames: [],
+      };
+    }
+
     if (queryRegiments) {
-      const regiments = queryRegiments.split(',');
+      const regiments = queryRegiments.split('||');
       const tagNames = tags
         .filter((tag: Tag) => {
           return tag.isSelected === true;
         })
         .map((tag: Tag) => tag.name);
       return { type: 'regiments', artists: [], regiments, tagNames };
+    }
+
+    if (queryCollection) {
+      const collectionItemId = queryCollection;
+      const tagNames = queryTags?.split(',') || [];
+      console.log('collectionItemId', collectionItemId);
+      console.log('tags', tags);
+
+      const collectionName = tags
+        .filter((tag: Tag) => {
+          return tag.group === 'Collection';
+        })
+        .filter((tag: Tag) => {
+          // console.log(`tag.itemId >${tag.itemId}<, >${collectionItemId}<`);
+          return tag.itemId === collectionItemId;
+        })[0].name;
+      console.log('collectionName', collectionName);
+
+      const updatedTags = tags.map((tag: Tag) => {
+        return {
+          ...tag,
+          isSelected: tag.itemId == collectionItemId,
+        };
+      });
+
+      if (!_isEqual(updatedTags, tags)) {
+        console.log('Gallery:updatedTags', updatedTags);
+        setTags(updatedTags);
+      }
+
+      return {
+        type: 'tags',
+        artists: [],
+        regiments: [],
+        tagNames: [...tagNames, collectionName],
+      };
     }
 
     let tagNames: string[] = [];
@@ -67,14 +115,14 @@ const Gallery = () => {
     return { type: 'tags', artists: [], regiments: [], tagNames };
   };
 
-  useEffect(() => {
-    loadForm(pageNumber);
-  }, []);
+  // useEffect(() => {
+  //   loadForm(pageNumber);
+  // }, []);
 
   useEffect(() => {
     loadForm(pageNumber);
     document.getElementById('scrollableView')?.scrollTo({ top: 0 });
-  }, [pageNumber, sortField, tags]);
+  }, [pageNumber, sortField, tags]); // tags TODO fix
 
   const [readItemsByTags, {}] = useLazyQuery(readItemsByTagsQuery, {
     onCompleted: (data) => {
@@ -95,6 +143,7 @@ const Gallery = () => {
     readItemsByTags({
       variables: {
         artists: queryDetails.artists,
+        battles: queryDetails.battles,
         pageNumber,
         pageSize: PAGE_SIZE,
         regiments: queryDetails.regiments,
@@ -132,8 +181,9 @@ const Gallery = () => {
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR)
+  if (loadStatus === LoadStatus.ERROR) {
     return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
+  }
 
   return (
     <div css={classes.wrapper} ref={wrapperRef} tabIndex={0}>

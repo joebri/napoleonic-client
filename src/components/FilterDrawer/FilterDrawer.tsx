@@ -4,8 +4,8 @@ import { Button, Chip, Drawer, Stack, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 
 import { classes } from './FilterDraw.style';
-import { AppContext } from '../../pages/appContext';
-import { Tag } from '../../interfaces/tag.interface';
+import { useAppContext } from '../../AppContext';
+import { Tag } from '../../types/Tag.type';
 
 interface FilterDrawerProps {
   onActionSelect: Function;
@@ -14,13 +14,13 @@ interface FilterDrawerProps {
 export enum ActionEnum {
   Search,
   ShowArtists,
+  ShowBattles,
   ShowCollections,
   ShowRegiments,
 }
 
 const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
-  const { isFilterOpen, setIsFilterOpen, tags, setTags } =
-    useContext(AppContext);
+  const { isFilterOpen, setIsFilterOpen, tags, setTags } = useAppContext();
 
   const [localTags, setLocalTags] = useState([] as Tag[]);
 
@@ -29,25 +29,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
   }, [tags]);
 
   const handleTagClick = (selectedTag: Tag) => {
-    let updatedTags: Tag[];
-    if (selectedTag.name === 'Battles') {
-      tags
-        .filter((tag: Tag) => {
-          return tag.name !== 'Battles';
-        })
-        .map((tag: Tag) => {
-          tag.isSelected = false;
-        });
-    } else {
-      tags
-        .filter((tag: Tag) => {
-          return tag.name === 'Battles';
-        })
-        .map((tag: Tag) => {
-          tag.isSelected = false;
-        });
-    }
-    updatedTags = tags.map((tag: Tag) => {
+    const updatedTags = tags.map((tag: Tag) => {
       if (tag.name === selectedTag.name) {
         tag.isSelected = !tag.isSelected;
       }
@@ -61,13 +43,17 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
   };
 
   const handleButtonClick = (action: ActionEnum) => {
-    setTags(localTags);
-    setIsFilterOpen(false);
-
-    const selectedTags = localTags.filter((tag: Tag) => {
-      return tag.isSelected;
+    const updatedTags = localTags.map((tag: Tag) => {
+      return {
+        ...tag,
+        isSelected: tag.group === 'Collection' ? false : tag.isSelected,
+      };
     });
-    onActionSelect(action, selectedTags);
+
+    console.log('FilterDraw:updatedTags', localTags, updatedTags);
+    setTags(updatedTags);
+    setIsFilterOpen(false);
+    onActionSelect(action);
   };
 
   interface TagProps {
@@ -111,18 +97,9 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             </Button>
           </Stack>
           <div css={classes.section}>
-            <Typography variant="h5">Sections</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {localTags
-                .filter((tag: Tag) => tag.group === 'Section')
-                .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
-                ))}
-            </Stack>
-
             <Typography variant="h5">Nationality</Typography>
             <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {localTags
+              {tags
                 .filter((tag: Tag) => tag.group === 'Nation')
                 .sort((a: Tag, b: Tag) => {
                   return a.name > b.name ? 1 : -1;
@@ -135,7 +112,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
           <div css={classes.section}>
             <Typography variant="h5">Type</Typography>
             <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {localTags
+              {tags
                 .filter((tag: Tag) => tag.group === 'Type')
                 .map((tag: Tag, index: number) => (
                   <Tag tag={tag} key={index} />
@@ -145,7 +122,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
           <div css={classes.section}>
             <Typography variant="h5">Sub Type</Typography>
             <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {localTags
+              {tags
                 .filter((tag: Tag) => tag.group === 'SubType')
                 .map((tag: Tag, index: number) => (
                   <Tag tag={tag} key={index} />
@@ -166,6 +143,13 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               onClick={() => handleButtonClick(ActionEnum.ShowCollections)}
             >
               Show Collections
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={() => handleButtonClick(ActionEnum.ShowBattles)}
+            >
+              Show Battles
             </Button>
           </Stack>
         </div>

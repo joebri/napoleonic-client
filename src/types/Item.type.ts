@@ -6,9 +6,9 @@ type Item = {
   descriptionLong: string;
   descriptionShort: string;
   id: string;
+  isCollection: boolean;
   publicId: string;
-  /** @deprecated Use regiments */
-  regiment: string;
+  rating: number;
   regiments: string;
   tags: string[];
   title: string;

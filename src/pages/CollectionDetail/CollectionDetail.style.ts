@@ -5,24 +5,18 @@ const classes = {
     margin: '0.5rem auto 2rem auto',
     width: '80%',
   }),
-  container_image: css({
+  container__link: css({
+    display: 'flex',
+    justifyContent: 'center',
+    fontSize: '2rem',
+  }),
+  container__image: css({
+    display: 'flex',
+    justifyContent: 'center',
     marginBottom: '1rem',
-    marginTop: '1rem',
-    width: 'fit-content',
-  }),
-  image: css({
-    boxShadow: '0.25rem 0.25rem 5px #ccc',
-    maxWidth: '100%',
-  }),
-  artist: css({
-    fontStyle: 'italic',
-    textAlign: 'right',
+    marginTop: '2rem',
   }),
   tags: css({
-    marginTop: '1rem',
-  }),
-  radioLabel: css({
-    fontSize: '0.8rem',
     marginTop: '1rem',
   }),
   actionBar: css({
@@ -30,7 +24,7 @@ const classes = {
     right: '2rem',
     top: '5rem',
   }),
-  button__spacer: css({
+  button_spacer: css({
     marginRight: '1rem',
   }),
   dialog: css({

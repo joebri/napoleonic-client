@@ -6,13 +6,13 @@ import { useMutation } from '@apollo/client';
 import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 
-import { classes } from './ItemDetail.style';
+import { classes } from './CollectionDetail.style';
 import createItemMutation from './queries/createItemMutation';
 import { Edit } from './Edit';
 import { initialisedItem } from '../../helper';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
-const ItemDetailAdd = () => {
+const CollectionDetailAdd = () => {
   const navigate = useNavigate();
 
   const [template, setTemplate] = useLocalStorage<any>('template', {
@@ -26,7 +26,7 @@ const ItemDetailAdd = () => {
     artist: {
       name: template.artist,
     },
-    publicId: template.urlRoot,
+    publicId: '/Napoleonic/GreeceBar_wphbeq.gif',
     tags: template.tags.split(','),
   });
   const [showMessage, setShowMessage] = useState(false);
@@ -34,15 +34,6 @@ const ItemDetailAdd = () => {
   const [createItem] = useMutation(createItemMutation);
 
   const handleEditChange = (field: string, value: any) => {
-    //TODO need a better approach
-    if (field === 'artist-name') {
-      setItem((priorItem: any) => ({
-        ...priorItem,
-        artist: { name: value },
-      }));
-      return;
-    }
-
     setItem((priorItem: any) => ({
       ...priorItem,
       [field]: value,
@@ -50,26 +41,24 @@ const ItemDetailAdd = () => {
   };
 
   const handleEditCancelClick = () => {
-    navigate(`/`);
+    navigate(`/collections`);
   };
 
   const handleEditSaveClick = async () => {
     try {
       const result = await createItem({
         variables: {
-          artist: item.artist.name,
           descriptionLong: item.descriptionLong,
           descriptionShort: item.descriptionShort,
-          publicId: item.publicId,
-          rating: parseInt(item.rating.toString()),
-          regiments: item.regiments,
           tags: item.tags,
           title: item.title,
-          yearFrom: item.yearFrom,
-          yearTo: item.yearTo,
         },
       });
-      navigate(`/itemDetailView/${result.data.createItem}`);
+      console.info(
+        'Manually create collection record for:',
+        result.data.createItem
+      );
+      navigate(`/collectionDetailView/${result.data.createItem}`);
     } catch (exception: any) {
       console.error(`ItemDetailAdd exception. Create failed.\n${exception}`);
       setShowMessage(true);
@@ -83,7 +72,7 @@ const ItemDetailAdd = () => {
   return (
     <>
       <div css={classes.container}>
-        <Typography variant="h4">Add Item</Typography>
+        <Typography variant="h4">Add Collection</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -91,6 +80,7 @@ const ItemDetailAdd = () => {
           onSave={handleEditSaveClick}
         />
       </div>
+
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         autoHideDuration={6000}
@@ -109,4 +99,4 @@ const ItemDetailAdd = () => {
   );
 };
 
-export { ItemDetailAdd };
+export { CollectionDetailAdd };

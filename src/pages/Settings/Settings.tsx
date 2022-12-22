@@ -12,8 +12,9 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 const Settings = () => {
   const [template, setTemplate] = useLocalStorage<any>('template', {
-    urlRoot: '',
+    artist: '',
     tags: [],
+    urlRoot: '',
   });
 
   const handleChange = (event: any, field: string) => {
@@ -51,6 +52,17 @@ const Settings = () => {
           margin="normal"
           onChange={(event) => handleChange(event, 'tags')}
           value={template.tags}
+          variant="standard"
+        />
+        <TextField
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          label="Artist"
+          margin="normal"
+          onChange={(event) => handleChange(event, 'artist')}
+          value={template.artist}
           variant="standard"
         />
 

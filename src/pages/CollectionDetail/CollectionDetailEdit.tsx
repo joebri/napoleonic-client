@@ -6,15 +6,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 
-import { classes } from './ItemDetail.style';
+import { classes } from './CollectionDetail.style';
 import readItemQuery from './queries/readItemQuery';
 import updateItemMutation from './queries/updateItemMutation';
 import { Edit } from './Edit';
 import { LoadStatus } from '../../enums/loadStatus.enum';
 import { initialisedItem } from '../../helper';
 
-const ItemDetailEdit = () => {
+const CollectionDetailEdit = () => {
+  // const [searchParams] = useSearchParams();
+  // const itemId = searchParams.get('id');
   let { itemId } = useParams();
+
+  const viewPageURI = `/collectionDetailView/${itemId}`;
+
   const navigate = useNavigate();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
@@ -46,15 +51,6 @@ const ItemDetailEdit = () => {
   }, [itemId]);
 
   const handleEditChange = (field: string, value: any) => {
-    //TODO need a better approach
-    if (field === 'artist-name') {
-      setItem((priorItem: any) => ({
-        ...priorItem,
-        artist: { name: value },
-      }));
-      return;
-    }
-
     setItem((priorItem: any) => ({
       ...priorItem,
       [field]: value,
@@ -63,29 +59,25 @@ const ItemDetailEdit = () => {
 
   const handleEditCancelClick = () => {
     loadForm();
-    navigate(`/itemDetailView/${itemId}`);
+    navigate(viewPageURI);
   };
 
   const handleEditSaveClick = async () => {
     try {
       await updateItem({
         variables: {
-          artist: item.artist.name,
           descriptionLong: item.descriptionLong,
           descriptionShort: item.descriptionShort,
           id: item.id,
-          publicId: item.publicId,
-          rating: parseInt(item.rating.toString()),
-          regiments: item.regiments,
           tags: item.tags,
           title: item.title,
-          yearFrom: item.yearFrom,
-          yearTo: item.yearTo,
         },
       });
-      navigate(`/itemDetailView/${item.id}`);
+      navigate(viewPageURI);
     } catch (exception: any) {
-      console.error(`ItemDetailEdit exception. Update failed.\n${exception}`);
+      console.error(
+        `CollectionDetailEdit exception. Update failed.\n${exception}`
+      );
       setShowMessage(true);
     }
   };
@@ -94,14 +86,13 @@ const ItemDetailEdit = () => {
     setShowMessage(false);
   };
 
-  //TODO JSB rework this
   if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
   if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
   return (
     <>
       <div css={classes.container}>
-        <Typography variant="h4">Edit Item</Typography>
+        <Typography variant="h4">Edit Collection</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -128,4 +119,4 @@ const ItemDetailEdit = () => {
   );
 };
 
-export { ItemDetailEdit };
+export { CollectionDetailEdit };

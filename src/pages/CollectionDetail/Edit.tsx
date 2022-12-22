@@ -1,22 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
 import { ChangeEvent, KeyboardEvent } from 'react';
-import {
-  Button,
-  FormControlLabel,
-  InputLabel,
-  RadioGroup,
-  Radio,
-  Stack,
-  TextField,
-} from '@mui/material';
+import { Button, Stack, TextField } from '@mui/material';
 import {
   BackspaceOutlined as BackspaceOutlinedIcon,
-  Label,
   Save as SaveIcon,
 } from '@mui/icons-material';
 
-import { classes } from './ItemDetail.style';
+import { classes } from './CollectionDetail.style';
 import { TagInput } from '../../components/TagInput/TagInput';
 import { Item } from '../../types';
 
@@ -55,7 +46,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
     <div onKeyDown={handleOnKeyDown}>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button__spacer}
+          css={classes.button_spacer}
           onClick={handleSaveClick}
           size="small"
           startIcon={<SaveIcon />}
@@ -72,7 +63,18 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
           Cancel
         </Button>
       </div>
-
+      {/* <TextField
+        fullWidth
+        InputLabelProps={{
+          shrink: true,
+        }}
+        label="Tag Name (to identify items which are part of this collection)"
+        margin="normal"
+        name="collectionName"
+        onChange={handleChange}
+        value={item.collectionName}
+        variant="standard"
+      /> */}
       <TextField
         fullWidth
         InputLabelProps={{
@@ -110,74 +112,6 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         value={item.descriptionLong}
         variant="standard"
       />
-      <TextField
-        fullWidth
-        InputLabelProps={{
-          shrink: true,
-        }}
-        label="Regiment(s)"
-        margin="normal"
-        name="regiments"
-        onChange={handleChange}
-        value={item.regiments}
-        variant="standard"
-      />
-      <TextField
-        fullWidth
-        InputLabelProps={{
-          shrink: true,
-        }}
-        label="Image url"
-        margin="normal"
-        name="publicId"
-        onChange={handleChange}
-        value={item.publicId}
-        variant="standard"
-      />
-      <TextField
-        fullWidth
-        InputLabelProps={{
-          shrink: true,
-        }}
-        label="Artist"
-        margin="normal"
-        name="artist-name"
-        onChange={handleChange}
-        value={item.artist?.name}
-        variant="standard"
-      />
-      <Stack direction={'row'} gap={2}>
-        <TextField
-          InputLabelProps={{
-            shrink: true,
-          }}
-          label="Year From"
-          margin="normal"
-          name="yearFrom"
-          onChange={handleChange}
-          value={item.yearFrom}
-          variant="standard"
-        />
-        <TextField
-          InputLabelProps={{
-            shrink: true,
-          }}
-          label="Year To"
-          margin="normal"
-          name="yearTo"
-          onChange={handleChange}
-          value={item.yearTo}
-          variant="standard"
-        />
-      </Stack>
-
-      <InputLabel css={classes.radioLabel}>Rating</InputLabel>
-      <RadioGroup name="rating" row onChange={handleChange} value={item.rating}>
-        <FormControlLabel value="1" control={<Radio />} label="High" />
-        <FormControlLabel value="3" control={<Radio />} label="Medium" />
-        <FormControlLabel value="5" control={<Radio />} label="Low" />
-      </RadioGroup>
-
       <div css={classes.tags}>
         <TagInput isEdit onChange={handleTagsChange} tagNames={item.tags} />
       </div>

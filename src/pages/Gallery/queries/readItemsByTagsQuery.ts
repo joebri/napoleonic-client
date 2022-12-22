@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export default gql`
   query readItemsByTags(
     $artists: [String!]
+    $battles: [String!]
     $pageNumber: Int!
     $pageSize: Int!
     $regiments: [String!]
@@ -13,6 +14,7 @@ export default gql`
     readItemsByTags(
       input: {
         artists: $artists
+        battles: $battles
         pageNumber: $pageNumber
         pageSize: $pageSize
         regiments: $regiments
@@ -26,12 +28,12 @@ export default gql`
         artist {
           name
         }
-        contentId
         descriptionLong
         descriptionShort
         id
+        isCollection
         publicId
-        regiment
+        rating
         regiments
         tags
         title

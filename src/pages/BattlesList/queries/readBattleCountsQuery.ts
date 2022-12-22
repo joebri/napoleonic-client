@@ -1,11 +1,10 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  query readCollections {
-    readCollections {
-      group
+  query readBattleCounts {
+    readBattleCounts {
       name
-      itemId
+      count
     }
   }
 `;

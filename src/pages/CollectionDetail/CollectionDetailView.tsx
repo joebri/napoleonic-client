@@ -5,17 +5,18 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Alert, Snackbar } from '@mui/material';
 
-import { classes } from './ItemDetail.style';
+import { classes } from './CollectionDetail.style';
 import readItemQuery from './queries/readItemQuery';
 import deleteItemMutation from './queries/deleteItemMutation';
 import { View } from './View';
 import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog/ConfirmDeleteDialog';
 import { LoadStatus } from '../../enums/loadStatus.enum';
 import { initialisedItem } from '../../helper';
-// import { Rating } from '../../enums/rating.enum';
 
-const ItemDetailView = () => {
+const CollectionDetailView = () => {
   let { itemId } = useParams();
+  const EDIT_PAGE_URI = `/collectionDetailEdit/${itemId}`;
+
   const navigate = useNavigate();
 
   const [loadStatus, setLoadStatus] = React.useState(LoadStatus.LOADING);
@@ -48,7 +49,7 @@ const ItemDetailView = () => {
   }, [itemId]);
 
   const handleEditClick = () => {
-    navigate(`/itemDetailEdit/${itemId}`);
+    navigate(EDIT_PAGE_URI);
   };
 
   const handleDeleteClick = () => {
@@ -68,7 +69,9 @@ const ItemDetailView = () => {
       });
       navigate(`/`);
     } catch (exception) {
-      console.error(`ItemDetailView exception. Delete failed.\n${exception}`);
+      console.error(
+        `CollectionDetailView exception. Delete failed.\n${exception}`
+      );
       setShowConfirmDeleteDialog(false);
       setShowMessage(true);
     }
@@ -108,11 +111,11 @@ const ItemDetailView = () => {
           onClose={handleMessageClose}
           severity="error"
         >
-          Unable to delete item. Please try again.
+          Unable to delete collection. Please try again.
         </Alert>
       </Snackbar>
     </>
   );
 };
 
-export { ItemDetailView };
+export { CollectionDetailView };

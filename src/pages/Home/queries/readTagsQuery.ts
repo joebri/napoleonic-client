@@ -5,6 +5,7 @@ export default gql`
     readTags {
       group
       name
+      itemId
     }
   }
 `;
