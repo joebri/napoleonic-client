@@ -31,7 +31,7 @@ const RegimentsList = () => {
   useEffect(() => {
     readRegimentCounts({
       variables: {
-        tags: tagsStringRef.current.split(','),
+        tags: tagsStringRef.current.split('||'),
       },
     });
   }, [tagsStringRef.current]);

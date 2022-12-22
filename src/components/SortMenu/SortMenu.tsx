@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
-import { MouseEvent, useContext, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 
 import { classes } from './SortMenu.style';
-import { AppContext } from '../../pages/appContext';
+import { useAppContext } from '../../AppContext';
 
 const SortMenu = () => {
-  const { sortField, setSortField } = useContext(AppContext);
+  const { sortField, setSortField } = useAppContext();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -62,12 +62,13 @@ const SortMenu = () => {
         >
           Image
         </MenuItem>
-        <MenuItem
+        {/* TODO fix regiment sort */}
+        {/* <MenuItem
           onClick={() => handleItemSelected('regiment')}
           selected={sortField === 'regiment'}
         >
           Regiment
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </>
   );

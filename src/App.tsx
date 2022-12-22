@@ -1,10 +1,11 @@
+import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { theme, ThemeProvider } from './theme';
+import { AppProvider } from './AppContext';
 import useConfig from './hooks/useConfig';
 import { Home } from './pages/Home/Home';
-import React from 'react';
 
 function App() {
   const client = new ApolloClient({
@@ -22,7 +23,9 @@ function App() {
       <CssBaseline />
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          <Home />
+          <AppProvider>
+            <Home />
+          </AppProvider>
         </ThemeProvider>
       </ApolloProvider>
     </React.StrictMode>

@@ -35,8 +35,8 @@ const CollectionList = () => {
     },
   });
 
-  const handleSearchClick = (name: string) => {
-    navigate(`${name}`);
+  const handleSearchClick = (collection: Collection) => {
+    navigate(`/collectionDetailView/${collection.itemId}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
@@ -45,14 +45,16 @@ const CollectionList = () => {
 
   return (
     <div css={classes.container}>
-      <h2 css={classes.title}>Collections</h2>
+      <Typography variant="h4" css={classes.title}>
+        Collections
+      </Typography>
       <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
         {collections.map((collection: Collection, index: number) => (
           <Button
             css={classes.button}
             key={index}
             onClick={() => {
-              handleSearchClick(`${collection.uri}`);
+              handleSearchClick(collection);
             }}
             variant="contained"
           >

@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 
-import { classes } from './ItemDetail.style';
+import { classes } from './ConfirmDeleteDialog.style';
 
 interface ConfirmDeleteDialogProps {
   isOpen: boolean;

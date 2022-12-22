@@ -23,7 +23,6 @@ import gql from 'graphql-tag';
 //         descriptionShort
 //         id
 //         publicId
-//         regiment
 //         regiments
 //         tags
 //         title

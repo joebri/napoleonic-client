@@ -1,4 +1,5 @@
 import { Item } from './types';
+import { Rating } from './enums/rating.enum';
 
 const initialisedItem: Item = {
   artist: {
@@ -8,8 +9,9 @@ const initialisedItem: Item = {
   descriptionLong: '',
   descriptionShort: '',
   id: '0',
+  isCollection: false,
   publicId: '',
-  regiment: '',
+  rating: Rating.MEDIUM,
   regiments: '',
   title: '',
   tags: [],

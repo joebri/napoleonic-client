@@ -18,6 +18,9 @@ const classes = {
   container_image: css({
     marginBottom: '1rem',
     width: 'fit-content',
+    '& img': {
+      width: '100%',
+    },
   }),
   image: css({
     boxShadow: '0.25rem 0.25rem 5px #ccc',

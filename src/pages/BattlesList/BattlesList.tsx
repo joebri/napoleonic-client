@@ -5,27 +5,25 @@ import { useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
 
-import { classes } from './ArtistsList.style';
+import { classes } from './BattlesList.style';
 import { LoadStatus } from '../../enums/loadStatus.enum';
-import readArtistCountsQuery from './queries/readArtistCountsQuery';
-import { ArtistTag } from '../../types/ArtistTag.type';
+import readBattleCountsQuery from './queries/readBattleCountsQuery';
+import { BattleTag } from '../../types/BattleTag.type';
 
-const ArtistsList = () => {
+const BattlesList = () => {
   const navigate = useNavigate();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-
-  const [artists, setArtists] = useState([] as ArtistTag[]);
-
+  const [battles, setBattles] = useState([] as BattleTag[]);
   const errorRef: any = useRef();
 
   useEffect(() => {
-    readArtistCounts();
+    readBattleCounts();
   }, []);
 
-  const [readArtistCounts, {}] = useLazyQuery(readArtistCountsQuery, {
+  const [readBattleCounts, {}] = useLazyQuery(readBattleCountsQuery, {
     onCompleted: (data) => {
-      setArtists(data.readArtistCounts);
+      setBattles(data.readBattleCounts);
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
@@ -36,40 +34,41 @@ const ArtistsList = () => {
   });
 
   const handleChipClick = (index: number) => {
-    let newArtists: ArtistTag[] = [...artists];
-    newArtists[index].isSelected = !newArtists[index].isSelected;
-    setArtists(newArtists);
+    let newBattles: BattleTag[] = [...battles];
+    newBattles[index].isSelected = !newBattles[index].isSelected;
+    setBattles(newBattles);
   };
 
   const handleSearchClick = () => {
     const selected = encodeURIComponent(
-      artists
-        .filter((artist: ArtistTag) => artist.isSelected)
-        .map((artist) => artist.name)
+      battles
+        .filter((battle: BattleTag) => battle.isSelected)
+        .map((battle) => battle.name)
         .join('||')
     );
-    navigate(`/?artists=${selected}`);
+    navigate(`/?battles=${selected}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR)
+  if (loadStatus === LoadStatus.ERROR) {
     return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
+  }
 
   return (
     <div css={classes.container}>
       <Typography variant="h4" css={classes.title}>
-        Artists
+        Battles
       </Typography>
       <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-        {artists.map((artist: ArtistTag, index: number) => (
+        {battles.map((battle: BattleTag, index: number) => (
           <Chip
             color="primary"
-            label={`${artist.name || 'Unknown'} (${artist.count})`}
+            label={`${battle.name || 'Unknown'} (${battle.count})`}
             key={index}
             onClick={() => {
               handleChipClick(index);
             }}
-            variant={artist.isSelected ? undefined : 'outlined'}
+            variant={battle.isSelected ? undefined : 'outlined'}
           />
         ))}
       </Stack>
@@ -84,4 +83,4 @@ const ArtistsList = () => {
   );
 };
 
-export { ArtistsList };
+export { BattlesList };

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Dialog } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Image } from 'cloudinary-react';
 
 import { classes } from './ItemCard.style';
-import { AppContext } from '../pages/appContext';
+import { useAppContext } from '../AppContext';
 import { imageService, imageAccountName } from '../services/imageService';
 import { Item, Tag } from '../types';
 
@@ -29,12 +29,13 @@ const parseDescriptionForImage = (descriptionLong: string): string => {
 
 const ItemCard = ({ item }: ItemCardProps) => {
   const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [nationalityTags, setNationalityTags] = useState('');
   const [alternateImageUrl, setAlternateImageUrl] = useState('');
 
-  const { tags: availableTags } = useContext(AppContext);
+  const { tags: availableTags } = useAppContext();
 
   useEffect(() => {
     const nationTags = availableTags
@@ -65,14 +66,12 @@ const ItemCard = ({ item }: ItemCardProps) => {
   };
 
   const handleDetailsMenuClick = () => {
-    // window.open(`//localhost:3000/itemDetailView/${item.id}`);
-    navigate(`/itemDetailView/${item.id}`);
+    if (item.isCollection) {
+      navigate(`/collectionDetailView/${item.id}`);
+    } else {
+      navigate(`/itemDetailView/${item.id}`);
+    }
     setAnchorEl(null);
-  };
-
-  const handleContentMenuClick = () => {
-    navigate(`/content/${item.contentId}`);
-    // setAnchorEl(null);
   };
 
   const handleImageClick = () => {
@@ -174,9 +173,6 @@ const ItemCard = ({ item }: ItemCardProps) => {
         }}
       >
         <MenuItem onClick={handleDetailsMenuClick}>Details</MenuItem>
-        {item.contentId && (
-          <MenuItem onClick={handleContentMenuClick}>Content</MenuItem>
-        )}
       </Menu>
 
       <Dialog onClose={handleImageClose} open={isOpen}>
