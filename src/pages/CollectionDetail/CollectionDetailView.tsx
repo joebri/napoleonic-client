@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, Snackbar } from '@mui/material';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionDetail.style';
 import readItemQuery from './queries/readItemQuery';
 import deleteItemMutation from './queries/deleteItemMutation';
 import { View } from './View';
+import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog/ConfirmDeleteDialog';
 import { LoadStatus } from '../../enums/loadStatus.enum';
 import { initialisedItem } from '../../helper';
@@ -19,11 +20,10 @@ const CollectionDetailView = () => {
 
   const navigate = useNavigate();
 
-  const [loadStatus, setLoadStatus] = React.useState(LoadStatus.LOADING);
-  const [item, setItem] = React.useState(initialisedItem);
-  const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] =
-    React.useState(false);
-  const [showMessage, setShowMessage] = React.useState(false);
+  const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
+  const [item, setItem] = useState(initialisedItem);
+  const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
@@ -39,14 +39,14 @@ const CollectionDetailView = () => {
 
   const [deleteItem] = useMutation(deleteItemMutation);
 
-  const loadForm = () => {
-    setLoadStatus(LoadStatus.LOADING);
-    readItem();
-  };
+  useEffect(() => {
+    const loadForm = () => {
+      setLoadStatus(LoadStatus.LOADING);
+      readItem();
+    };
 
-  React.useEffect(() => {
     loadForm();
-  }, [itemId]);
+  }, [itemId, readItem]);
 
   const handleEditClick = () => {
     navigate(EDIT_PAGE_URI);
@@ -86,6 +86,9 @@ const CollectionDetailView = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Collection</title>
+      </Helmet>
       <div css={classes.container}>
         <View
           item={item}
@@ -100,20 +103,11 @@ const CollectionDetailView = () => {
         onDeleteConfirmed={handleDeleteConfirmed}
       />
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to delete collection. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to delete collection. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

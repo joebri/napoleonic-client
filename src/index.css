@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'TangerineBold';
+  src: local('TangerineBold'),
+    url('./fonts/Tangerine/Tangerine-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'Tangerine';
+  src: local('Tangerine'),
+    url('./fonts/Tangerine/Tangerine-Regular.ttf') format('truetype');
+}

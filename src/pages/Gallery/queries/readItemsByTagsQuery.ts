@@ -6,6 +6,7 @@ export default gql`
     $battles: [String!]
     $pageNumber: Int!
     $pageSize: Int!
+    $ratings: [Int!]
     $regiments: [String!]
     $sort: String!
     $sortSequence: String!
@@ -17,6 +18,7 @@ export default gql`
         battles: $battles
         pageNumber: $pageNumber
         pageSize: $pageSize
+        ratings: $ratings
         regiments: $regiments
         tags: $tags
         sort: $sort
@@ -25,9 +27,7 @@ export default gql`
     ) {
       count
       items {
-        artist {
-          name
-        }
+        artist
         descriptionLong
         descriptionShort
         id

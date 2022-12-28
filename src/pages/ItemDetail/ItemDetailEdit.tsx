@@ -5,11 +5,13 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './ItemDetail.style';
 import readItemQuery from './queries/readItemQuery';
 import updateItemMutation from './queries/updateItemMutation';
 import { Edit } from './Edit';
+import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { LoadStatus } from '../../enums/loadStatus.enum';
 import { initialisedItem } from '../../helper';
 
@@ -47,13 +49,13 @@ const ItemDetailEdit = () => {
 
   const handleEditChange = (field: string, value: any) => {
     //TODO need a better approach
-    if (field === 'artist-name') {
-      setItem((priorItem: any) => ({
-        ...priorItem,
-        artist: { name: value },
-      }));
-      return;
-    }
+    // if (field === 'artist-name') {
+    //   setItem((priorItem: any) => ({
+    //     ...priorItem,
+    //     artist: { name: value },
+    //   }));
+    //   return;
+    // }
 
     setItem((priorItem: any) => ({
       ...priorItem,
@@ -70,17 +72,17 @@ const ItemDetailEdit = () => {
     try {
       await updateItem({
         variables: {
-          artist: item.artist.name,
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
+          artist: item.artist?.trim(),
+          descriptionLong: item.descriptionLong?.trim(),
+          descriptionShort: item.descriptionShort?.trim(),
           id: item.id,
-          publicId: item.publicId,
+          publicId: item.publicId?.trim(),
           rating: parseInt(item.rating.toString()),
-          regiments: item.regiments,
+          regiments: item.regiments?.trim(),
           tags: item.tags,
-          title: item.title,
-          yearFrom: item.yearFrom,
-          yearTo: item.yearTo,
+          title: item.title?.trim(),
+          yearFrom: item.yearFrom?.trim(),
+          yearTo: item.yearTo?.trim(),
         },
       });
       navigate(`/itemDetailView/${item.id}`);
@@ -100,8 +102,11 @@ const ItemDetailEdit = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Edit Item</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Edit Item</Typography>
+        <Typography variant="h5">Edit Item</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -110,20 +115,11 @@ const ItemDetailEdit = () => {
         />
       </div>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to update item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to update item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

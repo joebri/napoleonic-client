@@ -11,9 +11,7 @@ export default gql`
     ) {
       count
       items {
-        artist {
-          name
-        }
+        artist
         contentId
         descriptionLong
         descriptionShort

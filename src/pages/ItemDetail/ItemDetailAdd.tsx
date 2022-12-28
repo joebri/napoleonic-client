@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './ItemDetail.style';
 import createItemMutation from './queries/createItemMutation';
 import { Edit } from './Edit';
+import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { initialisedItem } from '../../helper';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
@@ -23,11 +25,10 @@ const ItemDetailAdd = () => {
 
   const [item, setItem] = useState({
     ...initialisedItem,
-    artist: {
-      name: template.artist,
-    },
+    artist: template.artist,
     publicId: template.urlRoot,
     tags: template.tags.split(','),
+    yearFrom: template.yearFrom,
   });
   const [showMessage, setShowMessage] = useState(false);
 
@@ -35,13 +36,13 @@ const ItemDetailAdd = () => {
 
   const handleEditChange = (field: string, value: any) => {
     //TODO need a better approach
-    if (field === 'artist-name') {
-      setItem((priorItem: any) => ({
-        ...priorItem,
-        artist: { name: value },
-      }));
-      return;
-    }
+    // if (field === 'artist-name') {
+    //   setItem((priorItem: any) => ({
+    //     ...priorItem,
+    //     artist: { name: value },
+    //   }));
+    //   return;
+    // }
 
     setItem((priorItem: any) => ({
       ...priorItem,
@@ -57,16 +58,16 @@ const ItemDetailAdd = () => {
     try {
       const result = await createItem({
         variables: {
-          artist: item.artist.name,
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
-          publicId: item.publicId,
+          artist: item.artist?.trim(),
+          descriptionLong: item.descriptionLong?.trim(),
+          descriptionShort: item.descriptionShort?.trim(),
+          publicId: item.publicId?.trim(),
           rating: parseInt(item.rating.toString()),
-          regiments: item.regiments,
+          regiments: item.regiments?.trim(),
           tags: item.tags,
-          title: item.title,
-          yearFrom: item.yearFrom,
-          yearTo: item.yearTo,
+          title: item.title?.trim(),
+          yearFrom: item.yearFrom?.trim(),
+          yearTo: item.yearTo?.trim(),
         },
       });
       navigate(`/itemDetailView/${result.data.createItem}`);
@@ -82,8 +83,11 @@ const ItemDetailAdd = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Add Item</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Add Item</Typography>
+        <Typography variant="h5">Add Item</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -91,20 +95,12 @@ const ItemDetailAdd = () => {
           onSave={handleEditSaveClick}
         />
       </div>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+
+      <AppSnackBar
+        message="Unable to create item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to create item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

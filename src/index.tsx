@@ -3,6 +3,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import './index.css';
+import './fonts/Tangerine/Tangerine-Regular.ttf';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

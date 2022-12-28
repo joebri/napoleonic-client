@@ -1,26 +1,26 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { Stack, TextField } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import { useLazyQuery } from '@apollo/client';
 import { useSearchParams } from 'react-router-dom';
-import _debounce from 'lodash/debounce';
+import { Helmet } from 'react-helmet';
+// import _debounce from 'lodash/debounce';
 import _isEqual from 'lodash/isEqual';
 
 import { classes } from './Gallery.style';
 import { useAppContext } from '../../AppContext';
-import { ItemCardList } from '../../components/ItemCardList';
+import { ItemCardList } from '../../components/ItemCardList/ItemCardList';
 import { Tag } from '../../types/Tag.type';
-// import readItemsByArtistsQuery from './queries/readItemsByArtistsQuery';
-// import readItemsByRegimentsQuery from './queries/readItemsByRegimentsQuery';
 import readItemsByTagsQuery from './queries/readItemsByTagsQuery';
 import { LoadStatus } from '../../enums/loadStatus.enum';
 
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
-  const { sortField, tags, setTags, pageNumber, setPageNumber } =
+  const { ratings, sortField, tags, setTags, pageNumber, setPageNumber } =
     useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
@@ -33,16 +33,38 @@ const Gallery = () => {
   const errorRef: any = useRef();
   const wrapperRef: any = useRef(null);
 
-  const getQueryDetails = () => {
+  const cachedGetQueryDetails = useCallback(() => {
     const queryArtists = searchParams.get('artists');
     const queryBattles = searchParams.get('battles');
     const queryRegiments = searchParams.get('regiments');
     const queryCollection = searchParams.get('collection');
     const queryTags = searchParams.get('tags');
 
+    const selectedRatings = [];
+    if (ratings.high) {
+      selectedRatings.push(1);
+    }
+    if (ratings.medium) {
+      selectedRatings.push(3);
+    }
+    if (ratings.low) {
+      selectedRatings.push(5);
+    }
+
     if (queryArtists) {
       const artists = queryArtists.split('||');
-      return { type: 'artists', artists, regiments: [], tagNames: [] };
+      const tagNames = tags
+        .filter((tag: Tag) => {
+          return tag.isSelected === true;
+        })
+        .map((tag: Tag) => tag.name);
+      return {
+        type: 'artists',
+        artists,
+        ratings: selectedRatings,
+        regiments: [],
+        tagNames,
+      };
     }
 
     if (queryBattles) {
@@ -51,6 +73,7 @@ const Gallery = () => {
         type: 'battles',
         artists: [],
         battles,
+        ratings,
         regiments: [],
         tagNames: [],
       };
@@ -63,40 +86,42 @@ const Gallery = () => {
           return tag.isSelected === true;
         })
         .map((tag: Tag) => tag.name);
-      return { type: 'regiments', artists: [], regiments, tagNames };
+      return {
+        type: 'regiments',
+        artists: [],
+        ratings: selectedRatings,
+        regiments,
+        tagNames,
+      };
     }
 
     if (queryCollection) {
       const collectionItemId = queryCollection;
       const tagNames = queryTags?.split(',') || [];
-      console.log('collectionItemId', collectionItemId);
-      console.log('tags', tags);
 
       const collectionName = tags
         .filter((tag: Tag) => {
           return tag.group === 'Collection';
         })
         .filter((tag: Tag) => {
-          // console.log(`tag.itemId >${tag.itemId}<, >${collectionItemId}<`);
           return tag.itemId === collectionItemId;
         })[0].name;
-      console.log('collectionName', collectionName);
 
       const updatedTags = tags.map((tag: Tag) => {
         return {
           ...tag,
-          isSelected: tag.itemId == collectionItemId,
+          isSelected: tag.itemId === collectionItemId,
         };
       });
 
       if (!_isEqual(updatedTags, tags)) {
-        console.log('Gallery:updatedTags', updatedTags);
         setTags(updatedTags);
       }
 
       return {
         type: 'tags',
         artists: [],
+        ratings: selectedRatings,
         regiments: [],
         tagNames: [...tagNames, collectionName],
       };
@@ -112,19 +137,16 @@ const Gallery = () => {
         })
         .map((tag: Tag) => tag.name);
     }
-    return { type: 'tags', artists: [], regiments: [], tagNames };
-  };
+    return {
+      type: 'tags',
+      artists: [],
+      ratings: selectedRatings,
+      regiments: [],
+      tagNames,
+    };
+  }, [ratings, searchParams, setTags, tags]);
 
-  // useEffect(() => {
-  //   loadForm(pageNumber);
-  // }, []);
-
-  useEffect(() => {
-    loadForm(pageNumber);
-    document.getElementById('scrollableView')?.scrollTo({ top: 0 });
-  }, [pageNumber, sortField, tags]); // tags TODO fix
-
-  const [readItemsByTags, {}] = useLazyQuery(readItemsByTagsQuery, {
+  const [readItemsByTags] = useLazyQuery(readItemsByTagsQuery, {
     onCompleted: (data) => {
       itemsRef.current = data.readItemsByTags.items;
       const pageCount = Math.ceil(data.readItemsByTags.count / PAGE_SIZE);
@@ -138,21 +160,28 @@ const Gallery = () => {
     },
   });
 
-  const loadForm = (pageNumber: number) => {
-    const queryDetails = getQueryDetails();
-    readItemsByTags({
-      variables: {
-        artists: queryDetails.artists,
-        battles: queryDetails.battles,
-        pageNumber,
-        pageSize: PAGE_SIZE,
-        regiments: queryDetails.regiments,
-        sort: sortField,
-        sortSequence: 'asc',
-        tags: queryDetails.tagNames,
-      },
-    });
-  };
+  useEffect(() => {
+    const loadForm = (pageNumber: number) => {
+      const queryDetails = cachedGetQueryDetails();
+      console.log('queryDetails', queryDetails);
+      readItemsByTags({
+        variables: {
+          artists: queryDetails.artists,
+          battles: queryDetails.battles,
+          pageNumber,
+          pageSize: PAGE_SIZE,
+          ratings: queryDetails.ratings,
+          regiments: queryDetails.regiments,
+          sort: sortField,
+          sortSequence: 'asc',
+          tags: queryDetails.tagNames,
+        },
+      });
+    };
+
+    loadForm(pageNumber);
+    document.getElementById('scrollableView')?.scrollTo({ top: 0 });
+  }, [cachedGetQueryDetails, pageNumber, readItemsByTags, sortField, tags]);
 
   const handlePaginationChange = (
     _: ChangeEvent<unknown>,
@@ -186,30 +215,35 @@ const Gallery = () => {
   }
 
   return (
-    <div css={classes.wrapper} ref={wrapperRef} tabIndex={0}>
-      <div id="scrollableView" css={classes.div1}>
-        <ItemCardList items={itemsRef.current}></ItemCardList>
+    <>
+      <Helmet>
+        <title>Uniformology: Gallery</title>
+      </Helmet>
+      <div css={classes.wrapper} ref={wrapperRef} tabIndex={0}>
+        <div id="scrollableView" css={classes.div1}>
+          <ItemCardList items={itemsRef.current}></ItemCardList>
+        </div>
+        <Stack direction={'row'} justifyContent="center" gap={4}>
+          <Pagination
+            count={pageCount}
+            css={classes.pager}
+            onChange={handlePaginationChange}
+            page={pageNumber}
+            shape="rounded"
+            variant="outlined"
+          />
+          <TextField
+            css={classes.pageNumber}
+            type="number"
+            size="small"
+            value={requestedPageNumber}
+            onChange={handlePageNumberChange}
+            onKeyDown={handlePageNumberKeyDown}
+            variant="outlined"
+          />
+        </Stack>
       </div>
-      <Stack direction={'row'} justifyContent="center" gap={4}>
-        <Pagination
-          count={pageCount}
-          css={classes.pager}
-          onChange={handlePaginationChange}
-          page={pageNumber}
-          shape="rounded"
-          variant="outlined"
-        />
-        <TextField
-          css={classes.pageNumber}
-          type="number"
-          size="small"
-          value={requestedPageNumber}
-          onChange={handlePageNumberChange}
-          onKeyDown={handlePageNumberKeyDown}
-          variant="outlined"
-        />
-      </Stack>
-    </div>
+    </>
   );
 };
 

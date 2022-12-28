@@ -16,7 +16,7 @@ export default gql`
   ) {
     updateItem(
       input: {
-        artist: { name: $artist }
+        artist: $artist
         descriptionLong: $descriptionLong
         descriptionShort: $descriptionShort
         id: $id

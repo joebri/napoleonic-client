@@ -1,11 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
-// import { useContext } from 'react';
-import { Button, Stack, TextField, Typography } from '@mui/material';
-// import {
-//   BackspaceOutlined as BackspaceOutlinedIcon,
-//   Save as SaveIcon,
-// } from '@mui/icons-material';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './Settings.style';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -15,6 +12,7 @@ const Settings = () => {
     artist: '',
     tags: [],
     urlRoot: '',
+    yearFrom: '',
   });
 
   const handleChange = (event: any, field: string) => {
@@ -30,6 +28,9 @@ const Settings = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Settings</title>
+      </Helmet>
       <div css={classes.container}>
         <Typography variant="h5">Templates</Typography>
         <TextField
@@ -63,6 +64,18 @@ const Settings = () => {
           margin="normal"
           onChange={(event) => handleChange(event, 'artist')}
           value={template.artist}
+          variant="standard"
+        />
+
+        <TextField
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          label="Year From"
+          margin="normal"
+          onChange={(event) => handleChange(event, 'yearFrom')}
+          value={template.yearFrom}
           variant="standard"
         />
 

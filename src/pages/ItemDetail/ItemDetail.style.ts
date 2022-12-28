@@ -26,12 +26,17 @@ const classes = {
     marginTop: '1rem',
   }),
   actionBar: css({
+    display: 'flex',
+    flexDirection: 'column',
     position: 'fixed',
     right: '2rem',
     top: '5rem',
   }),
   button__spacer: css({
-    marginRight: '1rem',
+    marginBottom: '1rem',
+  }),
+  button__spacer__x4: css({
+    marginBottom: '4rem',
   }),
   dialog: css({
     '& .MuiPaper-root': {

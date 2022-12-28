@@ -15,7 +15,7 @@ export default gql`
   ) {
     createItem(
       input: {
-        artist: { name: $artist }
+        artist: $artist
         descriptionLong: $descriptionLong
         descriptionShort: $descriptionShort
         publicId: $publicId

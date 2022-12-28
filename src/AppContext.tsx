@@ -1,31 +1,46 @@
-import * as React from 'react';
+import { createContext, useContext, useState } from 'react';
 
 import { Tag } from './types/Tag.type';
+
+type RatingsType = {
+  high: boolean;
+  medium: boolean;
+  low: boolean;
+};
 
 type AppContextType = {
   isFilterOpen: boolean;
   setIsFilterOpen: Function;
   pageNumber: number;
   setPageNumber: Function;
+  ratings: RatingsType;
+  setRatings: Function;
   sortField: string;
   setSortField: Function;
   tags: Tag[];
   setTags: Function;
 };
 
-const AppContext = React.createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppProvider = ({ children }: any) => {
-  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [pageNumber, setPageNumber] = React.useState(1);
-  const [sortField, setSortField] = React.useState('title');
-  const [tags, setTags] = React.useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [ratings, setRatings] = useState({
+    high: true,
+    medium: true,
+    low: false,
+  });
+  const [sortField, setSortField] = useState('title');
+  const [tags, setTags] = useState([]);
 
   const value: any = {
     isFilterOpen,
     setIsFilterOpen,
     pageNumber,
     setPageNumber,
+    ratings,
+    setRatings,
     sortField,
     setSortField,
     tags,
@@ -36,7 +51,7 @@ const AppProvider = ({ children }: any) => {
 };
 
 const useAppContext = () => {
-  const context = React.useContext(AppContext);
+  const context = useContext(AppContext);
 
   if (context === undefined) {
     throw new Error('useAppContext must be used within an AppProvider');

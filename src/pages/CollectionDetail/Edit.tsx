@@ -63,18 +63,6 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
           Cancel
         </Button>
       </div>
-      {/* <TextField
-        fullWidth
-        InputLabelProps={{
-          shrink: true,
-        }}
-        label="Tag Name (to identify items which are part of this collection)"
-        margin="normal"
-        name="collectionName"
-        onChange={handleChange}
-        value={item.collectionName}
-        variant="standard"
-      /> */}
       <TextField
         fullWidth
         InputLabelProps={{

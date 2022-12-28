@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './BattlesList.style';
 import { LoadStatus } from '../../enums/loadStatus.enum';
@@ -14,7 +15,11 @@ const BattlesList = () => {
   const navigate = useNavigate();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
+
   const [battles, setBattles] = useState([] as BattleTag[]);
+
+  const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+
   const errorRef: any = useRef();
 
   useEffect(() => {
@@ -36,6 +41,12 @@ const BattlesList = () => {
   const handleChipClick = (index: number) => {
     let newBattles: BattleTag[] = [...battles];
     newBattles[index].isSelected = !newBattles[index].isSelected;
+
+    const isAnySelected = newBattles.some((battle: BattleTag) => {
+      return battle.isSelected;
+    });
+    setIsSearchEnabled(isAnySelected);
+
     setBattles(newBattles);
   };
 
@@ -55,31 +66,37 @@ const BattlesList = () => {
   }
 
   return (
-    <div css={classes.container}>
-      <Typography variant="h4" css={classes.title}>
-        Battles
-      </Typography>
-      <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-        {battles.map((battle: BattleTag, index: number) => (
-          <Chip
-            color="primary"
-            label={`${battle.name || 'Unknown'} (${battle.count})`}
-            key={index}
-            onClick={() => {
-              handleChipClick(index);
-            }}
-            variant={battle.isSelected ? undefined : 'outlined'}
-          />
-        ))}
-      </Stack>
-      <Button
-        variant="contained"
-        css={classes.button}
-        onClick={handleSearchClick}
-      >
-        Search
-      </Button>
-    </div>
+    <>
+      <Helmet>
+        <title>Uniformology: Battles</title>
+      </Helmet>
+      <div css={classes.container}>
+        <Typography variant="h4" css={classes.title}>
+          Battles
+        </Typography>
+        <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
+          {battles.map((battle: BattleTag, index: number) => (
+            <Chip
+              color="primary"
+              label={`${battle.name || 'Unknown'} (${battle.count})`}
+              key={index}
+              onClick={() => {
+                handleChipClick(index);
+              }}
+              variant={battle.isSelected ? undefined : 'outlined'}
+            />
+          ))}
+        </Stack>
+        <Button
+          css={classes.button}
+          disabled={!isSearchEnabled}
+          onClick={handleSearchClick}
+          variant="contained"
+        >
+          Search
+        </Button>
+      </div>
+    </>
   );
 };
 

@@ -60,7 +60,6 @@ const Home = () => {
           itemId: `6399233689a2743cd476e42d`,
         } as Tag,
       ];
-      console.log('Home:mergedTags', mergedTags);
       setTags(mergedTags);
     },
     onError: (exception) => {
@@ -112,10 +111,11 @@ const Home = () => {
     }
 
     // const tagNames = selectedTags.map((selectedTag) => selectedTag.name);
-    // if (action === ActionEnum.ShowRegiments) {
-    //   navigate(`/regiments?tags=${tagNames.join(',')}`);
-    //   return;
-    // }
+    if (action === ActionEnum.ShowRegiments) {
+      // navigate(`/regiments?tags=${tagNames.join(',')}`);
+      navigate(`/regiments`);
+      return;
+    }
 
     // This triggers refresh of gallery
     // setTags((tags: any) => {
@@ -137,7 +137,6 @@ const Home = () => {
         return tag;
       });
 
-      console.log('Home:handleTagClick:updatedTags', updatedTags);
       setTags(updatedTags);
       const collectionUri = `/collectionDetailView/${tag.itemId || ''}`;
       navigate(collectionUri);

@@ -2,9 +2,7 @@ import { Item } from './types';
 import { Rating } from './enums/rating.enum';
 
 const initialisedItem: Item = {
-  artist: {
-    name: '',
-  },
+  artist: '',
   contentId: '',
   descriptionLong: '',
   descriptionShort: '',

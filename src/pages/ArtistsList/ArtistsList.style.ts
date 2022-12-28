@@ -2,7 +2,8 @@ import { css } from '@emotion/react';
 
 const classes = {
   container: css({
-    padding: '0 2rem 2rem 2rem',
+    margin: '0 auto 2rem auto',
+    width: '85%',
   }),
   title: css({
     alignItems: 'center',
@@ -11,7 +12,12 @@ const classes = {
     whiteSpace: 'break-spaces',
   }),
   button: css({
-    marginTop: '1rem',
+    // marginTop: '1rem',
+
+    flexDirection: 'column',
+    position: 'fixed',
+    right: '2rem',
+    top: '5rem',
   }),
 };
 export { classes };

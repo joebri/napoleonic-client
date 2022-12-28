@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import {
   Edit as EditIcon,
   DeleteForever as DeleteForeverIcon,
 } from '@mui/icons-material';
+import WindowIcon from '@mui/icons-material/Window';
 import { Image } from 'cloudinary-react';
 
 import { classes } from './CollectionDetail.style';
@@ -25,6 +26,12 @@ interface ViewProps {
 }
 
 const View = ({ item, onDelete, onEdit }: ViewProps) => {
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate('/collections');
+  };
+
   const handleEditClick = () => {
     onEdit();
   };
@@ -38,6 +45,15 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
       <div css={classes.actionBar}>
         <Button
           css={classes.button_spacer}
+          onClick={handleHomeClick}
+          size="small"
+          startIcon={<WindowIcon />}
+          variant="contained"
+        >
+          Home
+        </Button>
+        <Button
+          css={classes.button_spacer__x4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}
@@ -55,9 +71,11 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         </Button>
       </div>
 
-      <Typography variant="h4">{item.title}</Typography>
+      <Typography variant="h2">{item.title}</Typography>
 
-      {item.descriptionShort && <p>{item.descriptionShort}</p>}
+      {item.descriptionShort && (
+        <Typography variant="h3">{item.descriptionShort}</Typography>
+      )}
 
       <div css={classes.container__link}>
         <Link to={`/?collection=${item.id}`}>Plates</Link>

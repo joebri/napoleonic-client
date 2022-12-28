@@ -1,7 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, Chip, Drawer, Stack, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import {
+  Button,
+  Checkbox,
+  Chip,
+  Drawer,
+  FormControlLabel,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { classes } from './FilterDraw.style';
 import { useAppContext } from '../../AppContext';
@@ -20,7 +28,8 @@ export enum ActionEnum {
 }
 
 const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
-  const { isFilterOpen, setIsFilterOpen, tags, setTags } = useAppContext();
+  const { isFilterOpen, setIsFilterOpen, ratings, setRatings, tags, setTags } =
+    useAppContext();
 
   const [localTags, setLocalTags] = useState([] as Tag[]);
 
@@ -50,10 +59,13 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
       };
     });
 
-    console.log('FilterDraw:updatedTags', localTags, updatedTags);
     setTags(updatedTags);
     setIsFilterOpen(false);
     onActionSelect(action);
+  };
+
+  const handleRatingChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setRatings({ ...ratings, [event.target.name]: event.target.checked });
   };
 
   interface TagProps {
@@ -128,6 +140,41 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                   <Tag tag={tag} key={index} />
                 ))}
             </Stack>
+          </div>
+
+          <div css={classes.section}>
+            <Typography variant="h5">Rating</Typography>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={ratings.high}
+                  onChange={handleRatingChange}
+                  name="high"
+                />
+              }
+              label="High"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={ratings.medium}
+                  onChange={handleRatingChange}
+                  name="medium"
+                />
+              }
+              label="Medium"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={ratings.low}
+                  onChange={handleRatingChange}
+                  name="low"
+                />
+              }
+              label="Low"
+            />
           </div>
         </div>
         <div css={classes.section}>

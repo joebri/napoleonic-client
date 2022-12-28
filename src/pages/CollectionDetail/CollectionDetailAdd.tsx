@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionDetail.style';
 import createItemMutation from './queries/createItemMutation';
 import { Edit } from './Edit';
+import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { initialisedItem } from '../../helper';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
@@ -23,9 +24,7 @@ const CollectionDetailAdd = () => {
 
   const [item, setItem] = useState({
     ...initialisedItem,
-    artist: {
-      name: template.artist,
-    },
+    artist: template.artist,
     publicId: '/Napoleonic/GreeceBar_wphbeq.gif',
     tags: template.tags.split(','),
   });
@@ -48,10 +47,10 @@ const CollectionDetailAdd = () => {
     try {
       const result = await createItem({
         variables: {
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
+          descriptionLong: item.descriptionLong.trim(),
+          descriptionShort: item.descriptionShort.trim(),
           tags: item.tags,
-          title: item.title,
+          title: item.title.trim(),
         },
       });
       console.info(
@@ -71,8 +70,11 @@ const CollectionDetailAdd = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Add Collection</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Add Collection</Typography>
+        <Typography variant="h5">Add Collection</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -81,20 +83,11 @@ const CollectionDetailAdd = () => {
         />
       </div>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to create item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to create item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

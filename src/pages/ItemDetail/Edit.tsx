@@ -141,9 +141,9 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         }}
         label="Artist"
         margin="normal"
-        name="artist-name"
+        name="artist"
         onChange={handleChange}
-        value={item.artist?.name}
+        value={item.artist}
         variant="standard"
       />
       <Stack direction={'row'} gap={2}>

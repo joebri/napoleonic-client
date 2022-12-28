@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionList.style';
 import { LoadStatus } from '../../enums/loadStatus.enum';
@@ -44,25 +45,30 @@ const CollectionList = () => {
     return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
 
   return (
-    <div css={classes.container}>
-      <Typography variant="h4" css={classes.title}>
-        Collections
-      </Typography>
-      <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-        {collections.map((collection: Collection, index: number) => (
-          <Button
-            css={classes.button}
-            key={index}
-            onClick={() => {
-              handleSearchClick(collection);
-            }}
-            variant="contained"
-          >
-            {`${collection.name}`}
-          </Button>
-        ))}
-      </Stack>
-    </div>
+    <>
+      <Helmet>
+        <title>Uniformology: Collections</title>
+      </Helmet>
+      <div css={classes.container}>
+        <Typography variant="h4" css={classes.title}>
+          Collections
+        </Typography>
+        <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
+          {collections.map((collection: Collection, index: number) => (
+            <Button
+              css={classes.button}
+              key={index}
+              onClick={() => {
+                handleSearchClick(collection);
+              }}
+              variant="contained"
+            >
+              {`${collection.name}`}
+            </Button>
+          ))}
+        </Stack>
+      </div>
+    </>
   );
 };
 

@@ -2,20 +2,23 @@
 
 import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Dialog } from '@mui/material';
-import CardHeader from '@mui/material/CardHeader';
+
+import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Image } from 'cloudinary-react';
 
 import { classes } from './ItemCard.style';
-import { useAppContext } from '../AppContext';
-import { imageService, imageAccountName } from '../services/imageService';
-import { Item, Tag } from '../types';
+import { useAppContext } from '../../AppContext';
+import { imageService, imageAccountName } from '../../services/imageService';
+import { Item, Tag } from '../../types';
 
 interface ItemCardProps {
   item: Item;
@@ -53,7 +56,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         setAlternateImageUrl(url);
       }
     }
-  }, [item]);
+  }, [availableTags, item]);
 
   const open = Boolean(anchorEl);
 
@@ -65,11 +68,20 @@ const ItemCard = ({ item }: ItemCardProps) => {
     setAnchorEl(null);
   };
 
-  const handleDetailsMenuClick = () => {
+  const handleViewMenuClick = () => {
     if (item.isCollection) {
       navigate(`/collectionDetailView/${item.id}`);
     } else {
       navigate(`/itemDetailView/${item.id}`);
+    }
+    setAnchorEl(null);
+  };
+
+  const handleEditMenuClick = () => {
+    if (item.isCollection) {
+      navigate(`/collectionDetailEdit/${item.id}`);
+    } else {
+      navigate(`/itemDetailEdit/${item.id}`);
     }
     setAnchorEl(null);
   };
@@ -118,7 +130,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
                     variant="body2"
                     color="text.secondary"
                   >
-                    {item.artist.name}
+                    {item.artist}
                   </Typography>
                 </>
               )}
@@ -135,7 +147,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
                         variant="body2"
                         color="text.secondary"
                       >
-                        {item.artist.name}
+                        {item.artist}
                       </Typography>
                     </>
                   )}
@@ -172,7 +184,8 @@ const ItemCard = ({ item }: ItemCardProps) => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleDetailsMenuClick}>Details</MenuItem>
+        <MenuItem onClick={handleViewMenuClick}>View</MenuItem>
+        <MenuItem onClick={handleEditMenuClick}>Edit</MenuItem>
       </Menu>
 
       <Dialog onClose={handleImageClose} open={isOpen}>

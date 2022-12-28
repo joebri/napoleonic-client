@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
 
-// import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -13,6 +11,7 @@ import { classes } from './ItemDetail.style';
 import { imageService, imageAccountName } from '../../services/imageService';
 import { TagInput } from '../../components/TagInput/TagInput';
 import { Item } from '../../types';
+import { Rating } from '../../enums/rating.enum';
 
 const getUrl = (imagePublicId: string) => {
   const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
@@ -21,11 +20,11 @@ const getUrl = (imagePublicId: string) => {
 
 const ratingToString = (rating: number) => {
   switch (rating) {
-    case 1:
+    case Rating.HIGH:
       return 'High';
-    case 3:
+    case Rating.MEDIUM:
       return 'Medium';
-    case 5:
+    case Rating.LOW:
       return 'Low';
     default:
       return 'n/a';
@@ -39,8 +38,6 @@ interface ViewProps {
 }
 
 const View = ({ item, onDelete, onEdit }: ViewProps) => {
-  const navigate = useNavigate();
-
   const handleEditClick = () => {
     onEdit();
   };
@@ -53,7 +50,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
     <div>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button__spacer}
+          css={classes.button__spacer__x4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}
@@ -71,9 +68,11 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         </Button>
       </div>
 
-      <Typography variant="h4">{item.title}</Typography>
+      <Typography variant="h2">{item.title}</Typography>
 
-      {item.descriptionShort && <p>{item.descriptionShort}</p>}
+      {item.descriptionShort && (
+        <Typography variant="h3">{item.descriptionShort}</Typography>
+      )}
 
       {item.descriptionLong && (
         <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
@@ -88,6 +87,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
                 cloudName={imageAccountName}
                 publicId={getUrl(item.publicId)}
                 secure="true"
+                title={item.publicId}
               />
             </div>
             {item.artist && (
@@ -96,7 +96,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
                 variant="body2"
                 color="text.secondary"
               >
-                {item.artist.name}
+                {item.artist}
               </Typography>
             )}
           </>

@@ -3,19 +3,18 @@
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionDetail.style';
 import readItemQuery from './queries/readItemQuery';
 import updateItemMutation from './queries/updateItemMutation';
 import { Edit } from './Edit';
+import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { LoadStatus } from '../../enums/loadStatus.enum';
 import { initialisedItem } from '../../helper';
 
 const CollectionDetailEdit = () => {
-  // const [searchParams] = useSearchParams();
-  // const itemId = searchParams.get('id');
   let { itemId } = useParams();
 
   const viewPageURI = `/collectionDetailView/${itemId}`;
@@ -66,11 +65,11 @@ const CollectionDetailEdit = () => {
     try {
       await updateItem({
         variables: {
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
+          descriptionLong: item.descriptionLong.trim(),
+          descriptionShort: item.descriptionShort.trim(),
           id: item.id,
           tags: item.tags,
-          title: item.title,
+          title: item.title.trim(),
         },
       });
       navigate(viewPageURI);
@@ -91,8 +90,11 @@ const CollectionDetailEdit = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Edit Collection</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Edit Collection</Typography>
+        <Typography variant="h5">Edit Collection</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -101,20 +103,11 @@ const CollectionDetailEdit = () => {
         />
       </div>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to update item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to update item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

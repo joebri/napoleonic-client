@@ -1,6 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Helmet } from 'react-helmet';
 
 import { theme, ThemeProvider } from './theme';
 import { AppProvider } from './AppContext';
@@ -20,6 +21,9 @@ function App() {
 
   return (
     <React.StrictMode>
+      <Helmet>
+        <title>Uniformology: Napoleonic</title>
+      </Helmet>
       <CssBaseline />
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>

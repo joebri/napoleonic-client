@@ -1,7 +1,5 @@
 type Item = {
-  artist: {
-    name: string;
-  };
+  artist: string;
   contentId: string;
   descriptionLong: string;
   descriptionShort: string;
