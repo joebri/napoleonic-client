@@ -5,6 +5,9 @@ const classes = {
     margin: '0 auto 2rem auto',
     width: '85%',
   }),
+  noItems: css({
+    margin: 'auto',
+  }),
   title: css({
     alignItems: 'center',
     display: 'flex',

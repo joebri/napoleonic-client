@@ -11,14 +11,15 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Image } from 'cloudinary-react';
 
 import { classes } from './ItemCard.style';
-import { useAppContext } from '../../AppContext';
+import { TagTooltip } from 'components/TagTooltip/TagTooltip';
+
 import { imageService, imageAccountName } from '../../services/imageService';
 import { Item, Tag } from '../../types';
+import { useAppContext } from 'AppContext';
 
 interface ItemCardProps {
   item: Item;
@@ -172,6 +173,10 @@ const ItemCard = ({ item }: ItemCardProps) => {
               {item.yearTo ? <span> - {item.yearTo}</span> : ''}
             </Typography>
           )}
+
+          <Typography variant="body2" color="text.secondary">
+            <TagTooltip tagNames={item.tags} />
+          </Typography>
         </CardContent>
       </Card>
 

@@ -12,8 +12,9 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react';
 
 import { classes } from './FilterDraw.style';
-import { useAppContext } from '../../AppContext';
-import { Tag } from '../../types/Tag.type';
+
+import { useAppContext } from 'AppContext';
+import { Tag } from 'types/Tag.type';
 
 interface FilterDrawerProps {
   onActionSelect: Function;
@@ -32,10 +33,18 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     useAppContext();
 
   const [localTags, setLocalTags] = useState([] as Tag[]);
+  const [localRatings, setLocalRatings] = useState({
+    high: false,
+    medium: false,
+    low: false,
+  });
 
   useEffect(() => {
     setLocalTags(tags);
   }, [tags]);
+  useEffect(() => {
+    setLocalRatings(ratings);
+  }, [ratings]);
 
   const handleTagClick = (selectedTag: Tag) => {
     const updatedTags = tags.map((tag: Tag) => {
@@ -60,12 +69,16 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     });
 
     setTags(updatedTags);
+    setRatings(localRatings);
     setIsFilterOpen(false);
     onActionSelect(action);
   };
 
   const handleRatingChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setRatings({ ...ratings, [event.target.name]: event.target.checked });
+    setLocalRatings({
+      ...localRatings,
+      [event.target.name]: event.target.checked,
+    });
   };
 
   interface TagProps {
@@ -100,6 +113,12 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               onClick={() => handleButtonClick(ActionEnum.Search)}
             >
               Search
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleButtonClick(ActionEnum.ShowArtists)}
+            >
+              Show Artists
             </Button>
             <Button
               variant="contained"
@@ -148,7 +167,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={ratings.high}
+                  checked={localRatings.high}
                   onChange={handleRatingChange}
                   name="high"
                 />
@@ -158,7 +177,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={ratings.medium}
+                  checked={localRatings.medium}
                   onChange={handleRatingChange}
                   name="medium"
                 />
@@ -168,7 +187,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={ratings.low}
+                  checked={localRatings.low}
                   onChange={handleRatingChange}
                   name="low"
                 />
@@ -179,12 +198,6 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
         </div>
         <div css={classes.section}>
           <Stack gap={1} direction="row">
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowArtists)}
-            >
-              Show Artists
-            </Button>
             <Button
               variant="contained"
               onClick={() => handleButtonClick(ActionEnum.ShowCollections)}

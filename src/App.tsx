@@ -1,12 +1,13 @@
-import * as React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import CssBaseline from '@mui/material/CssBaseline';
+import { BrowserRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import CssBaseline from '@mui/material/CssBaseline';
 
-import { theme, ThemeProvider } from './theme';
-import { AppProvider } from './AppContext';
-import useConfig from './hooks/useConfig';
-import { Home } from './pages/Home/Home';
+import { Home } from 'pages/Home/Home';
+
+import { AppProvider } from 'AppContext';
+import { theme, ThemeProvider } from 'theme';
+import useConfig from 'hooks/useConfig';
 
 function App() {
   const client = new ApolloClient({
@@ -20,7 +21,7 @@ function App() {
   });
 
   return (
-    <React.StrictMode>
+    <BrowserRouter>
       <Helmet>
         <title>Uniformology: Napoleonic</title>
       </Helmet>
@@ -32,7 +33,7 @@ function App() {
           </AppProvider>
         </ThemeProvider>
       </ApolloProvider>
-    </React.StrictMode>
+    </BrowserRouter>
   );
 }
 

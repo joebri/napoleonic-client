@@ -1,48 +1,47 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Stack, Typography } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
 import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionList.style';
-import { LoadStatus } from '../../enums/loadStatus.enum';
+
+import { Collection } from 'types';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { useLogError } from 'hooks/useLogError';
 import readCollectionsQuery from './queries/readCollectionsQuery';
-import { Collection } from '../../types/Collection.type';
 
 const CollectionList = () => {
   const navigate = useNavigate();
+  const { logError } = useLogError(CollectionList.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
   const [collections, setCollections] = useState([] as Collection[]);
 
-  const errorRef: any = useRef();
-
-  useEffect(() => {
-    readCollections();
-  }, []);
-
-  const [readCollections, {}] = useLazyQuery(readCollectionsQuery, {
+  const [readCollections, { error }] = useLazyQuery(readCollectionsQuery, {
     onCompleted: (data) => {
       setCollections(data.readCollections);
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
-      errorRef.current = exception;
+      logError({ name: 'readCollections', exception });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
+
+  useEffect(() => {
+    readCollections();
+  }, [readCollections]);
 
   const handleSearchClick = (collection: Collection) => {
     navigate(`/collectionDetailView/${collection.itemId}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR)
-    return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
+  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
   return (
     <>

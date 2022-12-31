@@ -1,24 +1,27 @@
 /** @jsxImportSource @emotion/react */
 
+import { Helmet } from 'react-helmet';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionDetail.style';
-import readItemQuery from './queries/readItemQuery';
-import deleteItemMutation from './queries/deleteItemMutation';
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
+
+import { initialisedItem } from 'helper';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { useLogError } from 'hooks/useLogError';
 import { View } from './View';
-import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
-import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
+import deleteItemMutation from './queries/deleteItemMutation';
+import readItemQuery from './queries/readItemQuery';
 
 const CollectionDetailView = () => {
   let { itemId } = useParams();
-  const EDIT_PAGE_URI = `/collectionDetailEdit/${itemId}`;
-
   const navigate = useNavigate();
+  const { logError } = useLogError(CollectionDetailView.name);
+
+  const EDIT_PAGE_URI = `/collectionDetailEdit/${itemId}`;
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
@@ -32,7 +35,7 @@ const CollectionDetailView = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
+      logError({ name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -69,9 +72,12 @@ const CollectionDetailView = () => {
       });
       navigate(`/`);
     } catch (exception) {
-      console.error(
-        `CollectionDetailView exception. Delete failed.\n${exception}`
-      );
+      logError({
+        name: 'handleDeleteConfirmed',
+        exception,
+        message: 'Delete failed.',
+        itemId,
+      });
       setShowConfirmDeleteDialog(false);
       setShowMessage(true);
     }

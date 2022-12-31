@@ -1,8 +1,9 @@
 import { css } from '@emotion/react';
 
 const classes = {
-  icon: css({
-    marginRight: '0.25rem',
+  tooltip: css({
+    position: 'relative',
+    left: '-3px',
   }),
 };
 

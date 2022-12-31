@@ -1,25 +1,27 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { Helmet } from 'react-helmet';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
+
+import { Edit } from './Edit';
+import { initialisedItem } from 'helper';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { useLogError } from 'hooks/useLogError';
 import readItemQuery from './queries/readItemQuery';
 import updateItemMutation from './queries/updateItemMutation';
-import { Edit } from './Edit';
-import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
 
 const CollectionDetailEdit = () => {
   let { itemId } = useParams();
+  const navigate = useNavigate();
+  const { logError } = useLogError(CollectionDetailEdit.name);
 
   const viewPageURI = `/collectionDetailView/${itemId}`;
-
-  const navigate = useNavigate();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
@@ -32,22 +34,21 @@ const CollectionDetailEdit = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error('error', itemId);
-      console.error(exception);
+      logError({ name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
   const [updateItem] = useMutation(updateItemMutation);
 
-  const loadForm = () => {
+  const loadForm = useCallback(() => {
     setLoadStatus(LoadStatus.LOADING);
     readItem();
-  };
+  }, [readItem]);
 
   useEffect(() => {
     loadForm();
-  }, [itemId]);
+  }, [itemId, loadForm]);
 
   const handleEditChange = (field: string, value: any) => {
     setItem((priorItem: any) => ({
@@ -73,10 +74,13 @@ const CollectionDetailEdit = () => {
         },
       });
       navigate(viewPageURI);
-    } catch (exception: any) {
-      console.error(
-        `CollectionDetailEdit exception. Update failed.\n${exception}`
-      );
+    } catch (exception) {
+      logError({
+        name: 'handleEditSaveClick',
+        exception,
+        message: 'Update failed.',
+        itemId: item.id,
+      });
       setShowMessage(true);
     }
   };

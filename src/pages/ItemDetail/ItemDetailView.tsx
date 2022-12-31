@@ -1,41 +1,41 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './ItemDetail.style';
-import readItemQuery from './queries/readItemQuery';
-import deleteItemMutation from './queries/deleteItemMutation';
+import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
+
+import { initialisedItem } from 'helper';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { useLogError } from 'hooks/useLogError';
 import { View } from './View';
-import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
-import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
+import deleteItemMutation from './queries/deleteItemMutation';
+import readItemQuery from './queries/readItemQuery';
 
 const ItemDetailView = () => {
-  let { itemId } = useParams();
+  const { itemId } = useParams();
   const navigate = useNavigate();
+  const { logError } = useLogError(ItemDetailView.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
-  const errorRef: any = useRef();
-
   const [deleteItem] = useMutation(deleteItemMutation);
 
-  const [readItem] = useLazyQuery(readItemQuery, {
+  const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
     onCompleted: (data) => {
       setItem(data.readItem);
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
-      errorRef.current = exception;
+      logError({ name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -70,7 +70,12 @@ const ItemDetailView = () => {
       });
       navigate(`/`);
     } catch (exception) {
-      console.error(`ItemDetailView exception. Delete failed.\n${exception}`);
+      logError({
+        name: 'handleDeleteConfirmed',
+        exception,
+        message: 'Delete failed.',
+        itemId,
+      });
       setShowConfirmDeleteDialog(false);
       setShowMessage(true);
     }
@@ -81,7 +86,7 @@ const ItemDetailView = () => {
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {errorRef?.message}</p>;
+  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
   return (
     <>

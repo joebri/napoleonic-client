@@ -1,27 +1,28 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { Alert, Snackbar } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import { Helmet } from 'react-helmet';
+import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Typography from '@mui/material/Typography';
 
-import { classes } from './ItemDetail.style';
-import createItemMutation from './queries/createItemMutation';
-import { Edit } from './Edit';
 import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
-import { initialisedItem } from '../../helper';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { classes } from './ItemDetail.style';
+
+import { Edit } from './Edit';
+import { initialisedItem } from 'helper';
+import { useLocalStorage } from 'hooks/useLocalStorage';
+import { useLogError } from 'hooks/useLogError';
+import createItemMutation from './queries/createItemMutation';
 
 const ItemDetailAdd = () => {
   const navigate = useNavigate();
-
-  const [template, setTemplate] = useLocalStorage<any>('template', {
+  const [template] = useLocalStorage<any>('template', {
     artist: '',
     tags: [],
     urlRoot: '',
   });
+  const { logError } = useLogError(ItemDetailAdd.name);
 
   const [item, setItem] = useState({
     ...initialisedItem,
@@ -35,15 +36,6 @@ const ItemDetailAdd = () => {
   const [createItem] = useMutation(createItemMutation);
 
   const handleEditChange = (field: string, value: any) => {
-    //TODO need a better approach
-    // if (field === 'artist-name') {
-    //   setItem((priorItem: any) => ({
-    //     ...priorItem,
-    //     artist: { name: value },
-    //   }));
-    //   return;
-    // }
-
     setItem((priorItem: any) => ({
       ...priorItem,
       [field]: value,
@@ -71,8 +63,12 @@ const ItemDetailAdd = () => {
         },
       });
       navigate(`/itemDetailView/${result.data.createItem}`);
-    } catch (exception: any) {
-      console.error(`ItemDetailAdd exception. Create failed.\n${exception}`);
+    } catch (exception) {
+      logError({
+        name: 'handleEditSaveClick',
+        exception,
+        message: 'Create failed.',
+      });
       setShowMessage(true);
     }
   };

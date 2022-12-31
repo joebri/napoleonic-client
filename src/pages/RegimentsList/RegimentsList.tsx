@@ -1,22 +1,26 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
 import { classes } from './RegimentsList.style';
-import { useAppContext } from '../../AppContext';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { RegimentTag } from '../../types/RegimentTag.type';
-import { Tag } from '../../types/Tag.type';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { ratingsToArray } from 'helper';
+import { RegimentTag } from 'types/RegimentTag.type';
+import { Tag } from 'types/Tag.type';
+import { useAppContext } from 'AppContext';
+import { useLogError } from 'hooks/useLogError';
 import readRegimentCountsQuery from './queries/readRegimentCountsQuery';
 
 const RegimentsList = () => {
   const navigate = useNavigate();
-
-  const { tags } = useAppContext();
+  const location = useLocation();
+  const { ratings, tags } = useAppContext();
+  const { logError } = useLogError(RegimentsList.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
@@ -24,9 +28,23 @@ const RegimentsList = () => {
 
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-  const errorRef: any = useRef();
+  const [readRegimentCounts, { error }] = useLazyQuery(
+    readRegimentCountsQuery,
+    {
+      onCompleted: (data) => {
+        setRegiments(data.readRegimentCounts);
+        setLoadStatus(LoadStatus.LOADED);
+      },
+      onError: (exception) => {
+        logError({ name: 'readRegimentCounts', exception });
+        setLoadStatus(LoadStatus.ERROR);
+      },
+    }
+  );
 
   useEffect(() => {
+    const selectedRatings = ratingsToArray(ratings);
+
     const tagNames = tags
       .filter((tag: Tag) => {
         return tag.isSelected;
@@ -34,24 +52,14 @@ const RegimentsList = () => {
       .map((tag: Tag) => {
         return tag.name;
       });
+
     readRegimentCounts({
       variables: {
+        ratings: selectedRatings,
         tags: tagNames,
       },
     });
-  }, [tags]);
-
-  const [readRegimentCounts, {}] = useLazyQuery(readRegimentCountsQuery, {
-    onCompleted: (data) => {
-      setRegiments(data.readRegimentCounts);
-      setLoadStatus(LoadStatus.LOADED);
-    },
-    onError: (exception) => {
-      console.error(exception);
-      errorRef.current = exception;
-      setLoadStatus(LoadStatus.ERROR);
-    },
-  });
+  }, [location.key, ratings, tags, readRegimentCounts]);
 
   const handleChipClick = (index: number) => {
     let newRegiments: RegimentTag[] = [...regiments];
@@ -74,8 +82,7 @@ const RegimentsList = () => {
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR)
-    return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
+  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
   return (
     <>
@@ -88,19 +95,23 @@ const RegimentsList = () => {
             Regiments
           </Typography>
         </Stack>
-        <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-          {regiments.map((regiment: RegimentTag, index: number) => (
-            <Chip
-              color="primary"
-              label={`${regiment.name || 'Unknown'} (${regiment.count})`}
-              key={index}
-              onClick={() => {
-                handleChipClick(index);
-              }}
-              variant={regiment.isSelected ? undefined : 'outlined'}
-            />
-          ))}
-        </Stack>
+        {regiments.length === 0 ? (
+          <div>No Regiments available.</div>
+        ) : (
+          <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
+            {regiments.map((regiment: RegimentTag, index: number) => (
+              <Chip
+                color="primary"
+                label={`${regiment.name || 'Unknown'} (${regiment.count})`}
+                key={index}
+                onClick={() => {
+                  handleChipClick(index);
+                }}
+                variant={regiment.isSelected ? undefined : 'outlined'}
+              />
+            ))}
+          </Stack>
+        )}
         <Button
           css={classes.button}
           disabled={!isSearchEnabled}

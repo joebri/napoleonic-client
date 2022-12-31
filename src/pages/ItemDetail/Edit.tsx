@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, KeyboardEvent } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import {
   Button,
   FormControlLabel,
@@ -12,13 +12,13 @@ import {
 } from '@mui/material';
 import {
   BackspaceOutlined as BackspaceOutlinedIcon,
-  Label,
   Save as SaveIcon,
 } from '@mui/icons-material';
 
 import { classes } from './ItemDetail.style';
-import { TagInput } from '../../components/TagInput/TagInput';
-import { Item } from '../../types';
+import { TagInput } from 'components/TagInput/TagInput';
+
+import { Item } from 'types';
 
 interface EditProps {
   item: Item;
@@ -28,8 +28,11 @@ interface EditProps {
 }
 
 const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
+  const [isDirty, setIsDirty] = useState(false);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.name, event.target.value);
+    setIsDirty(true);
   };
 
   const handleTagsChange = (tags: string[]) => {
@@ -56,6 +59,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
       <div css={classes.actionBar}>
         <Button
           css={classes.button__spacer}
+          disabled={!isDirty}
           onClick={handleSaveClick}
           size="small"
           startIcon={<SaveIcon />}

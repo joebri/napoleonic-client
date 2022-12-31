@@ -8,4 +8,6 @@
 - automatically create Collection records
 - Specific tags - France:Infantry, Russia:Cavalry
 - leave edit checks
-- counts should tkae ratings filter into account
+  Look into using MD library
+
+## Done

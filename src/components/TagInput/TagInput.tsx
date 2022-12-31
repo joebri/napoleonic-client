@@ -4,10 +4,16 @@ import { SyntheticEvent } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Chip, Stack, TextField } from '@mui/material';
 
-import { useAppContext } from '../../AppContext';
-import { Tag } from '../../types';
+import { Tag } from 'types';
+import { useAppContext } from 'AppContext';
 
-const TagInput = ({ tagNames, isEdit, onChange }: any) => {
+interface TagInputProps {
+  tagNames: string[];
+  isEdit: boolean;
+  onChange?: Function;
+}
+
+const TagInput = ({ tagNames, isEdit, onChange = () => {} }: TagInputProps) => {
   const { tags: availableTags } = useAppContext();
   const availbleTagNames = availableTags.map((tag: Tag) => {
     return tag.name;

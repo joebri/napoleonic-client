@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  query readArtistCounts($tags: [String!]!) {
-    readArtistCounts(input: { tags: $tags }) {
+  query readArtistCounts($ratings: [Int!]!, $tags: [String!]!) {
+    readArtistCounts(input: { ratings: $ratings, tags: $tags }) {
       name
       count
     }

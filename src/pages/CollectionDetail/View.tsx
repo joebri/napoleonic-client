@@ -10,9 +10,10 @@ import WindowIcon from '@mui/icons-material/Window';
 import { Image } from 'cloudinary-react';
 
 import { classes } from './CollectionDetail.style';
-import { imageService, imageAccountName } from '../../services/imageService';
-import { TagInput } from '../../components/TagInput/TagInput';
-import { Item } from '../../types';
+
+import { imageService, imageAccountName } from 'services/imageService';
+import { Item } from 'types';
+import { TagInput } from 'components/TagInput/TagInput';
 
 const getUrl = (imagePublicId: string) => {
   const url = imageService.image(`${imagePublicId}`).format('auto').toURL();

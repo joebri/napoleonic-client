@@ -1,22 +1,25 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import Typography from '@mui/material/Typography';
 import { Helmet } from 'react-helmet';
+import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Typography from '@mui/material/Typography';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
-import createItemMutation from './queries/createItemMutation';
+
 import { Edit } from './Edit';
-import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
-import { initialisedItem } from '../../helper';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { initialisedItem } from 'helper';
+import { useLocalStorage } from 'hooks/useLocalStorage';
+import { useLogError } from 'hooks/useLogError';
+import createItemMutation from './queries/createItemMutation';
 
 const CollectionDetailAdd = () => {
   const navigate = useNavigate();
+  const { logError } = useLogError(CollectionDetailAdd.name);
 
-  const [template, setTemplate] = useLocalStorage<any>('template', {
+  const [template] = useLocalStorage<any>('template', {
     artist: '',
     tags: [],
     urlRoot: '',
@@ -54,12 +57,16 @@ const CollectionDetailAdd = () => {
         },
       });
       console.info(
-        'Manually create collection record for:',
+        'Now manually create collection record for:',
         result.data.createItem
       );
       navigate(`/collectionDetailView/${result.data.createItem}`);
-    } catch (exception: any) {
-      console.error(`ItemDetailAdd exception. Create failed.\n${exception}`);
+    } catch (exception) {
+      logError({
+        name: 'handleEditSaveClick',
+        exception,
+        message: 'Create failed.',
+      });
       setShowMessage(true);
     }
   };

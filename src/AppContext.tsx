@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-import { Tag } from './types/Tag.type';
+import { Tag } from './types';
 
 type RatingsType = {
   high: boolean;

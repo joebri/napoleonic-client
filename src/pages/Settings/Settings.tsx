@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
+import { Helmet } from 'react-helmet';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Helmet } from 'react-helmet';
 
 import { classes } from './Settings.style';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+
+import { useLocalStorage } from 'hooks/useLocalStorage';
 
 const Settings = () => {
   const [template, setTemplate] = useLocalStorage<any>('template', {

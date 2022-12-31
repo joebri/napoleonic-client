@@ -1,66 +1,67 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Helmet } from 'react-helmet';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './ItemDetail.style';
+import { Edit } from './Edit';
+
+import { initialisedItem } from 'helper';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { Rating } from 'enums/rating.enum';
+import { useConfirmExit } from 'hooks/useConfirmExit';
+import { useLogError } from 'hooks/useLogError';
 import readItemQuery from './queries/readItemQuery';
 import updateItemMutation from './queries/updateItemMutation';
-import { Edit } from './Edit';
-import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
 
 const ItemDetailEdit = () => {
   let { itemId } = useParams();
   const navigate = useNavigate();
+  const { logError } = useLogError(ItemDetailEdit.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
   const [showMessage, setShowMessage] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  useConfirmExit(isDirty);
 
   const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
     onCompleted: (data) => {
-      setItem({ ...data.readItem, rating: data.readItem.rating || 3 });
+      setItem({
+        ...data.readItem,
+        rating: data.readItem.rating || Rating.MEDIUM,
+      });
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error('error', itemId);
-      console.error(exception);
+      logError({ name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
   const [updateItem] = useMutation(updateItemMutation);
 
-  const loadForm = () => {
+  const loadForm = useCallback(() => {
     setLoadStatus(LoadStatus.LOADING);
     readItem();
-  };
+  }, [readItem]);
 
   useEffect(() => {
     loadForm();
-  }, [itemId]);
+  }, [itemId, loadForm]);
 
   const handleEditChange = (field: string, value: any) => {
-    //TODO need a better approach
-    // if (field === 'artist-name') {
-    //   setItem((priorItem: any) => ({
-    //     ...priorItem,
-    //     artist: { name: value },
-    //   }));
-    //   return;
-    // }
-
     setItem((priorItem: any) => ({
       ...priorItem,
       [field]: value,
     }));
+    setIsDirty(true);
   };
 
   const handleEditCancelClick = () => {
@@ -87,7 +88,12 @@ const ItemDetailEdit = () => {
       });
       navigate(`/itemDetailView/${item.id}`);
     } catch (exception: any) {
-      console.error(`ItemDetailEdit exception. Update failed.\n${exception}`);
+      logError({
+        name: 'handleEditSaveClick',
+        exception,
+        message: 'Update failed.',
+        itemId: item.id,
+      });
       setShowMessage(true);
     }
   };
@@ -96,7 +102,6 @@ const ItemDetailEdit = () => {
     setShowMessage(false);
   };
 
-  //TODO JSB rework this
   if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
   if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
@@ -120,6 +125,8 @@ const ItemDetailEdit = () => {
         onClose={handleMessageClose}
         open={showMessage}
       ></AppSnackBar>
+
+      {/* <Alert when={isDirty} message={() => 'Do you really want to leave?'} /> */}
     </>
   );
 };

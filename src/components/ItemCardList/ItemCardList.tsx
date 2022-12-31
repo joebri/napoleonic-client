@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { ItemCard } from '../ItemCard/ItemCard';
-import { classes } from '../ItemCard/ItemCard.style';
+import { classes } from './ItemCardList.style';
+import { ItemCard } from 'components/ItemCard/ItemCard';
 
 interface ItemCardListProps {
   items: [];

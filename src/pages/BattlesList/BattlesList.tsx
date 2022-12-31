@@ -1,18 +1,25 @@
 /** @jsxImportSource @emotion/react */
 
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
 import { classes } from './BattlesList.style';
-import { LoadStatus } from '../../enums/loadStatus.enum';
+
+import { BattleTag } from 'types';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { ratingsToArray } from 'helper';
+import { useAppContext } from 'AppContext';
+import { useLogError } from 'hooks/useLogError';
 import readBattleCountsQuery from './queries/readBattleCountsQuery';
-import { BattleTag } from '../../types/BattleTag.type';
 
 const BattlesList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { logError } = useLogError(BattlesList.name);
+  const { ratings } = useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
@@ -22,21 +29,28 @@ const BattlesList = () => {
 
   const errorRef: any = useRef();
 
-  useEffect(() => {
-    readBattleCounts();
-  }, []);
-
-  const [readBattleCounts, {}] = useLazyQuery(readBattleCountsQuery, {
+  const [readBattleCounts, { error }] = useLazyQuery(readBattleCountsQuery, {
     onCompleted: (data) => {
       setBattles(data.readBattleCounts);
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
+      logError({ name: 'readBattleCounts', exception });
       errorRef.current = exception;
       setLoadStatus(LoadStatus.ERROR);
     },
   });
+
+  useEffect(() => {
+    const selectedRatings = ratingsToArray(ratings);
+
+    readBattleCounts({
+      variables: {
+        ratings: selectedRatings,
+        tags: [],
+      },
+    });
+  }, [location.key, ratings, readBattleCounts]);
 
   const handleChipClick = (index: number) => {
     let newBattles: BattleTag[] = [...battles];
@@ -60,10 +74,8 @@ const BattlesList = () => {
     navigate(`/?battles=${selected}`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR) {
-    return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
-  }
+  if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
+  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
   return (
     <>
@@ -74,19 +86,25 @@ const BattlesList = () => {
         <Typography variant="h4" css={classes.title}>
           Battles
         </Typography>
-        <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-          {battles.map((battle: BattleTag, index: number) => (
-            <Chip
-              color="primary"
-              label={`${battle.name || 'Unknown'} (${battle.count})`}
-              key={index}
-              onClick={() => {
-                handleChipClick(index);
-              }}
-              variant={battle.isSelected ? undefined : 'outlined'}
-            />
-          ))}
-        </Stack>
+
+        {battles.length === 0 ? (
+          <div css={classes.noItems}>No Battles available.</div>
+        ) : (
+          <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
+            {battles.map((battle: BattleTag, index: number) => (
+              <Chip
+                color="primary"
+                label={`${battle.name || 'Unknown'} (${battle.count})`}
+                key={index}
+                onClick={() => {
+                  handleChipClick(index);
+                }}
+                variant={battle.isSelected ? undefined : 'outlined'}
+              />
+            ))}
+          </Stack>
+        )}
+
         <Button
           css={classes.button}
           disabled={!isSearchEnabled}

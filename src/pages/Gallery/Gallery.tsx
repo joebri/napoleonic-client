@@ -1,27 +1,30 @@
 /** @jsxImportSource @emotion/react */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import _isEqual from 'lodash/isEqual';
 import { ChangeEvent } from 'react';
+import { Helmet } from 'react-helmet';
 import { Stack, TextField } from '@mui/material';
-import Pagination from '@mui/material/Pagination';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useSearchParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-// import _debounce from 'lodash/debounce';
-import _isEqual from 'lodash/isEqual';
+import Pagination from '@mui/material/Pagination';
 
 import { classes } from './Gallery.style';
-import { useAppContext } from '../../AppContext';
-import { ItemCardList } from '../../components/ItemCardList/ItemCardList';
-import { Tag } from '../../types/Tag.type';
+import { ItemCardList } from 'components/ItemCardList/ItemCardList';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { ratingsToArray } from 'helper';
+import { Tag } from 'types';
+import { useAppContext } from 'AppContext';
+import { useLogError } from 'hooks/useLogError';
 import readItemsByTagsQuery from './queries/readItemsByTagsQuery';
-import { LoadStatus } from '../../enums/loadStatus.enum';
 
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
   const { ratings, sortField, tags, setTags, pageNumber, setPageNumber } =
     useAppContext();
+  const { logError } = useLogError(Gallery.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [pageCount, setPageCount] = useState(1);
@@ -40,16 +43,7 @@ const Gallery = () => {
     const queryCollection = searchParams.get('collection');
     const queryTags = searchParams.get('tags');
 
-    const selectedRatings = [];
-    if (ratings.high) {
-      selectedRatings.push(1);
-    }
-    if (ratings.medium) {
-      selectedRatings.push(3);
-    }
-    if (ratings.low) {
-      selectedRatings.push(5);
-    }
+    const selectedRatings = ratingsToArray(ratings);
 
     if (queryArtists) {
       const artists = queryArtists.split('||');
@@ -73,7 +67,7 @@ const Gallery = () => {
         type: 'battles',
         artists: [],
         battles,
-        ratings,
+        ratings: selectedRatings,
         regiments: [],
         tagNames: [],
       };
@@ -146,7 +140,7 @@ const Gallery = () => {
     };
   }, [ratings, searchParams, setTags, tags]);
 
-  const [readItemsByTags] = useLazyQuery(readItemsByTagsQuery, {
+  const [readItemsByTags, { error }] = useLazyQuery(readItemsByTagsQuery, {
     onCompleted: (data) => {
       itemsRef.current = data.readItemsByTags.items;
       const pageCount = Math.ceil(data.readItemsByTags.count / PAGE_SIZE);
@@ -154,7 +148,16 @@ const Gallery = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
+      logError({
+        name: 'readItemsByTags',
+        exception,
+        ratings,
+        sortField,
+        tags,
+        setTags,
+        pageNumber,
+        setPageNumber,
+      });
       errorRef.current = exception;
       setLoadStatus(LoadStatus.ERROR);
     },
@@ -163,7 +166,6 @@ const Gallery = () => {
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
       const queryDetails = cachedGetQueryDetails();
-      console.log('queryDetails', queryDetails);
       readItemsByTags({
         variables: {
           artists: queryDetails.artists,
@@ -210,9 +212,7 @@ const Gallery = () => {
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR) {
-    return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
-  }
+  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
 
   return (
     <>

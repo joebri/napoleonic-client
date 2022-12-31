@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 
 const classes = {
-  icon: css({
-    marginRight: '0.25rem',
+  noItems: css({
+    margin: 'auto',
   }),
 };
 

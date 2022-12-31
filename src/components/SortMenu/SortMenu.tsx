@@ -5,7 +5,7 @@ import { IconButton, Menu, MenuItem } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 
 import { classes } from './SortMenu.style';
-import { useAppContext } from '../../AppContext';
+import { useAppContext } from 'AppContext';
 
 const SortMenu = () => {
   const { sortField, setSortField } = useAppContext();
@@ -62,13 +62,6 @@ const SortMenu = () => {
         >
           Image
         </MenuItem>
-        {/* TODO fix regiment sort */}
-        {/* <MenuItem
-          onClick={() => handleItemSelected('regiment')}
-          selected={sortField === 'regiment'}
-        >
-          Regiment
-        </MenuItem> */}
       </Menu>
     </>
   );

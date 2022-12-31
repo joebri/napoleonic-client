@@ -8,10 +8,11 @@ import {
 import { Image } from 'cloudinary-react';
 
 import { classes } from './ItemDetail.style';
-import { imageService, imageAccountName } from '../../services/imageService';
-import { TagInput } from '../../components/TagInput/TagInput';
-import { Item } from '../../types';
-import { Rating } from '../../enums/rating.enum';
+import { TagInput } from 'components/TagInput/TagInput';
+
+import { imageService, imageAccountName } from 'services/imageService';
+import { Item } from 'types';
+import { Rating } from 'enums/rating.enum';
 
 const getUrl = (imagePublicId: string) => {
   const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
