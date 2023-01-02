@@ -16,15 +16,23 @@ const classes = {
     borderRadius: '0.25rem',
     padding: '0.5rem',
   },
-  // header: css({
-  //   display: 'flex',
-  //   justifyContent: 'space-between',
-  // }),
   section: css({
     marginTop: theme.spacing(1),
   }),
   tagGroup: css({
     flexWrap: 'wrap',
+  }),
+  slider_container: {
+    width: '95%',
+  },
+  years: css({
+    fontSize: '1rem',
+    margin: '0.4rem 0.5rem 0',
+  }),
+  years_checkbox: css({
+    marginLeft: '1rem',
+    top: '-0.3rem',
+    position: 'relative',
   }),
 };
 

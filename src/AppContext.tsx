@@ -1,12 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-import { Tag } from './types';
-
-type RatingsType = {
-  high: boolean;
-  medium: boolean;
-  low: boolean;
-};
+import { RatingsType, Tag } from './types';
 
 type AppContextType = {
   isFilterOpen: boolean;
@@ -19,6 +13,10 @@ type AppContextType = {
   setSortField: Function;
   tags: Tag[];
   setTags: Function;
+  yearRange: number[];
+  setYearRange: Function;
+  includeUnknownYear: boolean;
+  setIncludeUnknownYear: Function;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -26,15 +24,17 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const AppProvider = ({ children }: any) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
-  const [ratings, setRatings] = useState({
+  const [ratings, setRatings] = useState<RatingsType>({
     high: true,
     medium: true,
     low: false,
   });
   const [sortField, setSortField] = useState('title');
   const [tags, setTags] = useState([]);
+  const [yearRange, setYearRange] = useState([1795, 1815]);
+  const [includeUnknownYear, setIncludeUnknownYear] = useState(false);
 
-  const value: any = {
+  const value: AppContextType = {
     isFilterOpen,
     setIsFilterOpen,
     pageNumber,
@@ -45,6 +45,10 @@ const AppProvider = ({ children }: any) => {
     setSortField,
     tags,
     setTags,
+    yearRange,
+    setYearRange,
+    includeUnknownYear,
+    setIncludeUnknownYear,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

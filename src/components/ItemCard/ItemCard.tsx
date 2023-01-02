@@ -17,8 +17,8 @@ import { Image } from 'cloudinary-react';
 import { classes } from './ItemCard.style';
 import { TagTooltip } from 'components/TagTooltip/TagTooltip';
 
-import { imageService, imageAccountName } from '../../services/imageService';
-import { Item, Tag } from '../../types';
+import { imageService, imageAccountName } from 'services/imageService';
+import { Item, Tag } from 'types';
 import { useAppContext } from 'AppContext';
 
 interface ItemCardProps {

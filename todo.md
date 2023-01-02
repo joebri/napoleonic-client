@@ -1,13 +1,12 @@
 # TODO
 
 - rework loading and error 'pages'
-- wrap Cloundinary access in a facade
 - fix css around cards
 - review all uses of 'any'
-- add years to filters
 - automatically create Collection records
 - Specific tags - France:Infantry, Russia:Cavalry
-- leave edit checks
-  Look into using MD library
+- leave edit checks - pending fixes to router v6 (https://github.com/remix-run/react-router/issues/8139)
+- Look into using MD library
+- Review graphql caching strategy
 
 ## Done

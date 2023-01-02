@@ -19,7 +19,7 @@ import readRegimentCountsQuery from './queries/readRegimentCountsQuery';
 const RegimentsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { ratings, tags } = useAppContext();
+  const { ratings, tags, yearRange, includeUnknownYear } = useAppContext();
   const { logError } = useLogError(RegimentsList.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
@@ -57,6 +57,8 @@ const RegimentsList = () => {
       variables: {
         ratings: selectedRatings,
         tags: tagNames,
+        yearRange,
+        includeUnknownYear,
       },
     });
   }, [location.key, ratings, tags, readRegimentCounts]);

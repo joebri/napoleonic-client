@@ -20,7 +20,7 @@ const ArtistsList = () => {
   const location = useLocation();
   const { logError } = useLogError(ArtistsList.name);
 
-  const { ratings, tags } = useAppContext();
+  const { ratings, tags, yearRange, includeUnknownYear } = useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
@@ -54,6 +54,8 @@ const ArtistsList = () => {
       variables: {
         ratings: selectedRatings,
         tags: tagNames,
+        yearRange,
+        includeUnknownYear,
       },
     });
   }, [location.key, ratings, tags, readArtistCounts]);

@@ -17,13 +17,21 @@ import { ratingsToArray } from 'helper';
 import { Tag } from 'types';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
-import readItemsByTagsQuery from './queries/readItemsByTagsQuery';
+import readItemsByFilterQuery from './queries/readItemsByFilterQuery';
 
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
-  const { ratings, sortField, tags, setTags, pageNumber, setPageNumber } =
-    useAppContext();
+  const {
+    ratings,
+    sortField,
+    tags,
+    setTags,
+    pageNumber,
+    setPageNumber,
+    yearRange,
+    includeUnknownYear,
+  } = useAppContext();
   const { logError } = useLogError(Gallery.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
@@ -58,6 +66,8 @@ const Gallery = () => {
         ratings: selectedRatings,
         regiments: [],
         tagNames,
+        yearRange,
+        includeUnknownYear: true,
       };
     }
 
@@ -70,6 +80,8 @@ const Gallery = () => {
         ratings: selectedRatings,
         regiments: [],
         tagNames: [],
+        yearRange: [1699, 1899],
+        includeUnknownYear: true,
       };
     }
 
@@ -118,6 +130,8 @@ const Gallery = () => {
         ratings: selectedRatings,
         regiments: [],
         tagNames: [...tagNames, collectionName],
+        yearRange: [1699, 1899],
+        includeUnknownYear: true,
       };
     }
 
@@ -137,26 +151,26 @@ const Gallery = () => {
       ratings: selectedRatings,
       regiments: [],
       tagNames,
+      yearRange,
+      includeUnknownYear,
     };
   }, [ratings, searchParams, setTags, tags]);
 
-  const [readItemsByTags, { error }] = useLazyQuery(readItemsByTagsQuery, {
+  const [readItemsByFilter, { error }] = useLazyQuery(readItemsByFilterQuery, {
     onCompleted: (data) => {
-      itemsRef.current = data.readItemsByTags.items;
-      const pageCount = Math.ceil(data.readItemsByTags.count / PAGE_SIZE);
+      itemsRef.current = data.readItemsByFilter.items;
+      const pageCount = Math.ceil(data.readItemsByFilter.count / PAGE_SIZE);
       setPageCount(pageCount);
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
       logError({
-        name: 'readItemsByTags',
+        name: 'readItemsByFilter',
         exception,
         ratings,
         sortField,
         tags,
-        setTags,
         pageNumber,
-        setPageNumber,
       });
       errorRef.current = exception;
       setLoadStatus(LoadStatus.ERROR);
@@ -166,7 +180,7 @@ const Gallery = () => {
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
       const queryDetails = cachedGetQueryDetails();
-      readItemsByTags({
+      readItemsByFilter({
         variables: {
           artists: queryDetails.artists,
           battles: queryDetails.battles,
@@ -177,13 +191,15 @@ const Gallery = () => {
           sort: sortField,
           sortSequence: 'asc',
           tags: queryDetails.tagNames,
+          yearRange: queryDetails.yearRange,
+          includeUnknownYear: queryDetails.includeUnknownYear,
         },
       });
     };
 
     loadForm(pageNumber);
     document.getElementById('scrollableView')?.scrollTo({ top: 0 });
-  }, [cachedGetQueryDetails, pageNumber, readItemsByTags, sortField, tags]);
+  }, [cachedGetQueryDetails, pageNumber, readItemsByFilter, sortField, tags]);
 
   const handlePaginationChange = (
     _: ChangeEvent<unknown>,

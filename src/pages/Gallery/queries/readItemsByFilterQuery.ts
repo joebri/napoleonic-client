@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  query readItemsByTags(
+  query readItemsByFilter(
     $artists: [String!]
     $battles: [String!]
     $pageNumber: Int!
@@ -11,8 +11,10 @@ export default gql`
     $sort: String!
     $sortSequence: String!
     $tags: [String!]!
+    $yearRange: [Int!]!
+    $includeUnknownYear: Boolean!
   ) {
-    readItemsByTags(
+    readItemsByFilter(
       input: {
         artists: $artists
         battles: $battles
@@ -23,6 +25,8 @@ export default gql`
         tags: $tags
         sort: $sort
         sortSequence: $sortSequence
+        yearRange: $yearRange
+        includeUnknownYear: $includeUnknownYear
       }
     ) {
       count

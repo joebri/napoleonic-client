@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
 import {
+  Box,
   Button,
   Checkbox,
   Chip,
   Drawer,
   FormControlLabel,
+  Slider,
   Stack,
   Typography,
 } from '@mui/material';
@@ -29,22 +31,43 @@ export enum ActionEnum {
 }
 
 const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
-  const { isFilterOpen, setIsFilterOpen, ratings, setRatings, tags, setTags } =
-    useAppContext();
+  const {
+    isFilterOpen,
+    setIsFilterOpen,
+    ratings,
+    setRatings,
+    tags,
+    setTags,
+    yearRange,
+    setYearRange,
+    includeUnknownYear,
+    setIncludeUnknownYear,
+  } = useAppContext();
 
-  const [localTags, setLocalTags] = useState([] as Tag[]);
+  const [localTags, setLocalTags] = useState<Tag[]>([]);
+
   const [localRatings, setLocalRatings] = useState({
     high: false,
     medium: false,
     low: false,
   });
 
+  const [localYearRange, setLocalYearRange] = useState<number[]>([1795, 1815]);
+
+  const [localIncludeUnknownYear, setLocalIncludeUnknownYear] =
+    useState<boolean>(false);
+
   useEffect(() => {
     setLocalTags(tags);
   }, [tags]);
+
   useEffect(() => {
     setLocalRatings(ratings);
   }, [ratings]);
+
+  useEffect(() => {
+    setLocalIncludeUnknownYear(includeUnknownYear);
+  }, [includeUnknownYear]);
 
   const handleTagClick = (selectedTag: Tag) => {
     const updatedTags = tags.map((tag: Tag) => {
@@ -70,6 +93,8 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
 
     setTags(updatedTags);
     setRatings(localRatings);
+    setYearRange(localYearRange);
+    setIncludeUnknownYear(localIncludeUnknownYear);
     setIsFilterOpen(false);
     onActionSelect(action);
   };
@@ -79,6 +104,16 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
       ...localRatings,
       [event.target.name]: event.target.checked,
     });
+  };
+
+  const handleYearChange = (event: Event, newValue: number | number[]) => {
+    setLocalYearRange(newValue as number[]);
+  };
+
+  const handleIncludeUnknownYearChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocalIncludeUnknownYear(event.target.checked);
   };
 
   interface TagProps {
@@ -194,6 +229,35 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               }
               label="Low"
             />
+          </div>
+
+          <div css={classes.section}>
+            <Stack direction={'row'}>
+              <Typography variant="h5">Years </Typography>
+              <Typography variant="h5" css={classes.years}>
+                {localYearRange[0]} - {localYearRange[1]}
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={localIncludeUnknownYear}
+                    onChange={handleIncludeUnknownYearChange}
+                  />
+                }
+                css={classes.years_checkbox}
+                label="Include unknown?"
+              />
+            </Stack>
+            <Box css={classes.slider_container}>
+              <Slider
+                getAriaLabel={() => 'Temperature range'}
+                min={1780}
+                max={1820}
+                onChange={handleYearChange}
+                value={localYearRange}
+                valueLabelDisplay="auto"
+              />
+            </Box>
           </div>
         </div>
         <div css={classes.section}>
