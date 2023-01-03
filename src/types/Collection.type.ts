@@ -1,7 +1,10 @@
 type Collection = {
-  group: string;
-  name: string;
-  itemId: string;
+  descriptionLong: string;
+  descriptionShort: string;
+  id: string;
+  tagName: string;
+  tags: string[];
+  title: string;
 };
 
 export type { Collection };

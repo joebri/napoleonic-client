@@ -38,7 +38,6 @@ const Home = () => {
 
   const [getTags, { error }] = useLazyQuery(readTagsQuery, {
     onCompleted: (data) => {
-      console.log('tags read');
       setTags(data.readTags);
       setLoadStatus(LoadStatus.LOADED);
     },
@@ -102,11 +101,11 @@ const Home = () => {
 
           <Route path="collections" element={<CollectionList />} />
           <Route
-            path="collectionDetailView/:itemId"
+            path="collectionDetailView/:collectionId"
             element={<CollectionDetailView />}
           />
           <Route
-            path="collectionDetailEdit/:itemId"
+            path="collectionDetailEdit/:collectionId"
             element={<CollectionDetailEdit />}
           />
           <Route

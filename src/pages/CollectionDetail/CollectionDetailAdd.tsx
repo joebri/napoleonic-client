@@ -10,10 +10,10 @@ import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
 
 import { Edit } from './Edit';
-import { initialisedItem } from 'helper';
+import { initialisedCollection } from 'helper';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
-import createItemMutation from './queries/createItemMutation';
+import createCollectionMutation from './queries/createCollectionMutation';
 
 const CollectionDetailAdd = () => {
   const navigate = useNavigate();
@@ -25,19 +25,17 @@ const CollectionDetailAdd = () => {
     urlRoot: '',
   });
 
-  const [item, setItem] = useState({
-    ...initialisedItem,
-    artist: template.artist,
-    publicId: '/Napoleonic/GreeceBar_wphbeq.gif',
+  const [collection, setCollection] = useState({
+    ...initialisedCollection,
     tags: template.tags.split(','),
   });
   const [showMessage, setShowMessage] = useState(false);
 
-  const [createItem] = useMutation(createItemMutation);
+  const [createCollection] = useMutation(createCollectionMutation);
 
   const handleEditChange = (field: string, value: any) => {
-    setItem((priorItem: any) => ({
-      ...priorItem,
+    setCollection((priorCollection: any) => ({
+      ...priorCollection,
       [field]: value,
     }));
   };
@@ -48,19 +46,16 @@ const CollectionDetailAdd = () => {
 
   const handleEditSaveClick = async () => {
     try {
-      const result = await createItem({
+      const result = await createCollection({
         variables: {
-          descriptionLong: item.descriptionLong.trim(),
-          descriptionShort: item.descriptionShort.trim(),
-          tags: item.tags,
-          title: item.title.trim(),
+          descriptionLong: collection.descriptionLong.trim(),
+          descriptionShort: collection.descriptionShort.trim(),
+          tagName: collection.tagName.trim(),
+          tags: collection.tags,
+          title: collection.title.trim(),
         },
       });
-      console.info(
-        'Now manually create collection record for:',
-        result.data.createItem
-      );
-      navigate(`/collectionDetailView/${result.data.createItem}`);
+      navigate(`/collectionDetailView/${result.data.createCollection}`);
     } catch (exception) {
       logError({
         name: 'handleEditSaveClick',
@@ -83,7 +78,7 @@ const CollectionDetailAdd = () => {
       <div css={classes.container}>
         <Typography variant="h5">Add Collection</Typography>
         <Edit
-          item={item}
+          collection={collection}
           onCancel={handleEditCancelClick}
           onChange={handleEditChange}
           onSave={handleEditSaveClick}
@@ -91,7 +86,7 @@ const CollectionDetailAdd = () => {
       </div>
 
       <AppSnackBar
-        message="Unable to create item. Please try again."
+        message="Unable to create Collection. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
       ></AppSnackBar>

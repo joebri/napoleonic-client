@@ -16,7 +16,6 @@ import gql from 'graphql-tag';
 //       count
 //       items {
 //         artist
-//         contentId
 //         descriptionLong
 //         descriptionShort
 //         id

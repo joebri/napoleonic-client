@@ -1,14 +1,12 @@
-import { Item } from './types';
+import { Collection, Item } from './types';
 import { Rating } from './enums/rating.enum';
 import { RatingsType } from './types';
 
 const initialisedItem: Item = {
   artist: '',
-  contentId: '',
   descriptionLong: '',
   descriptionShort: '',
   id: '0',
-  isCollection: false,
   publicId: '',
   rating: Rating.MEDIUM,
   regiments: '',
@@ -16,6 +14,15 @@ const initialisedItem: Item = {
   tags: [],
   yearFrom: '',
   yearTo: '',
+};
+
+const initialisedCollection: Collection = {
+  descriptionLong: '',
+  descriptionShort: '',
+  id: '0',
+  tagName: '',
+  tags: [],
+  title: '',
 };
 
 const ratingsToArray = (ratings: RatingsType): number[] => {
@@ -32,4 +39,4 @@ const ratingsToArray = (ratings: RatingsType): number[] => {
   return selectedRatings;
 };
 
-export { initialisedItem, ratingsToArray };
+export { initialisedCollection, initialisedItem, ratingsToArray };

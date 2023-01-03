@@ -10,49 +10,51 @@ import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
 
 import { Edit } from './Edit';
-import { initialisedItem } from 'helper';
+import { initialisedCollection } from 'helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
-import readItemQuery from './queries/readItemQuery';
-import updateItemMutation from './queries/updateItemMutation';
+import readCollectionQuery from './queries/readCollectionQuery';
+import updateCollectionMutation from './queries/updateCollectionMutation';
 
 const CollectionDetailEdit = () => {
-  let { itemId } = useParams();
+  let { collectionId } = useParams();
   const navigate = useNavigate();
   const { logError } = useLogError(CollectionDetailEdit.name);
 
-  const viewPageURI = `/collectionDetailView/${itemId}`;
+  const viewPageURI = `/collectionDetailView/${collectionId}`;
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-  const [item, setItem] = useState(initialisedItem);
+  const [collection, setCollection] = useState(initialisedCollection);
   const [showMessage, setShowMessage] = useState(false);
 
-  const [readItem, { error }] = useLazyQuery(readItemQuery, {
-    variables: { id: itemId },
+  const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
+    variables: { id: collectionId },
     onCompleted: (data) => {
-      setItem({ ...data.readItem, rating: data.readItem.rating || 3 });
+      setCollection({
+        ...data.readCollection,
+      });
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readItem', exception, itemId });
+      logError({ name: 'readCollection', exception, collectionId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
-  const [updateItem] = useMutation(updateItemMutation);
+  const [updateCollection] = useMutation(updateCollectionMutation);
 
   const loadForm = useCallback(() => {
     setLoadStatus(LoadStatus.LOADING);
-    readItem();
-  }, [readItem]);
+    readCollection();
+  }, [readCollection]);
 
   useEffect(() => {
     loadForm();
-  }, [itemId, loadForm]);
+  }, [collectionId, loadForm]);
 
   const handleEditChange = (field: string, value: any) => {
-    setItem((priorItem: any) => ({
-      ...priorItem,
+    setCollection((priorCollection: any) => ({
+      ...priorCollection,
       [field]: value,
     }));
   };
@@ -64,13 +66,14 @@ const CollectionDetailEdit = () => {
 
   const handleEditSaveClick = async () => {
     try {
-      await updateItem({
+      await updateCollection({
         variables: {
-          descriptionLong: item.descriptionLong.trim(),
-          descriptionShort: item.descriptionShort.trim(),
-          id: item.id,
-          tags: item.tags,
-          title: item.title.trim(),
+          descriptionLong: collection.descriptionLong.trim(),
+          descriptionShort: collection.descriptionShort.trim(),
+          id: collection.id,
+          tagName: collection.tagName.trim(),
+          tags: collection.tags,
+          title: collection.title.trim(),
         },
       });
       navigate(viewPageURI);
@@ -79,7 +82,7 @@ const CollectionDetailEdit = () => {
         name: 'handleEditSaveClick',
         exception,
         message: 'Update failed.',
-        itemId: item.id,
+        collectionId: collection.id,
       });
       setShowMessage(true);
     }
@@ -100,7 +103,7 @@ const CollectionDetailEdit = () => {
       <div css={classes.container}>
         <Typography variant="h5">Edit Collection</Typography>
         <Edit
-          item={item}
+          collection={collection}
           onCancel={handleEditCancelClick}
           onChange={handleEditChange}
           onSave={handleEditSaveClick}
@@ -108,7 +111,7 @@ const CollectionDetailEdit = () => {
       </div>
 
       <AppSnackBar
-        message="Unable to update item. Please try again."
+        message="Unable to update Collection. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
       ></AppSnackBar>

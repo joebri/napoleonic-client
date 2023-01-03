@@ -30,7 +30,6 @@ const ArtistsList = () => {
 
   const [readArtistCounts, { error }] = useLazyQuery(readArtistCountsQuery, {
     onCompleted: (data) => {
-      console.log(data);
       setArtists(data.readArtistCounts);
       setLoadStatus(LoadStatus.LOADED);
     },

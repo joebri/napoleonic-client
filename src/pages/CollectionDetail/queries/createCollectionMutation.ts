@@ -1,17 +1,18 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation createItem(
-    $descriptionLong: String
-    $descriptionShort: String
-    $tags: [String]
-    $title: String
+  mutation createCollection(
+    $descriptionLong: String!
+    $descriptionShort: String!
+    $tagName: String!
+    $tags: [String!]!
+    $title: String!
   ) {
-    createItem(
+    createCollection(
       input: {
         descriptionLong: $descriptionLong
         descriptionShort: $descriptionShort
-        isCollection: true
+        tagName: $tagName
         tags: $tags
         title: $title
       }

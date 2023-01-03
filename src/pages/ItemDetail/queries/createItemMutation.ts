@@ -8,7 +8,7 @@ export default gql`
     $publicId: String
     $rating: Int
     $regiments: String
-    $tags: [String]
+    $tags: [String!]!
     $title: String
     $yearFrom: String
     $yearTo: String

@@ -35,7 +35,6 @@ export default gql`
         descriptionLong
         descriptionShort
         id
-        isCollection
         publicId
         rating
         regiments

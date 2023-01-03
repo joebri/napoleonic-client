@@ -12,7 +12,7 @@ import { Image } from 'cloudinary-react';
 import { classes } from './CollectionDetail.style';
 
 import { imageService, imageAccountName } from 'services/imageService';
-import { Item } from 'types';
+import { Collection } from 'types';
 import { TagInput } from 'components/TagInput/TagInput';
 
 const getUrl = (imagePublicId: string) => {
@@ -21,12 +21,12 @@ const getUrl = (imagePublicId: string) => {
 };
 
 interface ViewProps {
-  item: Item;
+  collection: Collection;
   onDelete: Function;
   onEdit: Function;
 }
 
-const View = ({ item, onDelete, onEdit }: ViewProps) => {
+const View = ({ collection, onDelete, onEdit }: ViewProps) => {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -72,22 +72,22 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         </Button>
       </div>
 
-      <Typography variant="h2">{item.title}</Typography>
+      <Typography variant="h2">{collection.title}</Typography>
 
-      {item.descriptionShort && (
-        <Typography variant="h3">{item.descriptionShort}</Typography>
+      {collection.descriptionShort && (
+        <Typography variant="h3">{collection.descriptionShort}</Typography>
       )}
 
       <div css={classes.container__link}>
-        <Link to={`/?collection=${item.id}`}>Plates</Link>
+        <Link to={`/?collection=${collection.tagName}`}>Plates</Link>
       </div>
 
-      {item.descriptionLong && (
-        <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
+      {collection.descriptionLong && (
+        <p dangerouslySetInnerHTML={{ __html: collection.descriptionLong }} />
       )}
 
       <div css={classes.container__link}>
-        <Link to={`/?collection=${item.id}`}>Plates</Link>
+        <Link to={`/?collection=${collection.tagName}`}>Plates</Link>
       </div>
 
       <div css={classes.container__image}>
@@ -98,9 +98,11 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         />
       </div>
 
-      <div css={classes.tags}>
-        <TagInput tagNames={item.tags} isEdit={false} />
-      </div>
+      <Typography>Tag Name: "{collection.tagName}"</Typography>
+
+      {/* <div css={classes.tags}>
+        <TagInput tagNames={collection.tags} isEdit={false} />
+      </div> */}
     </div>
   );
 };

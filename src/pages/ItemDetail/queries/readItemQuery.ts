@@ -4,7 +4,6 @@ export default gql`
   query readItem($id: ID!) {
     readItem(id: $id) {
       artist
-      contentId
       descriptionLong
       descriptionShort
       id

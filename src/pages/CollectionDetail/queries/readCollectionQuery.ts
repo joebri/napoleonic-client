@@ -1,13 +1,12 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  query readItem($id: ID!) {
-    readItem(id: $id) {
+  query readCollection($id: ID!) {
+    readCollection(id: $id) {
       descriptionLong
       descriptionShort
       id
-      rating
-      publicId
+      tagName
       tags
       title
     }

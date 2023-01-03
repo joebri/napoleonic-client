@@ -15,7 +15,7 @@ const useLogError = (moduleName: string) => {
       moduleName: moduleName,
       name,
     };
-    console.log('Error:', error);
+    console.error('Error:', error);
   };
 
   return { logError };

@@ -8,17 +8,17 @@ import {
 } from '@mui/icons-material';
 
 import { classes } from './CollectionDetail.style';
-import { Item } from 'types';
+import { Collection } from 'types';
 import { TagInput } from 'components/TagInput/TagInput';
 
 interface EditProps {
-  item: Item;
+  collection: Collection;
   onCancel: Function;
   onChange: Function;
   onSave: Function;
 }
 
-const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
+const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
   const [isDirty, setIsDirty] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +28,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
 
   const handleTagsChange = (tags: string[]) => {
     onChange('tags', tags);
+    setIsDirty(true);
   };
 
   const handleCancelClick = () => {
@@ -72,11 +73,23 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         InputLabelProps={{
           shrink: true,
         }}
+        label="Tag Name"
+        margin="normal"
+        name="tagName"
+        onChange={handleChange}
+        value={collection.tagName}
+        variant="standard"
+      />
+      <TextField
+        fullWidth
+        InputLabelProps={{
+          shrink: true,
+        }}
         label="Title"
         margin="normal"
         name="title"
         onChange={handleChange}
-        value={item.title}
+        value={collection.title}
         variant="standard"
       />
       <TextField
@@ -88,7 +101,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         margin="normal"
         name="descriptionShort"
         onChange={handleChange}
-        value={item.descriptionShort}
+        value={collection.descriptionShort}
         variant="standard"
       />
       <TextField
@@ -101,12 +114,16 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         multiline
         name="descriptionLong"
         onChange={handleChange}
-        value={item.descriptionLong}
+        value={collection.descriptionLong}
         variant="standard"
       />
-      <div css={classes.tags}>
-        <TagInput isEdit onChange={handleTagsChange} tagNames={item.tags} />
-      </div>
+      {/* <div css={classes.tags}>
+        <TagInput
+          isEdit
+          onChange={handleTagsChange}
+          tagNames={collection.tags}
+        />
+      </div> */}
     </div>
   );
 };

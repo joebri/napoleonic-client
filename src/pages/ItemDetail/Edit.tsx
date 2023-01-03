@@ -37,6 +37,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
 
   const handleTagsChange = (tags: string[]) => {
     onChange('tags', tags);
+    setIsDirty(true);
   };
 
   const handleCancelClick = () => {

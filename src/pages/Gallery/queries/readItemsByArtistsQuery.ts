@@ -12,7 +12,6 @@ export default gql`
       count
       items {
         artist
-        contentId
         descriptionLong
         descriptionShort
         id

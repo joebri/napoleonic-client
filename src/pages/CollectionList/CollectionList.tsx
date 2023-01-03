@@ -37,7 +37,7 @@ const CollectionList = () => {
   }, [readCollections]);
 
   const handleSearchClick = (collection: Collection) => {
-    navigate(`/collectionDetailView/${collection.itemId}`);
+    navigate(`/collectionDetailView/${collection.id}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
@@ -62,7 +62,7 @@ const CollectionList = () => {
               }}
               variant="contained"
             >
-              {`${collection.name}`}
+              {`${collection.tagName}`}
             </Button>
           ))}
         </Stack>

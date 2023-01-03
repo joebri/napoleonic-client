@@ -44,6 +44,7 @@ const Gallery = () => {
   const errorRef: any = useRef();
   const wrapperRef: any = useRef(null);
 
+  //TODO Make this function shorter
   const cachedGetQueryDetails = useCallback(() => {
     const queryArtists = searchParams.get('artists');
     const queryBattles = searchParams.get('battles');
@@ -102,34 +103,15 @@ const Gallery = () => {
     }
 
     if (queryCollection) {
-      const collectionItemId = queryCollection;
+      const collectionTagName = queryCollection;
       const tagNames = queryTags?.split(',') || [];
-
-      const collectionName = tags
-        .filter((tag: Tag) => {
-          return tag.group === 'Collection';
-        })
-        .filter((tag: Tag) => {
-          return tag.itemId === collectionItemId;
-        })[0].name;
-
-      const updatedTags = tags.map((tag: Tag) => {
-        return {
-          ...tag,
-          isSelected: tag.itemId === collectionItemId,
-        };
-      });
-
-      if (!_isEqual(updatedTags, tags)) {
-        setTags(updatedTags);
-      }
 
       return {
         type: 'tags',
         artists: [],
         ratings: selectedRatings,
         regiments: [],
-        tagNames: [...tagNames, collectionName],
+        tagNames: [...tagNames, collectionTagName],
         yearRange: [1699, 1899],
         includeUnknownYear: true,
       };
@@ -152,7 +134,7 @@ const Gallery = () => {
       regiments: [],
       tagNames,
       yearRange,
-      includeUnknownYear,
+      includeUnknownYear: true,
     };
   }, [ratings, searchParams, setTags, tags]);
 
@@ -180,6 +162,7 @@ const Gallery = () => {
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
       const queryDetails = cachedGetQueryDetails();
+      console.log('queryDetails', queryDetails);
       readItemsByFilter({
         variables: {
           artists: queryDetails.artists,

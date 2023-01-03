@@ -70,20 +70,12 @@ const ItemCard = ({ item }: ItemCardProps) => {
   };
 
   const handleViewMenuClick = () => {
-    if (item.isCollection) {
-      navigate(`/collectionDetailView/${item.id}`);
-    } else {
-      navigate(`/itemDetailView/${item.id}`);
-    }
+    navigate(`/itemDetailView/${item.id}`);
     setAnchorEl(null);
   };
 
   const handleEditMenuClick = () => {
-    if (item.isCollection) {
-      navigate(`/collectionDetailEdit/${item.id}`);
-    } else {
-      navigate(`/itemDetailEdit/${item.id}`);
-    }
+    navigate(`/itemDetailEdit/${item.id}`);
     setAnchorEl(null);
   };
 
@@ -96,7 +88,11 @@ const ItemCard = ({ item }: ItemCardProps) => {
   };
 
   const getUrl = (imagePublicId: string) => {
-    const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
+    const url = imageService
+      .image(`${imagePublicId}`)
+      .quality('auto')
+      .format('auto')
+      .toURL();
     return url;
   };
 

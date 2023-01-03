@@ -1,18 +1,20 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation updateItem(
-    $descriptionLong: String
-    $descriptionShort: String
+  mutation updateCollection(
+    $descriptionLong: String!
+    $descriptionShort: String!
     $id: ID!
-    $tags: [String]
-    $title: String
+    $tagName: String!
+    $tags: [String!]!
+    $title: String!
   ) {
-    updateItem(
+    updateCollection(
       input: {
         descriptionLong: $descriptionLong
         descriptionShort: $descriptionShort
         id: $id
+        tagName: $tagName
         tags: $tags
         title: $title
       }
