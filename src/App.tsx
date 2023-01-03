@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { Home } from 'pages/Home/Home';
+import { ErrorBoundary } from './ErrorBoundary';
 
 import { AppProvider } from 'AppContext';
 import { theme, ThemeProvider } from 'theme';
@@ -26,13 +27,15 @@ function App() {
         <title>Uniformology: Napoleonic</title>
       </Helmet>
       <CssBaseline />
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={theme}>
-          <AppProvider>
-            <Home />
-          </AppProvider>
-        </ThemeProvider>
-      </ApolloProvider>
+      <ErrorBoundary>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <AppProvider>
+              <Home />
+            </AppProvider>
+          </ThemeProvider>
+        </ApolloProvider>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

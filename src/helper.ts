@@ -39,4 +39,22 @@ const ratingsToArray = (ratings: RatingsType): number[] => {
   return selectedRatings;
 };
 
-export { initialisedCollection, initialisedItem, ratingsToArray };
+const ratingToString = (rating: number) => {
+  switch (rating) {
+    case Rating.HIGH:
+      return 'High';
+    case Rating.MEDIUM:
+      return 'Medium';
+    case Rating.LOW:
+      return 'Low';
+    default:
+      return 'n/a';
+  }
+};
+
+export {
+  initialisedCollection,
+  initialisedItem,
+  ratingsToArray,
+  ratingToString,
+};

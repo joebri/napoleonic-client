@@ -12,24 +12,11 @@ import { TagInput } from 'components/TagInput/TagInput';
 
 import { imageService, imageAccountName } from 'services/imageService';
 import { Item } from 'types';
-import { Rating } from 'enums/rating.enum';
+import { ratingToString } from 'helper';
 
 const getUrl = (imagePublicId: string) => {
   const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
   return url;
-};
-
-const ratingToString = (rating: number) => {
-  switch (rating) {
-    case Rating.HIGH:
-      return 'High';
-    case Rating.MEDIUM:
-      return 'Medium';
-    case Rating.LOW:
-      return 'Low';
-    default:
-      return 'n/a';
-  }
 };
 
 interface ViewProps {
