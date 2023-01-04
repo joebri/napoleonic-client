@@ -11,6 +11,7 @@ import { classes } from './CollectionDetail.style';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
 
+import { Collection } from 'types';
 import { Edit } from './Edit';
 import { initialisedCollection } from 'helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
@@ -54,8 +55,8 @@ const CollectionDetailEdit = () => {
     loadForm();
   }, [collectionId, loadForm]);
 
-  const handleEditChange = (field: string, value: any) => {
-    setCollection((priorCollection: any) => ({
+  const handleEditChange = (field: string, value: string | number) => {
+    setCollection((priorCollection: Collection) => ({
       ...priorCollection,
       [field]: value,
     }));

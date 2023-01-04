@@ -47,7 +47,7 @@ const MenuBar = () => {
 
   const handleTagClick = (tag: Tag) => {
     if (tag.itemId) {
-      const updatedTags: any = tags.map((tag: Tag) => {
+      const updatedTags: Tag[] = tags.map((tag: Tag) => {
         tag.isSelected = false;
         return tag;
       });

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useState } from 'react';
 
 import { RatingsType, Tag } from './types';
 
@@ -21,7 +21,11 @@ type AppContextType = {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const AppProvider = ({ children }: any) => {
+interface AppProviderProps {
+  children: ReactNode;
+}
+
+const AppProvider = ({ children }: AppProviderProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [ratings, setRatings] = useState<RatingsType>({

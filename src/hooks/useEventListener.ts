@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 // const useEventListener = (element, event, cb) => {
 //   useEffect(() => {
@@ -12,3 +12,6 @@ import { useEffect } from 'react';
 //   }, [event, cb, element]);
 // };
 // export default useEventListener;
+
+//TODO review use of this code
+export {};

@@ -13,7 +13,7 @@ interface AppSnackBarProps {
 }
 
 const AppSnackBar = ({ message, onClose, open }: AppSnackBarProps) => {
-  const handleClose = (event: any) => {
+  const handleClose = (event: SyntheticEvent<any> | Event) => {
     onClose(event);
   };
 
@@ -22,12 +22,12 @@ const AppSnackBar = ({ message, onClose, open }: AppSnackBarProps) => {
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         autoHideDuration={6000}
-        onClose={(event: any) => handleClose(event)}
+        onClose={(event: SyntheticEvent<any> | Event) => handleClose(event)}
         open={open}
       >
         <Alert
           css={classes.messageAlert}
-          onClose={(event: any) => handleClose(event)}
+          onClose={(event: SyntheticEvent<any> | Event) => handleClose(event)}
           severity="error"
         >
           {message}

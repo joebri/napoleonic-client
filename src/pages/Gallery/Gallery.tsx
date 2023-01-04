@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent } from 'react';
+import { ChangeEvent, KeyboardEvent, LegacyRef, MutableRefObject } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Stack, TextField } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -13,6 +13,7 @@ import { Error } from 'components/Error/Error';
 import { ItemCardList } from 'components/ItemCardList/ItemCardList';
 import { Loading } from 'components/Loading/Loading';
 
+import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
 import { Tag } from 'types';
@@ -40,9 +41,8 @@ const Gallery = () => {
 
   const [searchParams] = useSearchParams();
 
-  const itemsRef: any = useRef([]);
-  const errorRef: any = useRef();
-  const wrapperRef: any = useRef(null);
+  const itemsRef: MutableRefObject<Item[]> = useRef<Item[]>([]);
+  const wrapperRef: LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
   //TODO Make this function shorter
   const cachedGetQueryDetails = useCallback(() => {
@@ -154,7 +154,6 @@ const Gallery = () => {
         tags,
         pageNumber,
       });
-      errorRef.current = exception;
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -194,7 +193,7 @@ const Gallery = () => {
     setRequestedPageNumber(event.target.value);
   };
 
-  const handlePageNumberKeyDown = (event: any) => {
+  const handlePageNumberKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.code === 'Enter') {
       let pageNumber = parseInt(requestedPageNumber);
       if (pageNumber > pageCount) {
@@ -205,7 +204,7 @@ const Gallery = () => {
       }
       setRequestedPageNumber('');
       setPageNumber(pageNumber);
-      wrapperRef.current.focus();
+      wrapperRef.current?.focus();
     }
   };
 

@@ -3,8 +3,10 @@
 import { classes } from './ItemCardList.style';
 import { ItemCard } from 'components/ItemCard/ItemCard';
 
+import { Item } from '../../types';
+
 interface ItemCardListProps {
-  items: [];
+  items: Item[];
 }
 
 const ItemCardList = ({ items }: ItemCardListProps) => {
@@ -12,7 +14,7 @@ const ItemCardList = ({ items }: ItemCardListProps) => {
     <>
       {items?.length > 0 ? (
         <>
-          {items.map((item: any) => (
+          {items.map((item: Item) => (
             <ItemCard key={item.id.toString()} item={item}></ItemCard>
           ))}
         </>

@@ -10,6 +10,7 @@ import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { classes } from './ItemDetail.style';
 
 import { Edit } from './Edit';
+import { Item } from 'types';
 import { initialisedItem } from 'helper';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
@@ -35,8 +36,8 @@ const ItemDetailAdd = () => {
 
   const [createItem] = useMutation(createItemMutation);
 
-  const handleEditChange = (field: string, value: any) => {
-    setItem((priorItem: any) => ({
+  const handleEditChange = (field: string, value: string | number) => {
+    setItem((priorItem: Item) => ({
       ...priorItem,
       [field]: value,
     }));

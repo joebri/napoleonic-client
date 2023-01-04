@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
@@ -29,8 +29,6 @@ const BattlesList = () => {
 
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-  const errorRef: any = useRef();
-
   const [readBattleCounts, { error }] = useLazyQuery(readBattleCountsQuery, {
     onCompleted: (data) => {
       setBattles(data.readBattleCounts);
@@ -38,7 +36,6 @@ const BattlesList = () => {
     },
     onError: (exception) => {
       logError({ name: 'readBattleCounts', exception });
-      errorRef.current = exception;
       setLoadStatus(LoadStatus.ERROR);
     },
   });

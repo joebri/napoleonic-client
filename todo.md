@@ -1,6 +1,5 @@
 # TODO
 
-- rework loading and error 'pages'
 - fix css around cards
 - review all uses of 'any'
 - Specific tags - France:Infantry, Russia:Cavalry

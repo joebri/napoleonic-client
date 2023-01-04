@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
+import { ChangeEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { classes } from './Settings.style';
+import { Template } from 'types';
 
 import { useLocalStorage } from 'hooks/useLocalStorage';
 
@@ -14,10 +16,13 @@ const Settings = () => {
     tags: [],
     urlRoot: '',
     yearFrom: '',
-  });
+  } as Template);
 
-  const handleChange = (event: any, field: string) => {
-    setTemplate((priorTemplate: any) => ({
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: string
+  ) => {
+    setTemplate((priorTemplate: Template) => ({
       ...priorTemplate,
       [field]: event.target.value,
     }));

@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
 
+import { Collection } from 'types';
 import { Edit } from './Edit';
 import { initialisedCollection } from 'helper';
 import { useLocalStorage } from 'hooks/useLocalStorage';
@@ -33,8 +34,8 @@ const CollectionDetailAdd = () => {
 
   const [createCollection] = useMutation(createCollectionMutation);
 
-  const handleEditChange = (field: string, value: any) => {
-    setCollection((priorCollection: any) => ({
+  const handleEditChange = (field: string, value: string | number) => {
+    setCollection((priorCollection: Collection) => ({
       ...priorCollection,
       [field]: value,
     }));

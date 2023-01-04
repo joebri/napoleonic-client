@@ -13,6 +13,7 @@ import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
 
 import { initialisedItem } from 'helper';
+import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Rating } from 'enums/rating.enum';
 import { useConfirmExit } from 'hooks/useConfirmExit';
@@ -58,8 +59,8 @@ const ItemDetailEdit = () => {
     loadForm();
   }, [itemId, loadForm]);
 
-  const handleEditChange = (field: string, value: any) => {
-    setItem((priorItem: any) => ({
+  const handleEditChange = (field: string, value: string | number) => {
+    setItem((priorItem: Item) => ({
       ...priorItem,
       [field]: value,
     }));
@@ -89,7 +90,7 @@ const ItemDetailEdit = () => {
         },
       });
       navigate(`/itemDetailView/${item.id}`);
-    } catch (exception: any) {
+    } catch (exception) {
       logError({
         name: 'handleEditSaveClick',
         exception,
