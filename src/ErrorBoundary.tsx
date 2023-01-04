@@ -1,22 +1,32 @@
 /** @jsxImportSource @emotion/react */
 
-import { Component } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 
 import { classes } from './ErrorBoundary.style';
 
-class ErrorBoundary extends Component {
-  state: any;
-  props: any;
-  constructor(props: any) {
+interface Props {
+  children?: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends Component<Props, State> {
+  public props: Props;
+  public state: State;
+
+  constructor(props: Props) {
     super(props);
+    this.props = props;
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: any) {
+  public static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
 
-  componentDidCatch(error: any, errorInfo: any) {
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // logErrorToMyService(error, errorInfo);
     console.error(error, errorInfo);
   }

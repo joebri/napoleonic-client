@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import _isEqual from 'lodash/isEqual';
 import { ChangeEvent } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Stack, TextField } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
@@ -10,7 +9,9 @@ import { useSearchParams } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 
 import { classes } from './Gallery.style';
+import { Error } from 'components/Error/Error';
 import { ItemCardList } from 'components/ItemCardList/ItemCardList';
+import { Loading } from 'components/Loading/Loading';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
@@ -26,11 +27,10 @@ const Gallery = () => {
     ratings,
     sortField,
     tags,
-    setTags,
     pageNumber,
     setPageNumber,
     yearRange,
-    includeUnknownYear,
+    // includeUnknownYear,
   } = useAppContext();
   const { logError } = useLogError(Gallery.name);
 
@@ -136,7 +136,7 @@ const Gallery = () => {
       yearRange,
       includeUnknownYear: true,
     };
-  }, [ratings, searchParams, setTags, tags]);
+  }, [ratings, searchParams, tags, yearRange]);
 
   const [readItemsByFilter, { error }] = useLazyQuery(readItemsByFilterQuery, {
     onCompleted: (data) => {
@@ -162,7 +162,6 @@ const Gallery = () => {
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
       const queryDetails = cachedGetQueryDetails();
-      console.log('queryDetails', queryDetails);
       readItemsByFilter({
         variables: {
           artists: queryDetails.artists,
@@ -210,8 +209,8 @@ const Gallery = () => {
     }
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) return <Loading />;
+  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
 
   return (
     <>

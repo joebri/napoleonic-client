@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
+import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet';
 
 import { classes } from './RegimentsList.style';
+import { Error } from 'components/Error/Error';
+import { Loading } from 'components/Loading/Loading';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
@@ -61,7 +63,14 @@ const RegimentsList = () => {
         includeUnknownYear,
       },
     });
-  }, [location.key, ratings, tags, readRegimentCounts]);
+  }, [
+    location.key,
+    ratings,
+    tags,
+    readRegimentCounts,
+    yearRange,
+    includeUnknownYear,
+  ]);
 
   const handleChipClick = (index: number) => {
     let newRegiments: RegimentTag[] = [...regiments];
@@ -83,8 +92,8 @@ const RegimentsList = () => {
     navigate(`/?regiments=${selected.join('||')}`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) return <Loading />;
+  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
 
   return (
     <>

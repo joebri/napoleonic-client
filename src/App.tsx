@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { Home } from 'pages/Home/Home';
@@ -23,19 +23,21 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Helmet>
-        <title>Uniformology: Napoleonic</title>
-      </Helmet>
-      <CssBaseline />
-      <ErrorBoundary>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={theme}>
-            <AppProvider>
-              <Home />
-            </AppProvider>
-          </ThemeProvider>
-        </ApolloProvider>
-      </ErrorBoundary>
+      <HelmetProvider>
+        <Helmet>
+          <title>Uniformology: Napoleonic</title>
+        </Helmet>
+        <CssBaseline />
+        <ErrorBoundary>
+          <ApolloProvider client={client}>
+            <ThemeProvider theme={theme}>
+              <AppProvider>
+                <Home />
+              </AppProvider>
+            </ThemeProvider>
+          </ApolloProvider>
+        </ErrorBoundary>
+      </HelmetProvider>
     </BrowserRouter>
   );
 }

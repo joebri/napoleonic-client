@@ -38,7 +38,6 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     setRatings,
     tags,
     setTags,
-    yearRange,
     setYearRange,
     includeUnknownYear,
     setIncludeUnknownYear,

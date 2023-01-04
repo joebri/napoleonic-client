@@ -15,10 +15,12 @@ import { CollectionDetailAdd } from 'pages/CollectionDetail/CollectionDetailAdd'
 import { CollectionDetailEdit } from 'pages/CollectionDetail/CollectionDetailEdit';
 import { CollectionDetailView } from 'pages/CollectionDetail/CollectionDetailView';
 import { CollectionList } from 'pages/CollectionList/CollectionList';
+import { Error } from 'components/Error/Error';
 import { Gallery } from 'pages/Gallery/Gallery';
 import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
 import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
+import { Loading } from 'components/Loading/Loading';
 import { MenuBar } from 'components/MenuBar/MenuBar';
 import { RegimentsList } from 'pages/RegimentsList/RegimentsList';
 import { Settings } from 'pages/Settings/Settings';
@@ -83,8 +85,8 @@ const Home = () => {
     navigate(`/`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) return <Loading />;
+  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
 
   return (
     <div css={classes.container}>

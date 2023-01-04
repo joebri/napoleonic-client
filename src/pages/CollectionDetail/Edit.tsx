@@ -9,7 +9,7 @@ import {
 
 import { classes } from './CollectionDetail.style';
 import { Collection } from 'types';
-import { TagInput } from 'components/TagInput/TagInput';
+// import { TagInput } from 'components/TagInput/TagInput';
 
 interface EditProps {
   collection: Collection;
@@ -26,10 +26,10 @@ const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
     setIsDirty(true);
   };
 
-  const handleTagsChange = (tags: string[]) => {
-    onChange('tags', tags);
-    setIsDirty(true);
-  };
+  // const handleTagsChange = (tags: string[]) => {
+  //   onChange('tags', tags);
+  //   setIsDirty(true);
+  // };
 
   const handleCancelClick = () => {
     onCancel();

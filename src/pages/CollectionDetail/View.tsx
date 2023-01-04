@@ -13,7 +13,7 @@ import { classes } from './CollectionDetail.style';
 
 import { imageService, imageAccountName } from 'services/imageService';
 import { Collection } from 'types';
-import { TagInput } from 'components/TagInput/TagInput';
+// import { TagInput } from 'components/TagInput/TagInput';
 
 const getUrl = (imagePublicId: string) => {
   const url = imageService.image(`${imagePublicId}`).format('auto').toURL();

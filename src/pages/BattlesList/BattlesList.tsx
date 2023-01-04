@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Stack, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import { classes } from './BattlesList.style';
+import { Error } from 'components/Error/Error';
+import { Loading } from 'components/Loading/Loading';
 
 import { BattleTag } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
@@ -74,8 +76,8 @@ const BattlesList = () => {
     navigate(`/?battles=${selected}`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) return <Loading />;
+  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
 
   return (
     <>

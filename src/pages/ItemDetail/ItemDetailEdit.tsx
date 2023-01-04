@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
 
+import { Helmet } from 'react-helmet-async';
 import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
-import { Helmet } from 'react-helmet';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './ItemDetail.style';
 import { Edit } from './Edit';
+import { Error } from 'components/Error/Error';
+import { Loading } from 'components/Loading/Loading';
 
 import { initialisedItem } from 'helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
@@ -102,8 +104,8 @@ const ItemDetailEdit = () => {
     setShowMessage(false);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) return <Loading />;
+  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
 
   return (
     <>

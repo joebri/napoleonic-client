@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
+import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Stack, Typography } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
-import { Helmet } from 'react-helmet';
 
 import { classes } from './CollectionList.style';
+import { Error } from 'components/Error/Error';
+import { Loading } from 'components/Loading/Loading';
 
 import { Collection } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
@@ -40,8 +42,8 @@ const CollectionList = () => {
     navigate(`/collectionDetailView/${collection.id}`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) return <Loading />;
+  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
 
   return (
     <>
