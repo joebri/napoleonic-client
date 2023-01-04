@@ -31,8 +31,6 @@ const ItemDetailView = () => {
 
   const [deleteItem] = useMutation(deleteItemMutation);
 
-  consolo.log('test');
-
   const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
     onCompleted: (data) => {
