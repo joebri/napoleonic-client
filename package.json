@@ -30,6 +30,11 @@
     "lint": "eslint src/**/*.ts src/**/*.tsx",
     "prepare": "husky install"
   },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint"
+    ]
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

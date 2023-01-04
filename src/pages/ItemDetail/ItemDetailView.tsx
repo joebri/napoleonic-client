@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -17,6 +17,7 @@ import { useLogError } from 'hooks/useLogError';
 import { View } from './View';
 import deleteItemMutation from './queries/deleteItemMutation';
 import readItemQuery from './queries/readItemQuery';
+import { ConstructionOutlined } from '@mui/icons-material';
 
 const ItemDetailView = () => {
   const { itemId } = useParams();
@@ -29,6 +30,8 @@ const ItemDetailView = () => {
   const [showMessage, setShowMessage] = useState(false);
 
   const [deleteItem] = useMutation(deleteItemMutation);
+
+  consolo.log('test');
 
   const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
