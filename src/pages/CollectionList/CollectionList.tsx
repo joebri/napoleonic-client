@@ -42,8 +42,12 @@ const CollectionList = () => {
     navigate(`/collectionDetailView/${collection.id}`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <Loading />;
-  if (loadStatus === LoadStatus.ERROR) return <Error error={error} />;
+  if (loadStatus === LoadStatus.LOADING) {
+    return <Loading />;
+  }
+  if (loadStatus === LoadStatus.ERROR) {
+    return <Error error={error} />;
+  }
 
   return (
     <>

@@ -5,7 +5,9 @@ export function useConfirmExit(isEnabled: boolean | Function) {
     (event: Event) => {
       const confirmIsEnabled =
         typeof isEnabled === 'function' ? isEnabled() : isEnabled;
-      if (!confirmIsEnabled) return;
+      if (!confirmIsEnabled) {
+        return;
+      }
 
       event.preventDefault();
       event.returnValue = false;
