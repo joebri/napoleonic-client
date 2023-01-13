@@ -8,11 +8,10 @@ import { ErrorBoundary } from './ErrorBoundary';
 
 import { AppProvider } from 'AppContext';
 import { theme, ThemeProvider } from 'theme';
-import useConfig from 'hooks/useConfig';
 
 function App() {
   const client = new ApolloClient({
-    uri: useConfig('GRAPH_URL'),
+    uri: process.env.REACT_APP_GRAPH_URL,
     cache: new InMemoryCache(),
     defaultOptions: {
       watchQuery: {

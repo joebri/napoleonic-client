@@ -16,10 +16,16 @@ import { Loading } from 'components/Loading/Loading';
 import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
-import { Tag } from 'types';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import readItemsByFilterQuery from './queries/readItemsByFilterQuery';
+import {
+  buildArtistsQueryParams,
+  buildBattlesQueryParams,
+  buildCollectionsQueryParams,
+  buildRegimentsQueryParams,
+  buildTagsQueryParams,
+} from './queryBuilder';
 
 const PAGE_SIZE = 20;
 
@@ -44,98 +50,40 @@ const Gallery = () => {
   const itemsRef: MutableRefObject<Item[]> = useRef<Item[]>([]);
   const wrapperRef: LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
-  //TODO Make this function shorter
   const cachedGetQueryDetails = useCallback(() => {
-    const queryArtists = searchParams.get('artists');
-    const queryBattles = searchParams.get('battles');
-    const queryRegiments = searchParams.get('regiments');
-    const queryCollection = searchParams.get('collection');
-    const queryTags = searchParams.get('tags');
-
     const selectedRatings = ratingsToArray(ratings);
 
+    const queryArtists = searchParams.get('artists');
     if (queryArtists) {
-      const artists = queryArtists.split('||');
-      const tagNames = tags
-        .filter((tag: Tag) => {
-          return tag.isSelected === true;
-        })
-        .map((tag: Tag) => tag.name);
-      return {
-        type: 'artists',
-        artists,
-        ratings: selectedRatings,
-        regiments: [],
-        tagNames,
-        yearRange,
-        includeUnknownYear: true,
-      };
+      return buildArtistsQueryParams(
+        queryArtists,
+        tags,
+        selectedRatings,
+        yearRange
+      );
     }
 
+    const queryBattles = searchParams.get('battles');
     if (queryBattles) {
-      const battles = queryBattles.split('||');
-      return {
-        type: 'battles',
-        artists: [],
-        battles,
-        ratings: selectedRatings,
-        regiments: [],
-        tagNames: [],
-        yearRange: [1699, 1899],
-        includeUnknownYear: true,
-      };
+      return buildBattlesQueryParams(queryBattles, selectedRatings);
     }
 
+    const queryRegiments = searchParams.get('regiments');
     if (queryRegiments) {
-      const regiments = queryRegiments.split('||');
-      const tagNames = tags
-        .filter((tag: Tag) => {
-          return tag.isSelected === true;
-        })
-        .map((tag: Tag) => tag.name);
-      return {
-        type: 'regiments',
-        artists: [],
-        ratings: selectedRatings,
-        regiments,
-        tagNames,
-      };
+      return buildRegimentsQueryParams(queryRegiments, tags, selectedRatings);
     }
 
+    const queryCollection = searchParams.get('collection');
+    const queryTags = searchParams.get('tags');
     if (queryCollection) {
-      const collectionTagName = queryCollection;
-      const tagNames = queryTags?.split(',') || [];
-
-      return {
-        type: 'tags',
-        artists: [],
-        ratings: selectedRatings,
-        regiments: [],
-        tagNames: [...tagNames, collectionTagName],
-        yearRange: [1699, 1899],
-        includeUnknownYear: true,
-      };
+      return buildCollectionsQueryParams(
+        queryCollection,
+        queryTags,
+        selectedRatings
+      );
     }
 
-    let tagNames: string[] = [];
-    if (queryTags) {
-      tagNames = queryTags.split(',');
-    } else {
-      tagNames = tags
-        .filter((tag: Tag) => {
-          return tag.isSelected === true;
-        })
-        .map((tag: Tag) => tag.name);
-    }
-    return {
-      type: 'tags',
-      artists: [],
-      ratings: selectedRatings,
-      regiments: [],
-      tagNames,
-      yearRange,
-      includeUnknownYear: true,
-    };
+    return buildTagsQueryParams(queryTags, tags, selectedRatings, yearRange);
   }, [ratings, searchParams, tags, yearRange]);
 
   const [readItemsByFilter, { error }] = useLazyQuery(readItemsByFilterQuery, {

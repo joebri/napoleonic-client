@@ -26,9 +26,9 @@ const getConfig = () => {
   return { ...defaultConfig, ...envConfig };
 };
 
-const withConfig = (name: string, data: any = null) => {
+const useConfig = (name: string, data: any = null) => {
   const config = getConfig();
   return replaceValue(name, config, data);
 };
 
-export default withConfig;
+export { useConfig };
