@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Button, Chip, Stack } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { classes } from './BattlesList.style';
@@ -16,18 +16,21 @@ import { ratingsToArray } from 'helper';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import readBattleCountsQuery from './queries/readBattleCountsQuery';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const BattlesList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logError } = useLogError(BattlesList.name);
-  const { ratings } = useAppContext();
+  const { ratings, setHeaderTitle } = useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
   const [battles, setBattles] = useState([] as BattleTag[]);
 
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+
+  const { clearHeaderNavigationTags } = useNavigationTags();
 
   const [readBattleCounts, { error }] = useLazyQuery(readBattleCountsQuery, {
     onCompleted: (data) => {
@@ -39,6 +42,11 @@ const BattlesList = () => {
       setLoadStatus(LoadStatus.ERROR);
     },
   });
+
+  useEffect(() => {
+    setHeaderTitle('Battles');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
 
   useEffect(() => {
     const selectedRatings = ratingsToArray(ratings);
@@ -86,10 +94,6 @@ const BattlesList = () => {
         <title>Uniformology: Battles</title>
       </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4" css={classes.title}>
-          Battles
-        </Typography>
-
         {battles.length === 0 ? (
           <div css={classes.noItems}>No Battles available.</div>
         ) : (

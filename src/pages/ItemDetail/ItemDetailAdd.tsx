@@ -3,7 +3,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 
 import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
@@ -12,18 +12,23 @@ import { classes } from './ItemDetail.style';
 import { Edit } from './Edit';
 import { Item } from 'types';
 import { initialisedItem } from 'helper';
+import { useAppContext } from 'AppContext';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
 import createItemMutation from './queries/createItemMutation';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const ItemDetailAdd = () => {
   const navigate = useNavigate();
+  const { logError } = useLogError(ItemDetailAdd.name);
+
   const [template] = useLocalStorage<any>('template', {
     artist: '',
     tags: [],
     urlRoot: '',
   });
-  const { logError } = useLogError(ItemDetailAdd.name);
+
+  const { navigationTags } = useAppContext();
 
   const [item, setItem] = useState({
     ...initialisedItem,
@@ -33,6 +38,12 @@ const ItemDetailAdd = () => {
     yearFrom: template.yearFrom,
   });
   const [showMessage, setShowMessage] = useState(false);
+
+  const { enableLastNavigationTag } = useNavigationTags();
+
+  useEffect(() => {
+    enableLastNavigationTag();
+  }, [enableLastNavigationTag, navigationTags]);
 
   const [createItem] = useMutation(createItemMutation);
 

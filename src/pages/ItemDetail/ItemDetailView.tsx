@@ -13,20 +13,26 @@ import { Loading } from 'components/Loading/Loading';
 
 import { initialisedItem } from 'helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import { View } from './View';
 import deleteItemMutation from './queries/deleteItemMutation';
 import readItemQuery from './queries/readItemQuery';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const ItemDetailView = () => {
   const { itemId } = useParams();
   const navigate = useNavigate();
   const { logError } = useLogError(ItemDetailView.name);
 
+  const { navigationTags } = useAppContext();
+
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+
+  const { enableLastNavigationTag } = useNavigationTags();
 
   const [deleteItem] = useMutation(deleteItemMutation);
 
@@ -41,6 +47,10 @@ const ItemDetailView = () => {
       setLoadStatus(LoadStatus.ERROR);
     },
   });
+
+  useEffect(() => {
+    enableLastNavigationTag();
+  }, [enableLastNavigationTag, navigationTags]);
 
   useEffect(() => {
     const loadForm = () => {

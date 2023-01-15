@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Button, Chip, Stack } from '@mui/material';
 
 import { classes } from './RegimentsList.style';
 import { Error } from 'components/Error/Error';
@@ -17,11 +17,13 @@ import { Tag } from 'types/Tag.type';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import readRegimentCountsQuery from './queries/readRegimentCountsQuery';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const RegimentsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { ratings, tags, yearRange, includeUnknownYear } = useAppContext();
+  const { includeUnknownYear, ratings, setHeaderTitle, tags, yearRange } =
+    useAppContext();
   const { logError } = useLogError(RegimentsList.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
@@ -29,6 +31,8 @@ const RegimentsList = () => {
   const [regiments, setRegiments] = useState([] as RegimentTag[]);
 
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+
+  const { clearHeaderNavigationTags } = useNavigationTags();
 
   const [readRegimentCounts, { error }] = useLazyQuery(
     readRegimentCountsQuery,
@@ -43,6 +47,11 @@ const RegimentsList = () => {
       },
     }
   );
+
+  useEffect(() => {
+    setHeaderTitle('Regiments');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
 
   useEffect(() => {
     const selectedRatings = ratingsToArray(ratings);
@@ -105,11 +114,6 @@ const RegimentsList = () => {
         <title>Uniformology: Regiments</title>
       </Helmet>
       <div css={classes.container}>
-        <Stack direction={'row'}>
-          <Typography variant="h4" css={classes.title}>
-            Regiments
-          </Typography>
-        </Stack>
         {regiments.length === 0 ? (
           <div>No Regiments available.</div>
         ) : (

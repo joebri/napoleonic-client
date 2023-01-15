@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 const classes = {
   container: css({
-    margin: '0 auto 2rem auto',
+    margin: '2rem auto 2rem auto',
     width: '85%',
   }),
   title: css({

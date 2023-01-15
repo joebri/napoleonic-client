@@ -1,8 +1,12 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 
-import { RatingsType, Tag } from './types';
+import { NavigationTag, RatingsType, Tag } from './types';
 
 type AppContextType = {
+  headerTitle: string;
+  setHeaderTitle: Function;
+  navigationTags: NavigationTag[];
+  setNavigationTags: Function;
   isFilterOpen: boolean;
   setIsFilterOpen: Function;
   pageNumber: number;
@@ -26,8 +30,10 @@ interface AppProviderProps {
 }
 
 const AppProvider = ({ children }: AppProviderProps) => {
+  const [navigationTags, setNavigationTags] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
+  const [headerTitle, setHeaderTitle] = useState('Gallery');
   const [ratings, setRatings] = useState<RatingsType>({
     high: true,
     medium: true,
@@ -39,18 +45,30 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const [includeUnknownYear, setIncludeUnknownYear] = useState(false);
 
   const value: AppContextType = {
+    navigationTags,
+    setNavigationTags,
+
     isFilterOpen,
     setIsFilterOpen,
+
     pageNumber,
     setPageNumber,
+
+    headerTitle,
+    setHeaderTitle,
+
     ratings,
     setRatings,
+
     sortField,
     setSortField,
+
     tags,
     setTags,
+
     yearRange,
     setYearRange,
+
     includeUnknownYear,
     setIncludeUnknownYear,
   };

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Button, Chip, Stack } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { classes } from './ArtistsList.style';
@@ -15,6 +15,7 @@ import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 import readArtistCountsQuery from './queries/readArtistCountsQuery';
 
 const ArtistsList = () => {
@@ -22,13 +23,16 @@ const ArtistsList = () => {
   const location = useLocation();
   const { logError } = useLogError(ArtistsList.name);
 
-  const { ratings, tags, yearRange, includeUnknownYear } = useAppContext();
+  const { ratings, tags, yearRange, includeUnknownYear, setHeaderTitle } =
+    useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
   const [artists, setArtists] = useState([] as ArtistTag[]);
 
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+
+  const { clearHeaderNavigationTags } = useNavigationTags();
 
   const [readArtistCounts, { error }] = useLazyQuery(readArtistCountsQuery, {
     onCompleted: (data) => {
@@ -40,6 +44,11 @@ const ArtistsList = () => {
       setLoadStatus(LoadStatus.ERROR);
     },
   });
+
+  useEffect(() => {
+    setHeaderTitle('Artists');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
 
   useEffect(() => {
     const selectedRatings = ratingsToArray(ratings);
@@ -103,10 +112,6 @@ const ArtistsList = () => {
         <title>Uniformology: Artists</title>
       </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4" css={classes.title}>
-          Artists
-        </Typography>
-
         {artists.length === 0 ? (
           <div css={classes.noItems}>No Artists available.</div>
         ) : (

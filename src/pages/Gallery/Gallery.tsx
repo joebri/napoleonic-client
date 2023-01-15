@@ -17,6 +17,7 @@ import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
 import { useAppContext } from 'AppContext';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 import { useLogError } from 'hooks/useLogError';
 import readItemsByFilterQuery from './queries/readItemsByFilterQuery';
 import {
@@ -26,20 +27,22 @@ import {
   buildRegimentsQueryParams,
   buildTagsQueryParams,
 } from './queryBuilder';
+import { NavigationTagType } from 'enums/navigationTagType.enum';
 
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
+  const { logError } = useLogError(Gallery.name);
+
   const {
     ratings,
     sortField,
     tags,
     pageNumber,
     setPageNumber,
+    setHeaderTitle,
     yearRange,
-    // includeUnknownYear,
   } = useAppContext();
-  const { logError } = useLogError(Gallery.name);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [pageCount, setPageCount] = useState(1);
@@ -50,11 +53,17 @@ const Gallery = () => {
   const itemsRef: MutableRefObject<Item[]> = useRef<Item[]>([]);
   const wrapperRef: LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
+  const { setHeaderNavigationTags } = useNavigationTags();
+
   const cachedGetQueryDetails = useCallback(() => {
     const selectedRatings = ratingsToArray(ratings);
 
     const queryArtists = searchParams.get('artists');
     if (queryArtists) {
+      const artistNames = queryArtists.split('||');
+
+      setHeaderNavigationTags(NavigationTagType.ARTISTS, artistNames);
+
       return buildArtistsQueryParams(
         queryArtists,
         tags,
@@ -65,26 +74,43 @@ const Gallery = () => {
 
     const queryBattles = searchParams.get('battles');
     if (queryBattles) {
+      const battleNames = queryBattles.split('||');
+
+      setHeaderNavigationTags(NavigationTagType.BATTLES, battleNames);
+
       return buildBattlesQueryParams(queryBattles, selectedRatings);
     }
 
     const queryRegiments = searchParams.get('regiments');
     if (queryRegiments) {
+      const regimentNames = queryRegiments.split('||');
+
+      setHeaderNavigationTags(NavigationTagType.REGIMENTS, regimentNames);
+
       return buildRegimentsQueryParams(queryRegiments, tags, selectedRatings);
     }
 
     const queryCollection = searchParams.get('collection');
     const queryTags = searchParams.get('tags');
     if (queryCollection) {
+      const queryCollectionData = queryCollection.split('||');
+
+      setHeaderNavigationTags(
+        NavigationTagType.COLLECTION,
+        [queryCollectionData[0]],
+        queryCollectionData[1]
+      );
+
       return buildCollectionsQueryParams(
-        queryCollection,
+        queryCollectionData[0],
         queryTags,
         selectedRatings
       );
     }
 
+    setHeaderNavigationTags(NavigationTagType.GALLERY);
     return buildTagsQueryParams(queryTags, tags, selectedRatings, yearRange);
-  }, [ratings, searchParams, tags, yearRange]);
+  }, [setHeaderNavigationTags, ratings, searchParams, tags, yearRange]);
 
   const [readItemsByFilter, { error }] = useLazyQuery(readItemsByFilterQuery, {
     onCompleted: (data) => {
@@ -104,6 +130,10 @@ const Gallery = () => {
       });
       setLoadStatus(LoadStatus.ERROR);
     },
+  });
+
+  useEffect(() => {
+    setHeaderTitle('Gallery');
   });
 
   useEffect(() => {

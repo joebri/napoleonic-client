@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { classes } from './Settings.style';
 import { Template } from 'types';
-
+import { useAppContext } from 'AppContext';
 import { useLocalStorage } from 'hooks/useLocalStorage';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const Settings = () => {
   const [template, setTemplate] = useLocalStorage<any>('template', {
@@ -17,6 +18,15 @@ const Settings = () => {
     urlRoot: '',
     yearFrom: '',
   } as Template);
+
+  const { setHeaderTitle } = useAppContext();
+
+  const { clearHeaderNavigationTags } = useNavigationTags();
+
+  useEffect(() => {
+    setHeaderTitle('Settings');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

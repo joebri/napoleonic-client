@@ -3,7 +3,6 @@
 import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
-  Button,
   Chip,
   IconButton,
   Stack,
@@ -16,18 +15,12 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 import { classes } from './MenuBar.style';
 import { SortMenu } from 'components/SortMenu/SortMenu';
-
-import { Tag } from 'types/Tag.type';
 import { useAppContext } from 'AppContext';
 
 const MenuBar = () => {
   const navigate = useNavigate();
 
-  const { setIsFilterOpen, tags, setTags } = useAppContext();
-
-  const handleGalleryClick = () => {
-    navigate(`/`);
-  };
+  const { setIsFilterOpen, navigationTags, headerTitle } = useAppContext();
 
   const handleAddItemClick = () => {
     navigate(`/itemDetailAdd`);
@@ -45,38 +38,37 @@ const MenuBar = () => {
     setIsFilterOpen(true);
   };
 
-  const handleTagClick = (tag: Tag) => {
-    if (tag.itemId) {
-      const updatedTags: Tag[] = tags.map((tag: Tag) => {
-        tag.isSelected = false;
-        return tag;
-      });
-
-      setTags(updatedTags);
-      const collectionUri = `/collectionDetailView/${tag.itemId || ''}`;
-      navigate(collectionUri);
-    }
+  const handleNavigationTagClick = (navigationTag: any) => {
+    navigate(navigationTag.url);
   };
 
   return (
     <AppBar css={classes.appbar}>
       <Toolbar>
-        <span css={classes.appbar__left}>
-          <Button color="inherit" onClick={handleGalleryClick} variant="text">
-            <Typography variant="h6">Gallery</Typography>
-          </Button>
-          {tags
-            .filter((tag: Tag) => tag.isSelected)
-            .map((tag: Tag, ix: number) => (
-              <Chip
-                css={classes.chip}
-                key={ix}
-                label={tag.name}
-                onClick={() => handleTagClick(tag)}
-                variant={'outlined'}
-              />
-            ))}
-        </span>
+        <Stack direction="row" css={classes.appbar__left}>
+          <Typography variant="h4">{headerTitle}</Typography>
+          {navigationTags.map((navigationTag: any, ix: number) => (
+            <>
+              {navigationTag.isNavigationTag ? (
+                <Chip
+                  css={classes.chip}
+                  key={ix}
+                  label={navigationTag.title}
+                  onClick={() => handleNavigationTagClick(navigationTag)}
+                  variant={'outlined'}
+                />
+              ) : (
+                <Chip
+                  css={classes.chip}
+                  key={ix}
+                  label={navigationTag.title}
+                  variant={'filled'}
+                />
+              )}
+            </>
+          ))}
+        </Stack>
+
         <Stack direction="row" gap={3}>
           <IconButton
             color="inherit"

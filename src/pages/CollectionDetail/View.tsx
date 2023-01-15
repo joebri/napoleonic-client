@@ -1,19 +1,17 @@
 /** @jsxImportSource @emotion/react */
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import {
   Edit as EditIcon,
   DeleteForever as DeleteForeverIcon,
 } from '@mui/icons-material';
-import WindowIcon from '@mui/icons-material/Window';
 import { Image } from 'cloudinary-react';
 
 import { classes } from './CollectionDetail.style';
 
 import { imageService, imageAccountName } from 'services/imageService';
 import { Collection } from 'types';
-// import { TagInput } from 'components/TagInput/TagInput';
 
 const getUrl = (imagePublicId: string) => {
   const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
@@ -27,12 +25,6 @@ interface ViewProps {
 }
 
 const View = ({ collection, onDelete, onEdit }: ViewProps) => {
-  const navigate = useNavigate();
-
-  const handleHomeClick = () => {
-    navigate('/collections');
-  };
-
   const handleEditClick = () => {
     onEdit();
   };
@@ -44,15 +36,6 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
   return (
     <div>
       <div css={classes.actionBar}>
-        <Button
-          css={classes.button_spacer}
-          onClick={handleHomeClick}
-          size="small"
-          startIcon={<WindowIcon />}
-          variant="contained"
-        >
-          Home
-        </Button>
         <Button
           css={classes.button_spacer__x4}
           onClick={handleEditClick}
@@ -79,7 +62,9 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
       )}
 
       <div css={classes.container__link}>
-        <Link to={`/?collection=${collection.tagName}`}>Plates</Link>
+        <Link to={`/?collection=${collection.tagName}||${collection.id}`}>
+          Plates
+        </Link>
       </div>
 
       {collection.descriptionLong && (
@@ -87,7 +72,9 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
       )}
 
       <div css={classes.container__link}>
-        <Link to={`/?collection=${collection.tagName}`}>Plates</Link>
+        <Link to={`/?collection=${collection.tagName}||${collection.id}`}>
+          Plates
+        </Link>
       </div>
 
       <div css={classes.container__image}>
@@ -99,10 +86,6 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
       </div>
 
       <Typography>Tag Name: "{collection.tagName}"</Typography>
-
-      {/* <div css={classes.tags}>
-        <TagInput tagNames={collection.tags} isEdit={false} />
-      </div> */}
     </div>
   );
 };

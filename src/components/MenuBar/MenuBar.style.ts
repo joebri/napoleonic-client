@@ -8,7 +8,9 @@ const classes = {
       position: 'relative',
     },
   }),
-  appbar__left: css({}),
+  appbar__left: css({
+    alignItems: 'center',
+  }),
   chip: css({
     color: 'white',
     marginLeft: '1rem',

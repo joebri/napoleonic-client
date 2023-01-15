@@ -3,7 +3,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
 
 import { classes } from './CollectionList.style';
@@ -12,16 +12,22 @@ import { Loading } from 'components/Loading/Loading';
 
 import { Collection } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import readCollectionsQuery from './queries/readCollectionsQuery';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const CollectionList = () => {
   const navigate = useNavigate();
   const { logError } = useLogError(CollectionList.name);
 
+  const { setHeaderTitle } = useAppContext();
+
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
   const [collections, setCollections] = useState([] as Collection[]);
+
+  const { clearHeaderNavigationTags } = useNavigationTags();
 
   const [readCollections, { error }] = useLazyQuery(readCollectionsQuery, {
     onCompleted: (data) => {
@@ -33,6 +39,11 @@ const CollectionList = () => {
       setLoadStatus(LoadStatus.ERROR);
     },
   });
+
+  useEffect(() => {
+    setHeaderTitle('Collections');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
 
   useEffect(() => {
     readCollections();
@@ -55,9 +66,6 @@ const CollectionList = () => {
         <title>Uniformology: Collections</title>
       </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4" css={classes.title}>
-          Collections
-        </Typography>
         <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
           {collections.map((collection: Collection, index: number) => (
             <Button

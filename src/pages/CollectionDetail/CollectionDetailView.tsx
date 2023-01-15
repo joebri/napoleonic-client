@@ -13,7 +13,10 @@ import { Loading } from 'components/Loading/Loading';
 
 import { initialisedCollection } from 'helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { NavigationTagType } from 'enums/navigationTagType.enum';
+import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 import { View } from './View';
 import deleteCollectionMutation from './queries/deleteCollectionMutation';
 import readCollectionQuery from './queries/readCollectionQuery';
@@ -30,10 +33,18 @@ const CollectionDetailView = () => {
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
+  const { setHeaderTitle } = useAppContext();
+  const { setHeaderNavigationTags } = useNavigationTags();
+
   const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
     variables: { id: collectionId },
     onCompleted: (data) => {
       setCollection(data.readCollection);
+
+      setHeaderNavigationTags(NavigationTagType.COLLECTIONS, [
+        data.readCollection.title,
+      ]);
+
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
@@ -43,6 +54,10 @@ const CollectionDetailView = () => {
   });
 
   const [deleteCollection] = useMutation(deleteCollectionMutation);
+
+  useEffect(() => {
+    setHeaderTitle('Collection');
+  }, [setHeaderTitle]);
 
   useEffect(() => {
     const loadForm = () => {
