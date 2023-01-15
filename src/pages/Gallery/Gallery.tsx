@@ -35,6 +35,7 @@ const Gallery = () => {
   const { logError } = useLogError(Gallery.name);
 
   const {
+    includeUnknownYear,
     ratings,
     sortField,
     tags,
@@ -64,12 +65,13 @@ const Gallery = () => {
 
       setHeaderNavigationTags(NavigationTagType.ARTISTS, artistNames);
 
-      return buildArtistsQueryParams(
+      return buildArtistsQueryParams({
+        includeUnknownYear,
         queryArtists,
-        tags,
         selectedRatings,
-        yearRange
-      );
+        tags,
+        yearRange,
+      });
     }
 
     const queryBattles = searchParams.get('battles');
@@ -87,7 +89,12 @@ const Gallery = () => {
 
       setHeaderNavigationTags(NavigationTagType.REGIMENTS, regimentNames);
 
-      return buildRegimentsQueryParams(queryRegiments, tags, selectedRatings);
+      return buildRegimentsQueryParams({
+        includeUnknownYear,
+        queryRegiments,
+        selectedRatings,
+        tags,
+      });
     }
 
     const queryCollection = searchParams.get('collection');
@@ -108,9 +115,23 @@ const Gallery = () => {
       );
     }
 
+    // otherwise perform standard search
     setHeaderNavigationTags(NavigationTagType.GALLERY);
-    return buildTagsQueryParams(queryTags, tags, selectedRatings, yearRange);
-  }, [setHeaderNavigationTags, ratings, searchParams, tags, yearRange]);
+    return buildTagsQueryParams({
+      queryTags,
+      tags,
+      selectedRatings,
+      yearRange,
+      includeUnknownYear,
+    });
+  }, [
+    includeUnknownYear,
+    setHeaderNavigationTags,
+    ratings,
+    searchParams,
+    tags,
+    yearRange,
+  ]);
 
   const [readItemsByFilter, { error }] = useLazyQuery(readItemsByFilterQuery, {
     onCompleted: (data) => {

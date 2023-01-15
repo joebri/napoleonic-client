@@ -10,12 +10,36 @@ type QueryParams = {
   includeUnknownYear: boolean;
 };
 
-const buildArtistsQueryParams = (
-  queryArtists: string,
-  tags: Tag[],
-  selectedRatings: number[],
-  yearRange: number[]
-): QueryParams => {
+interface buildArtistsQueryParamsProps {
+  includeUnknownYear: boolean;
+  queryArtists: string;
+  selectedRatings: number[];
+  tags: Tag[];
+  yearRange: number[];
+}
+
+interface buildRegimentsQueryParamsProps {
+  includeUnknownYear: boolean;
+  queryRegiments: string;
+  selectedRatings: number[];
+  tags: Tag[];
+}
+
+interface buildTagsQueryParamsProps {
+  includeUnknownYear: boolean;
+  queryTags: string | null;
+  selectedRatings: number[];
+  tags: Tag[];
+  yearRange: number[];
+}
+
+const buildArtistsQueryParams = ({
+  includeUnknownYear,
+  queryArtists,
+  selectedRatings,
+  tags,
+  yearRange,
+}: buildArtistsQueryParamsProps): QueryParams => {
   const artists = queryArtists.split('||');
   const tagNames = tags
     .filter((tag: Tag) => {
@@ -29,7 +53,7 @@ const buildArtistsQueryParams = (
     regiments: [],
     tagNames,
     yearRange,
-    includeUnknownYear: true,
+    includeUnknownYear,
   };
 };
 
@@ -68,11 +92,12 @@ const buildCollectionsQueryParams = (
   };
 };
 
-const buildRegimentsQueryParams = (
-  queryRegiments: string,
-  tags: Tag[],
-  selectedRatings: number[]
-): QueryParams => {
+const buildRegimentsQueryParams = ({
+  includeUnknownYear,
+  queryRegiments,
+  selectedRatings,
+  tags,
+}: buildRegimentsQueryParamsProps): QueryParams => {
   const regiments = queryRegiments.split('||');
   const tagNames = tags
     .filter((tag: Tag) => {
@@ -86,16 +111,17 @@ const buildRegimentsQueryParams = (
     regiments,
     tagNames,
     yearRange: [1699, 1899],
-    includeUnknownYear: true,
+    includeUnknownYear,
   };
 };
 
-const buildTagsQueryParams = (
-  queryTags: string | null,
-  tags: Tag[],
-  selectedRatings: number[],
-  yearRange: number[]
-): QueryParams => {
+const buildTagsQueryParams = ({
+  queryTags,
+  tags,
+  selectedRatings,
+  yearRange,
+  includeUnknownYear,
+}: buildTagsQueryParamsProps): QueryParams => {
   let tagNames: string[] = [];
   if (queryTags) {
     tagNames = queryTags.split(',');
@@ -113,7 +139,7 @@ const buildTagsQueryParams = (
     regiments: [],
     tagNames,
     yearRange,
-    includeUnknownYear: true,
+    includeUnknownYear,
   };
 };
 
