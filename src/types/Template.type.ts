@@ -1,6 +1,6 @@
 type Template = {
   artist: string;
-  tags: string[];
+  tags: string;
   urlRoot: string;
   yearFrom: string;
 };

@@ -4,7 +4,8 @@ const classes = {
   container: css({
     display: 'flex',
     flexDirection: 'column',
-    margin: '1rem 1rem',
+    margin: '0.5rem auto 2rem auto',
+    width: '80%',
   }),
   actionBar: css({
     marginTop: '1rem',

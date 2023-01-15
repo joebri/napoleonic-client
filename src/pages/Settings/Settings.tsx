@@ -1,25 +1,38 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { Button, Stack, TextField, Typography } from '@mui/material';
+import {
+  BackspaceOutlined as BackspaceOutlinedIcon,
+  Save as SaveIcon,
+} from '@mui/icons-material';
 
 import { classes } from './Settings.style';
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+
 import { Template } from 'types';
 import { useAppContext } from 'AppContext';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 
+const initialisedTemplate: Template = {
+  artist: '',
+  tags: '',
+  urlRoot: '',
+  yearFrom: '',
+};
+
 const Settings = () => {
-  const [template, setTemplate] = useLocalStorage<any>('template', {
-    artist: '',
-    tags: [],
-    urlRoot: '',
-    yearFrom: '',
-  } as Template);
+  const [templateLS, setTemplateLS] = useLocalStorage<Template>(
+    'template',
+    initialisedTemplate
+  );
 
   const { setHeaderTitle } = useAppContext();
+
+  const [template, setTemplate] = useState(templateLS);
+  const [showMessage, setShowMessage] = useState(false);
 
   const { clearHeaderNavigationTags } = useNavigationTags();
 
@@ -38,9 +51,26 @@ const Settings = () => {
     }));
   };
 
-  // const handleCancelClick = () => {};
+  const handleCancelClick = () => {
+    setTemplate(templateLS);
+  };
 
-  // const handleSaveClick = () => {};
+  const handleSaveClick = () => {
+    const updatedTemplate: Template = {
+      artist: template.artist.trim(),
+      tags: template.tags.trim(),
+      urlRoot: template.urlRoot.trim(),
+      yearFrom: template.yearFrom.trim(),
+    };
+    setTemplate(updatedTemplate);
+    setTemplateLS(updatedTemplate);
+
+    setShowMessage(true);
+  };
+
+  const handleMessageClose = () => {
+    setShowMessage(false);
+  };
 
   return (
     <>
@@ -48,7 +78,7 @@ const Settings = () => {
         <title>Uniformology: Settings</title>
       </Helmet>
       <div css={classes.container}>
-        <Typography variant="h5">Templates</Typography>
+        <Typography variant="h5">Item Template</Typography>
         <TextField
           fullWidth
           InputLabelProps={{
@@ -95,7 +125,7 @@ const Settings = () => {
           variant="standard"
         />
 
-        {/* <div css={classes.actionBar}>
+        <div css={classes.actionBar}>
           <Stack direction="row" gap={1}>
             <Button
               onClick={handleCancelClick}
@@ -113,8 +143,15 @@ const Settings = () => {
               Save
             </Button>
           </Stack>
-        </div> */}
+        </div>
       </div>
+
+      <AppSnackBar
+        message="Settings saved!"
+        onClose={handleMessageClose}
+        open={showMessage}
+        severity="success"
+      ></AppSnackBar>
     </>
   );
 };

@@ -16,6 +16,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { classes } from './MenuBar.style';
 import { SortMenu } from 'components/SortMenu/SortMenu';
 import { useAppContext } from 'AppContext';
+import { NavigationTag } from 'types';
 
 const MenuBar = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const MenuBar = () => {
     setIsFilterOpen(true);
   };
 
-  const handleNavigationTagClick = (navigationTag: any) => {
+  const handleNavigationTagClick = (navigationTag: NavigationTag) => {
     navigate(navigationTag.url);
   };
 
@@ -47,7 +48,7 @@ const MenuBar = () => {
       <Toolbar>
         <Stack direction="row" css={classes.appbar__left}>
           <Typography variant="h4">{headerTitle}</Typography>
-          {navigationTags.map((navigationTag: any, ix: number) => (
+          {navigationTags.map((navigationTag: NavigationTag, ix: number) => (
             <>
               {navigationTag.isNavigationTag ? (
                 <Chip
