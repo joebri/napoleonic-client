@@ -131,14 +131,16 @@ const useNavigationTags = (): any => {
       .map((tag: Tag) => tag.name)
       .join(', ');
 
-    setNavigationTags([
-      {
-        type: NavigationTagType.GALLERY,
-        title: tagNames,
-        url: '/',
-        isNavigationTag: false,
-      },
-    ]);
+    if (tagNames) {
+      setNavigationTags([
+        {
+          type: NavigationTagType.GALLERY,
+          title: tagNames,
+          url: '/',
+          isNavigationTag: false,
+        },
+      ]);
+    }
   }, [setNavigationTags, tags]);
 
   const setHeaderNavigationTags = useCallback(

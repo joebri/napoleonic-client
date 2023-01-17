@@ -22,6 +22,9 @@ const classes = {
       width: '100%',
     },
   }),
+  loading_container: css({
+    height: '10.75rem',
+  }),
   image: css({
     boxShadow: '0.25rem 0.25rem 5px #ccc',
     cursor: 'pointer',
@@ -29,6 +32,13 @@ const classes = {
   }),
   imageFull: css({
     maxHeight: 'calc(100vh - 64px)',
+  }),
+  tagRatingLine: css({
+    display: 'flex',
+    alignItems: 'center',
+    '& > p': {
+      display: 'flex',
+    },
   }),
 };
 

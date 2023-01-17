@@ -6,42 +6,45 @@ import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Image } from 'cloudinary-react';
+import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
 
 import { classes } from './ItemCard.style';
 import { TagTooltip } from 'components/TagTooltip/TagTooltip';
+import { ItemCardImage } from './ItemCardImage';
+import { ImageMetaData } from './ImageMetaData';
 
-import { imageService, imageAccountName } from 'services/imageService';
-import { Item, Tag } from 'types';
+import { Item, ItemMetaData, Tag } from 'types';
 import { useAppContext } from 'AppContext';
+import { useImageService } from 'hooks/useImageService';
+import { useRatings } from 'pages/ItemDetail/useRatings';
 
 interface ItemCardProps {
   item: Item;
 }
 
-const parseDescriptionForImage = (descriptionLong: string): string => {
-  const match = descriptionLong.match(/<img src="([\w\W]+?)["][ ]?\/>/i);
-  const url = match ? match[1] : '';
-  return url;
-};
-
 const ItemCard = ({ item }: ItemCardProps) => {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
   const [nationalityTags, setNationalityTags] = useState('');
-  const [alternateImageUrl, setAlternateImageUrl] = useState('');
+  const [rating, setRating] = useState(0);
+  const [metaData, setMetaData] = useState<ItemMetaData>({} as ItemMetaData);
+  const [isShowMetaData, setIsShowMetaData] = useState(false);
 
   const { tags: availableTags } = useAppContext();
+  const { getMetaData } = useImageService();
+  const { toUiRating } = useRatings();
 
   useEffect(() => {
+    if (item.rating) {
+      setRating(toUiRating(item.rating));
+    }
+
     const nationTags = availableTags
       .filter((tag: Tag) => {
         return tag.group === 'Nation';
@@ -50,14 +53,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
 
     const tags = item.tags.filter((tag) => nationTags.includes(tag)).join(', ');
     setNationalityTags(tags);
-
-    if (!item.publicId) {
-      const url = parseDescriptionForImage(item.descriptionLong);
-      if (url) {
-        setAlternateImageUrl(url);
-      }
-    }
-  }, [availableTags, item]);
+  }, [availableTags, item, toUiRating]);
 
   const open = Boolean(anchorEl);
 
@@ -79,21 +75,15 @@ const ItemCard = ({ item }: ItemCardProps) => {
     setAnchorEl(null);
   };
 
-  const handleImageClick = () => {
-    setIsOpen(true);
+  const handleMetaMenuClick = async () => {
+    setAnchorEl(null);
+    setIsShowMetaData(true);
+    const metaData: ItemMetaData = await getMetaData(item.publicId);
+    setMetaData(metaData);
   };
 
-  const handleImageClose = () => {
-    setIsOpen(false);
-  };
-
-  const getUrl = (imagePublicId: string) => {
-    const url = imageService
-      .image(`${imagePublicId}`)
-      .quality('auto')
-      .format('auto')
-      .toURL();
-    return url;
+  const handleImageMetaDataClose = () => {
+    setIsShowMetaData(false);
   };
 
   return (
@@ -110,48 +100,16 @@ const ItemCard = ({ item }: ItemCardProps) => {
         ></CardHeader>
 
         <CardContent>
-          {item.publicId ? (
-            <div css={[classes.container_image]}>
-              <Image
-                css={classes.image}
-                cloudName={imageAccountName}
-                onClick={handleImageClick}
-                publicId={getUrl(item.publicId)}
-                secure="true"
-                title={item.publicId}
+          <div css={[classes.container_image]}>
+            {!isShowMetaData ? (
+              <ItemCardImage item={item} />
+            ) : (
+              <ImageMetaData
+                metaData={metaData}
+                onClose={handleImageMetaDataClose}
               />
-              {item.artist && (
-                <>
-                  <Typography
-                    css={[classes.artist]}
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {item.artist}
-                  </Typography>
-                </>
-              )}
-            </div>
-          ) : (
-            <>
-              {alternateImageUrl && (
-                <div css={[classes.container_image]}>
-                  <Image src={alternateImageUrl} />
-                  {item.artist && (
-                    <>
-                      <Typography
-                        css={[classes.artist]}
-                        variant="body2"
-                        color="text.secondary"
-                      >
-                        {item.artist}
-                      </Typography>
-                    </>
-                  )}
-                </div>
-              )}
-            </>
-          )}
+            )}
+          </div>
 
           <Typography variant="body2" color="text.secondary">
             Nationality: {nationalityTags}
@@ -170,9 +128,13 @@ const ItemCard = ({ item }: ItemCardProps) => {
             </Typography>
           )}
 
-          <Typography variant="body2" color="text.secondary">
-            <TagTooltip tagNames={item.tags} />
-          </Typography>
+          <div css={[classes.tagRatingLine]}>
+            <Typography variant="body2" color="text.secondary">
+              <TagTooltip tagNames={item.tags} />
+            </Typography>
+
+            <Rating max={3} readOnly size="small" value={rating} />
+          </div>
         </CardContent>
       </Card>
 
@@ -187,16 +149,8 @@ const ItemCard = ({ item }: ItemCardProps) => {
       >
         <MenuItem onClick={handleViewMenuClick}>View</MenuItem>
         <MenuItem onClick={handleEditMenuClick}>Edit</MenuItem>
+        <MenuItem onClick={handleMetaMenuClick}>MetaData</MenuItem>
       </Menu>
-
-      <Dialog onClose={handleImageClose} open={isOpen}>
-        <Image
-          cloudName={imageAccountName}
-          css={classes.imageFull}
-          publicId={getUrl(item.publicId)}
-          secure="true"
-        />
-      </Dialog>
     </>
   );
 };

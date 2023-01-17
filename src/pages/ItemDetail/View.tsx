@@ -1,23 +1,29 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, Typography } from '@mui/material';
+import { AdvancedImage } from '@cloudinary/react';
+import styled from '@emotion/styled';
+import { Button, Rating, Typography } from '@mui/material';
 import {
   Edit as EditIcon,
   DeleteForever as DeleteForeverIcon,
 } from '@mui/icons-material';
-import { Image } from 'cloudinary-react';
+import { useEffect, useState } from 'react';
 
 import { classes } from './ItemDetail.style';
 import { TagInput } from 'components/TagInput/TagInput';
 
-import { imageService, imageAccountName } from 'services/imageService';
 import { Item } from 'types';
-import { ratingToString } from 'helper';
+import { useImageService } from 'hooks/useImageService';
+import { useRatings } from './useRatings';
 
-const getUrl = (imagePublicId: string) => {
-  const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
-  return url;
-};
+const Label = styled.label`
+  font-weight: bold;
+  margin-right: 0.25rem;
+`;
+const TagLabel = styled.label`
+  font-weight: bold;
+  margin-right: 0.5rem;
+`;
 
 interface ViewProps {
   item: Item;
@@ -26,6 +32,15 @@ interface ViewProps {
 }
 
 const View = ({ item, onDelete, onEdit }: ViewProps) => {
+  const [rating, setRating] = useState(0);
+
+  const { ratingLabels, toUiRating } = useRatings();
+  const { getImage } = useImageService();
+
+  useEffect(() => {
+    setRating(toUiRating(item.rating));
+  }, [toUiRating, item.rating]);
+
   const handleEditClick = () => {
     onEdit();
   };
@@ -38,7 +53,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
     <div>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button__spacer__x4}
+          css={classes.button__spacerx4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}
@@ -55,26 +70,20 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
           Delete
         </Button>
       </div>
-
       <Typography variant="h2">{item.title}</Typography>
-
       {item.descriptionShort && (
         <Typography variant="h3">{item.descriptionShort}</Typography>
       )}
-
       {item.descriptionLong && (
         <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
       )}
-
       <div css={classes.container_image}>
         {item.publicId && (
           <>
             <div>
-              <Image
+              <AdvancedImage
+                cldImg={getImage(item.publicId)}
                 css={classes.image}
-                cloudName={imageAccountName}
-                publicId={getUrl(item.publicId)}
-                secure="true"
                 title={item.publicId}
               />
             </div>
@@ -90,19 +99,27 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
           </>
         )}
       </div>
-
-      {item.regiments && <p>Regiment(s): {item.regiments}</p>}
-
+      {item.regiments && (
+        <p>
+          <Label>Regiment(s):</Label>
+          {item.regiments}
+        </p>
+      )}
       {(item.yearFrom || item.yearTo) && (
         <p>
-          Year: {item.yearFrom}
+          <Label>Year:</Label>
+          {item.yearFrom}
           {item.yearTo ? <span> - {item.yearTo}</span> : ''}
         </p>
       )}
-
-      <p>Rating: {ratingToString(item.rating)}</p>
+      <div css={classes.rating}>
+        <Label>Rating:</Label>
+        <Rating max={3} readOnly value={rating} />
+        <span>{ratingLabels[rating]}</span>
+      </div>
 
       <div css={classes.tags}>
+        <TagLabel>Tags:</TagLabel>
         <TagInput tagNames={item.tags} isEdit={false} />
       </div>
     </div>

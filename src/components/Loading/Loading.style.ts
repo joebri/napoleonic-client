@@ -5,7 +5,7 @@ const classes = {
     height: '100%',
     justifyContent: 'center',
 
-    '> .MuiCircularProgress-root': {
+    '& > .MuiCircularProgress-root': {
       marginRight: '1rem',
     },
   },

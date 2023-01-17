@@ -1,22 +1,17 @@
 /** @jsxImportSource @emotion/react */
 
 import { Link } from 'react-router-dom';
+import { AdvancedImage } from '@cloudinary/react';
 import { Button, Typography } from '@mui/material';
 import {
   Edit as EditIcon,
   DeleteForever as DeleteForeverIcon,
 } from '@mui/icons-material';
-import { Image } from 'cloudinary-react';
 
 import { classes } from './CollectionDetail.style';
 
-import { imageService, imageAccountName } from 'services/imageService';
 import { Collection } from 'types';
-
-const getUrl = (imagePublicId: string) => {
-  const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
-  return url;
-};
+import { useImageService } from 'hooks/useImageService';
 
 interface ViewProps {
   collection: Collection;
@@ -25,6 +20,8 @@ interface ViewProps {
 }
 
 const View = ({ collection, onDelete, onEdit }: ViewProps) => {
+  const { getImage } = useImageService();
+
   const handleEditClick = () => {
     onEdit();
   };
@@ -78,11 +75,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
       </div>
 
       <div css={classes.container__image}>
-        <Image
-          cloudName={imageAccountName}
-          publicId={getUrl('/Napoleonic/GreeceBar_wphbeq')}
-          secure="true"
-        />
+        <AdvancedImage cldImg={getImage('/Napoleonic/GreeceBar_wphbeq')} />
       </div>
 
       <Typography>Tag Name: "{collection.tagName}"</Typography>

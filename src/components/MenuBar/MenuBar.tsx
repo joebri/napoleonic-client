@@ -49,11 +49,10 @@ const MenuBar = () => {
         <Stack direction="row" css={classes.appbar__left}>
           <Typography variant="h4">{headerTitle}</Typography>
           {navigationTags.map((navigationTag: NavigationTag, ix: number) => (
-            <>
+            <span key={ix}>
               {navigationTag.isNavigationTag ? (
                 <Chip
                   css={classes.chip}
-                  key={ix}
                   label={navigationTag.title}
                   onClick={() => handleNavigationTagClick(navigationTag)}
                   variant={'outlined'}
@@ -61,12 +60,11 @@ const MenuBar = () => {
               ) : (
                 <Chip
                   css={classes.chip}
-                  key={ix}
                   label={navigationTag.title}
                   variant={'filled'}
                 />
               )}
-            </>
+            </span>
           ))}
         </Stack>
 

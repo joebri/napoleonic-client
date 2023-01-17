@@ -4,6 +4,9 @@ const classes = {
   container: css({
     margin: '0.5rem auto 2rem auto',
     width: '80%',
+    '& .MuiAutocomplete-root': {
+      width: '100%',
+    },
   }),
   container_image: css({
     marginBottom: '1rem',
@@ -18,13 +21,28 @@ const classes = {
     fontStyle: 'italic',
     textAlign: 'right',
   }),
-  tags: css({
-    marginTop: '1rem',
-  }),
-  radioLabel: css({
+
+  ratingLabel: css({
     fontSize: '0.8rem',
+    marginBottom: '0.3rem',
     marginTop: '1rem',
   }),
+  rating: css({
+    display: 'flex',
+    alignItems: 'center',
+    '& > span:nth-of-type(1)': {
+      top: '-1px',
+    },
+    '& > span:nth-of-type(2)': {
+      marginLeft: '1rem',
+    },
+  }),
+  tags: css({
+    alignItems: 'center',
+    display: 'flex',
+    marginTop: '1rem',
+  }),
+
   actionBar: css({
     display: 'flex',
     flexDirection: 'column',
@@ -35,7 +53,7 @@ const classes = {
   button__spacer: css({
     marginBottom: '1rem',
   }),
-  button__spacer__x4: css({
+  button__spacerx4: css({
     marginBottom: '4rem',
   }),
   dialog: css({
