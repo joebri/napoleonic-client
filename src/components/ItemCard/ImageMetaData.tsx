@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
+import CodeIcon from '@mui/icons-material/Code';
 import styled from '@emotion/styled';
 
 import { classes } from './ItemCard.style';
@@ -22,6 +23,10 @@ const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
     onClose();
   };
 
+  const handleUrlButtonClick = () => {
+    navigator.clipboard.writeText(metaData.url);
+  };
+
   return (
     <>
       {metaData.height ? (
@@ -37,6 +42,18 @@ const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
           <p>
             <Label>Bytes:</Label>
             {metaData.bytes?.toLocaleString()}
+          </p>
+          <p>
+            <Label>Url:</Label>
+            <IconButton
+              color="inherit"
+              css={classes.url_icon_button}
+              edge="start"
+              onClick={handleUrlButtonClick}
+              size="small"
+            >
+              <CodeIcon />
+            </IconButton>
           </p>
           <Button onClick={handleMetaDataClose} variant="contained">
             Show image

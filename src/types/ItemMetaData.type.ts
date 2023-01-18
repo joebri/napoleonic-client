@@ -1,6 +1,7 @@
 type ItemMetaData = {
-  height: number;
   bytes: number;
+  height: number;
+  url: string;
   width: number;
 };
 

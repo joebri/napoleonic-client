@@ -41,8 +41,8 @@ const AppProvider = ({ children }: AppProviderProps) => {
   });
   const [sortField, setSortField] = useState('title');
   const [tags, setTags] = useState([]);
-  const [yearRange, setYearRange] = useState([1795, 1815]);
-  const [includeUnknownYear, setIncludeUnknownYear] = useState(false);
+  const [yearRange, setYearRange] = useState([1790, 1815]);
+  const [includeUnknownYear, setIncludeUnknownYear] = useState(true);
 
   const value: AppContextType = {
     navigationTags,

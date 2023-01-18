@@ -40,6 +40,9 @@ const classes = {
       display: 'flex',
     },
   }),
+  url_icon_button: css({
+    top: '-2px',
+  }),
 };
 
 export { classes };

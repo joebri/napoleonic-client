@@ -5,6 +5,7 @@ export default gql`
     readItemMetaData(publicId: $publicId) {
       bytes
       height
+      url
       width
     }
   }

@@ -51,10 +51,10 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     low: false,
   });
 
-  const [localYearRange, setLocalYearRange] = useState<number[]>([1795, 1815]);
+  const [localYearRange, setLocalYearRange] = useState<number[]>([1790, 1815]);
 
   const [localIncludeUnknownYear, setLocalIncludeUnknownYear] =
-    useState<boolean>(false);
+    useState<boolean>(true);
 
   useEffect(() => {
     setLocalTags(tags);
