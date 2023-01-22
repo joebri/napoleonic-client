@@ -22,8 +22,9 @@ const CollectionDetailAdd = () => {
 
   const [template] = useLocalStorage<any>('template', {
     artist: '',
-    tags: [],
+    tags: '',
     urlRoot: '',
+    yearFrom: '',
   });
 
   const [collection, setCollection] = useState({

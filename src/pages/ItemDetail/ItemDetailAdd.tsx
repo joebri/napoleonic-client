@@ -24,8 +24,9 @@ const ItemDetailAdd = () => {
 
   const [template] = useLocalStorage<any>('template', {
     artist: '',
-    tags: [],
+    tags: '',
     urlRoot: '',
+    yearFrom: '',
   });
 
   const { navigationTags } = useAppContext();

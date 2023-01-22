@@ -6,7 +6,7 @@ import { useLogError } from 'hooks/useLogError';
 import { ItemMetaData } from 'types';
 
 const imageService: any = (() => {
-  console.log('initialising image service...');
+  console.info('%cinitialising image service...', 'color:blue');
   return new Cloudinary({
     cloud: {
       cloudName: process.env.REACT_APP_CLOUDINARY_NAME,
