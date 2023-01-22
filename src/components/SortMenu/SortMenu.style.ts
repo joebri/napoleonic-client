@@ -1,9 +1,9 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  icon: css({
+const classes = createStyles({
+  icon: {
     marginRight: '0.25rem',
-  }),
-};
+  },
+});
 
 export { classes };

@@ -1,19 +1,19 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  container: css({
+const classes = createStyles({
+  container: {
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
-  }),
-  content: css({
+  },
+  content: {
     height: '100%',
     // overflowY: 'scroll',
     overflowY: 'auto',
     // flexDirection: 'column',
     // display: 'flex',
     // justifyContent: 'space-between',
-  }),
-};
+  },
+});
 
 export { classes };

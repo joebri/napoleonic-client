@@ -1,13 +1,13 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  container: css({
+const classes = createStyles({
+  container: {
     margin: '0.5rem auto 2rem auto',
     width: '80%',
-  }),
-  message: css({
+  },
+  message: {
     color: 'red',
-  }),
-};
+  },
+});
 
 export { classes };

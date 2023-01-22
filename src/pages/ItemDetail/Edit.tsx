@@ -71,7 +71,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
     <div onKeyDown={handleOnKeyDown}>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button__spacer}
+          css={classes.button_spacer}
           disabled={!isDirty}
           onClick={handleSaveClick}
           size="small"

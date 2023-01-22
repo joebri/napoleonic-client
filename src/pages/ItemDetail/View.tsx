@@ -53,7 +53,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
     <div>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button__spacerx4}
+          css={classes.button_spacer_x4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}

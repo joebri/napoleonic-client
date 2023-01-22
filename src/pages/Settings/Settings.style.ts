@@ -1,15 +1,15 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  container: css({
+const classes = createStyles({
+  container: {
     display: 'flex',
     flexDirection: 'column',
     margin: '0.5rem auto 2rem auto',
     width: '80%',
-  }),
-  actionBar: css({
+  },
+  actionBar: {
     marginTop: '1rem',
-  }),
-};
+  },
+});
 
 export { classes };

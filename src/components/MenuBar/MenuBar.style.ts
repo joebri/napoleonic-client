@@ -1,23 +1,23 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  appbar: css({
+const classes = createStyles({
+  appbar: {
     position: 'relative',
     '& > .MuiToolbar-root': {
       justifyContent: 'space-between',
       position: 'relative',
     },
-  }),
-  appbar__left: css({
+  },
+  appbar__left: {
     alignItems: 'center',
-  }),
-  chip: css({
+  },
+  chip: {
     color: 'white',
     marginLeft: '1rem',
-  }),
-  icon: css({
+  },
+  icon: {
     marginRight: '0.25rem',
-  }),
-};
+  },
+});
 
 export { classes };

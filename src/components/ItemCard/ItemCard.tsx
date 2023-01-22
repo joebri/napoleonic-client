@@ -2,7 +2,6 @@
 
 import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
@@ -14,9 +13,9 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 
 import { classes } from './ItemCard.style';
-import { TagTooltip } from 'components/TagTooltip/TagTooltip';
-import { ItemCardImage } from './ItemCardImage';
 import { ImageMetaData } from './ImageMetaData';
+import { ItemCardImage } from './ItemCardImage';
+import { TagTooltip } from 'components/TagTooltip/TagTooltip';
 
 import { Item, ItemMetaData, Tag } from 'types';
 import { useAppContext } from 'AppContext';
@@ -100,7 +99,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         ></CardHeader>
 
         <CardContent>
-          <div css={[classes.container_image]}>
+          <div css={classes.container_image}>
             {!isShowMetaData ? (
               <ItemCardImage item={item} />
             ) : (

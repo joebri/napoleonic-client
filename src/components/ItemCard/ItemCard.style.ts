@@ -1,48 +1,44 @@
-import { css } from '@emotion/react';
-// import { theme } from '../theme';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  card: css({
+const classes = createStyles({
+  card: {
     marginLeft: '0.5rem',
     marginTop: '1rem',
     maxWidth: '15rem',
     minWidth: '15rem',
-  }),
-  noItems: css({
-    margin: 'auto',
-  }),
-  artist: css({
+  },
+  artist: {
     fontStyle: 'italic',
     textAlign: 'right',
-  }),
-  container_image: css({
+  },
+  container_image: {
     marginBottom: '1rem',
     width: 'fit-content',
     '& img': {
       width: '100%',
     },
-  }),
-  loading_container: css({
+  },
+  loading_container: {
     height: '10.75rem',
-  }),
-  image: css({
+  },
+  image: {
     boxShadow: '0.25rem 0.25rem 5px #ccc',
     cursor: 'pointer',
     maxWidth: '100%',
-  }),
-  imageFull: css({
+  },
+  imageFull: {
     maxHeight: 'calc(100vh - 64px)',
-  }),
-  tagRatingLine: css({
+  },
+  tagRatingLine: {
     display: 'flex',
     alignItems: 'center',
     '& > p': {
       display: 'flex',
     },
-  }),
-  url_icon_button: css({
+  },
+  url_icon_button: {
     top: '-2px',
-  }),
-};
+  },
+});
 
 export { classes };

@@ -1,10 +1,10 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  tooltip: css({
+const classes = createStyles({
+  tooltip: {
     position: 'relative',
     left: '-3px',
-  }),
-};
+  },
+});
 
 export { classes };

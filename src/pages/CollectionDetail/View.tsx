@@ -34,7 +34,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
     <div>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button_spacer__x4}
+          css={classes.button_spacer_x4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}

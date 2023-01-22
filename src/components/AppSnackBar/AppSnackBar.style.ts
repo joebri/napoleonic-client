@@ -1,9 +1,9 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  messageAlert: css({
+const classes = createStyles({
+  messageAlert: {
     width: '100%',
-  }),
-};
+  },
+});
 
 export { classes };

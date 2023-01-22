@@ -1,9 +1,9 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'createStyles';
 
-const classes = {
-  noItems: css({
+const classes = createStyles({
+  noItems: {
     margin: 'auto',
-  }),
-};
+  },
+});
 
 export { classes };
