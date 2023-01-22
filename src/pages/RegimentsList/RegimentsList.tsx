@@ -11,7 +11,7 @@ import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { ratingsToArray } from 'helper';
+import { ratingsToArray } from 'utilities/helper';
 import { RegimentTag } from 'types/RegimentTag.type';
 import { Tag } from 'types/Tag.type';
 import { useAppContext } from 'AppContext';

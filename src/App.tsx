@@ -4,7 +4,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { Home } from 'pages/Home/Home';
-import { ErrorBoundary } from './ErrorBoundary';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
 import { AppProvider } from 'AppContext';
 import { theme, ThemeProvider } from 'theme';

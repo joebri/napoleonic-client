@@ -1,6 +1,6 @@
-import { Collection, Item } from './types';
-import { Rating } from './enums/rating.enum';
-import { RatingsType } from './types';
+import { Collection, Item } from '../types';
+import { Rating } from '../enums/rating.enum';
+import { RatingsType } from '../types';
 
 const initialisedItem: Item = {
   artist: '',

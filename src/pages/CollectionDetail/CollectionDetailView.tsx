@@ -11,7 +11,7 @@ import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDelet
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
 
-import { initialisedCollection } from 'helper';
+import { initialisedCollection } from 'utilities/helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useAppContext } from 'AppContext';

@@ -11,7 +11,7 @@ import { classes } from './ItemDetail.style';
 
 import { Edit } from './Edit';
 import { Item } from 'types';
-import { initialisedItem } from 'helper';
+import { initialisedItem } from 'utilities/helper';
 import { useAppContext } from 'AppContext';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';

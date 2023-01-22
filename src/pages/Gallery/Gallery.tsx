@@ -15,7 +15,7 @@ import { Loading } from 'components/Loading/Loading';
 
 import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { ratingsToArray } from 'helper';
+import { ratingsToArray } from 'utilities/helper';
 import { useAppContext } from 'AppContext';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { useLogError } from 'hooks/useLogError';

@@ -1,8 +1,9 @@
 import { createStyles } from 'utilities/createStyles';
 
 const classes = createStyles({
-  noItems: {
-    margin: 'auto',
+  container: {
+    margin: '0.5rem auto 2rem auto',
+    width: '80%',
   },
 });
 

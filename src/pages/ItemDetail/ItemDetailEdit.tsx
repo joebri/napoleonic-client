@@ -12,7 +12,7 @@ import { Edit } from './Edit';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
 
-import { initialisedItem } from 'helper';
+import { initialisedItem } from 'utilities/helper';
 import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Rating } from 'enums/rating.enum';

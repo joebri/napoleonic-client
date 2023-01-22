@@ -1,4 +1,4 @@
-import { createStyles } from 'createStyles';
+import { createStyles } from 'utilities/createStyles';
 import { theme } from '../../theme';
 
 const classes = createStyles({

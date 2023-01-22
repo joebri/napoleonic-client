@@ -13,7 +13,7 @@ import { Loading } from 'components/Loading/Loading';
 
 import { Collection } from 'types';
 import { Edit } from './Edit';
-import { initialisedCollection } from 'helper';
+import { initialisedCollection } from 'utilities/helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
 import readCollectionQuery from './queries/readCollectionQuery';

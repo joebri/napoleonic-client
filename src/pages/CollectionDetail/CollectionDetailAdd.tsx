@@ -11,7 +11,7 @@ import { classes } from './CollectionDetail.style';
 
 import { Collection } from 'types';
 import { Edit } from './Edit';
-import { initialisedCollection } from 'helper';
+import { initialisedCollection } from 'utilities/helper';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
 import createCollectionMutation from './queries/createCollectionMutation';
