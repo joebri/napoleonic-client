@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
 
 import { classes } from './RegimentsList.style';
 import { Error } from 'components/Error/Error';
@@ -16,8 +16,8 @@ import { RegimentTag } from 'types/RegimentTag.type';
 import { Tag } from 'types/Tag.type';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
-import readRegimentCountsQuery from './queries/readRegimentCountsQuery';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import readRegimentCountsQuery from './queries/readRegimentCountsQuery';
 
 const RegimentsList = () => {
   const navigate = useNavigate();
@@ -113,33 +113,34 @@ const RegimentsList = () => {
       <Helmet>
         <title>Uniformology: Regiments</title>
       </Helmet>
-      <div css={classes.container}>
-        {regiments.length === 0 ? (
-          <div>No Regiments available.</div>
-        ) : (
-          <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-            {regiments.map((regiment: RegimentTag, index: number) => (
-              <Chip
-                color="primary"
-                label={`${regiment.name || 'Unknown'} (${regiment.count})`}
-                key={index}
-                onClick={() => {
-                  handleChipClick(index);
-                }}
-                variant={regiment.isSelected ? undefined : 'outlined'}
-              />
-            ))}
-          </Stack>
-        )}
-        <Button
-          css={classes.button}
-          disabled={!isSearchEnabled}
-          onClick={handleSearchClick}
-          variant="contained"
-        >
-          Search
-        </Button>
-      </div>
+
+      {regiments.length === 0 ? (
+        <Typography css={classes.noItems} variant="h5">
+          No Regiments available.
+        </Typography>
+      ) : (
+        <div css={classes.container}>
+          {regiments.map((regiment: RegimentTag, index: number) => (
+            <Chip
+              color="primary"
+              label={`${regiment.name || 'Unknown'} (${regiment.count})`}
+              key={index}
+              onClick={() => {
+                handleChipClick(index);
+              }}
+              variant={regiment.isSelected ? undefined : 'outlined'}
+            />
+          ))}
+          <Button
+            css={classes.button}
+            disabled={!isSearchEnabled}
+            onClick={handleSearchClick}
+            variant="contained"
+          >
+            Search
+          </Button>
+        </div>
+      )}
     </>
   );
 };

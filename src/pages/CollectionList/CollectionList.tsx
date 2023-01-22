@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
+import { Button } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Stack } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 
 import { classes } from './CollectionList.style';
 import { Error } from 'components/Error/Error';
@@ -14,8 +14,8 @@ import { Collection } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
-import readCollectionsQuery from './queries/readCollectionsQuery';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import readCollectionsQuery from './queries/readCollectionsQuery';
 
 const CollectionList = () => {
   const navigate = useNavigate();
@@ -66,20 +66,18 @@ const CollectionList = () => {
         <title>Uniformology: Collections</title>
       </Helmet>
       <div css={classes.container}>
-        <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-          {collections.map((collection: Collection, index: number) => (
-            <Button
-              css={classes.button}
-              key={index}
-              onClick={() => {
-                handleSearchClick(collection);
-              }}
-              variant="contained"
-            >
-              {`${collection.tagName}`}
-            </Button>
-          ))}
-        </Stack>
+        {collections.map((collection: Collection, index: number) => (
+          <Button
+            key={index}
+            onClick={() => {
+              handleSearchClick(collection);
+            }}
+            title={collection.title}
+            variant="contained"
+          >
+            {`${collection.tagName}`}
+          </Button>
+        ))}
       </div>
     </>
   );

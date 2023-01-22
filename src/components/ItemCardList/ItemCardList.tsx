@@ -4,6 +4,7 @@ import { classes } from './ItemCardList.style';
 import { ItemCard } from 'components/ItemCard/ItemCard';
 
 import { Item } from '../../types';
+import Typography from '@mui/material/Typography';
 
 interface ItemCardListProps {
   items: Item[];
@@ -19,7 +20,9 @@ const ItemCardList = ({ items }: ItemCardListProps) => {
           ))}
         </>
       ) : (
-        <div css={classes.noItems}>No items available.</div>
+        <Typography css={classes.noItems} variant="h5">
+          No Items available.
+        </Typography>
       )}
     </>
   );

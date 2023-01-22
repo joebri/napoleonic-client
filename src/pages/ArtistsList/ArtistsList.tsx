@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
+import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { classes } from './ArtistsList.style';
 import { Error } from 'components/Error/Error';
@@ -111,33 +111,33 @@ const ArtistsList = () => {
       <Helmet>
         <title>Uniformology: Artists</title>
       </Helmet>
-      <div css={classes.container}>
-        {artists.length === 0 ? (
-          <div css={classes.noItems}>No Artists available.</div>
-        ) : (
-          <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-            {artists.map((tag: ArtistTag, index: number) => (
-              <Chip
-                color="primary"
-                label={`${tag.name || 'Unknown'} (${tag.count})`}
-                key={index}
-                onClick={() => {
-                  handleChipClick(index);
-                }}
-                variant={tag.isSelected ? undefined : 'outlined'}
-              />
-            ))}
-          </Stack>
-        )}
-        <Button
-          css={classes.button}
-          disabled={!isSearchEnabled}
-          onClick={handleSearchClick}
-          variant="contained"
-        >
-          Search
-        </Button>
-      </div>
+      {artists.length === 0 ? (
+        <Typography css={classes.noItems} variant="h5">
+          No Artists available.
+        </Typography>
+      ) : (
+        <div css={classes.container}>
+          {artists.map((tag: ArtistTag, index: number) => (
+            <Chip
+              color="primary"
+              label={`${tag.name || 'Unknown'} (${tag.count})`}
+              key={index}
+              onClick={() => {
+                handleChipClick(index);
+              }}
+              variant={tag.isSelected ? undefined : 'outlined'}
+            />
+          ))}
+          <Button
+            css={classes.button}
+            disabled={!isSearchEnabled}
+            onClick={handleSearchClick}
+            variant="contained"
+          >
+            Search
+          </Button>
+        </div>
+      )}
     </>
   );
 };

@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
+import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { classes } from './BattlesList.style';
 import { Error } from 'components/Error/Error';
@@ -15,8 +15,8 @@ import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'helper';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
-import readBattleCountsQuery from './queries/readBattleCountsQuery';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import readBattleCountsQuery from './queries/readBattleCountsQuery';
 
 const BattlesList = () => {
   const navigate = useNavigate();
@@ -93,34 +93,34 @@ const BattlesList = () => {
       <Helmet>
         <title>Uniformology: Battles</title>
       </Helmet>
-      <div css={classes.container}>
-        {battles.length === 0 ? (
-          <div css={classes.noItems}>No Battles available.</div>
-        ) : (
-          <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-            {battles.map((battle: BattleTag, index: number) => (
-              <Chip
-                color="primary"
-                label={`${battle.name || 'Unknown'} (${battle.count})`}
-                key={index}
-                onClick={() => {
-                  handleChipClick(index);
-                }}
-                variant={battle.isSelected ? undefined : 'outlined'}
-              />
-            ))}
-          </Stack>
-        )}
 
-        <Button
-          css={classes.button}
-          disabled={!isSearchEnabled}
-          onClick={handleSearchClick}
-          variant="contained"
-        >
-          Search
-        </Button>
-      </div>
+      {battles.length === 0 ? (
+        <Typography css={classes.noItems} variant="h5">
+          No Battles available.
+        </Typography>
+      ) : (
+        <div css={classes.container}>
+          {battles.map((battle: BattleTag, index: number) => (
+            <Chip
+              color="primary"
+              label={`${battle.name || 'Unknown'} (${battle.count})`}
+              key={index}
+              onClick={() => {
+                handleChipClick(index);
+              }}
+              variant={battle.isSelected ? undefined : 'outlined'}
+            />
+          ))}
+          <Button
+            css={classes.button}
+            disabled={!isSearchEnabled}
+            onClick={handleSearchClick}
+            variant="contained"
+          >
+            Search
+          </Button>
+        </div>
+      )}
     </>
   );
 };

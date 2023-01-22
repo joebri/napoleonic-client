@@ -2,11 +2,18 @@ import { css } from '@emotion/react';
 
 const classes = {
   container: css({
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
     margin: '2rem auto 2rem auto',
     width: '85%',
   }),
   noItems: css({
-    margin: 'auto',
+    alignItems: 'center',
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%',
   }),
   title: css({
     alignItems: 'center',
