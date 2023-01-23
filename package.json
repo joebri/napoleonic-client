@@ -28,7 +28,8 @@
   "scripts": {
     "start:dev": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test:dev": "react-scripts test",
+    "test": "jest",
     "lint": "eslint src/**/*.ts src/**/*.tsx --max-warnings=0",
     "prepare": "husky install",
     "docker:serve": "serve -s /app",
@@ -53,12 +54,20 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.1.2",
     "@types/lodash": "^4.14.186",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "jest-environment-jsdom": "^29.3.1",
+    "jest-extended": "^3.2.3",
+    "jest-html-reporter": "^3.7.0",
     "lint-staged": "^13.1.0",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
     "web-vitals": "^3.0.3"
   }
 }

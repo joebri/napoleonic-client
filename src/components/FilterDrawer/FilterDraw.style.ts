@@ -1,5 +1,5 @@
 import { createStyles } from 'utilities/createStyles';
-import { theme } from '../../theme';
+import { theme } from 'theme';
 
 const classes = createStyles({
   filters: {

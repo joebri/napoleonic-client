@@ -38,9 +38,10 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     setRatings,
     tags,
     setTags,
-    setYearRange,
     includeUnknownYear,
     setIncludeUnknownYear,
+    yearRange,
+    setYearRange,
   } = useAppContext();
 
   const [localTags, setLocalTags] = useState<Tag[]>([]);
@@ -63,6 +64,10 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
   useEffect(() => {
     setLocalRatings(ratings);
   }, [ratings]);
+
+  useEffect(() => {
+    setLocalYearRange(yearRange);
+  }, [yearRange]);
 
   useEffect(() => {
     setLocalIncludeUnknownYear(includeUnknownYear);
@@ -95,6 +100,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     setYearRange(localYearRange);
     setIncludeUnknownYear(localIncludeUnknownYear);
     setIsFilterOpen(false);
+
     onActionSelect(action);
   };
 
@@ -233,7 +239,11 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
           <div css={classes.section}>
             <Stack direction={'row'}>
               <Typography variant="h5">Years </Typography>
-              <Typography variant="h5" css={classes.years}>
+              <Typography
+                variant="h5"
+                css={classes.years}
+                data-testid="year-range"
+              >
                 {localYearRange[0]} - {localYearRange[1]}
               </Typography>
               <FormControlLabel
