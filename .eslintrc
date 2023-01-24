@@ -4,6 +4,7 @@
     "curly": ["error", "all"],
     "max-lines-per-function": ["error", 300],
     "max-params": ["error", 4],
+    "no-console": ["error", { "allow": ["info", "error"] }],
     "testing-library/no-container": "off",
     "testing-library/no-node-access": "off"
   }

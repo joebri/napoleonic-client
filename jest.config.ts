@@ -3,7 +3,7 @@ import type { Config } from 'jest';
 const config: Config = {
   collectCoverage: true,
   collectCoverageFrom: [
-    // 'src/**',
+    // '<rootDir>/src/**',
     // 'src/components/**',
     'src/components/FilterDrawer/*',
     // 'src/hooks/**',
