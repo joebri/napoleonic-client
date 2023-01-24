@@ -52,7 +52,7 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
             cldImg={getImage(item.publicId)}
             css={classes.image}
             onClick={handleImageClick}
-            plugins={[lazyload(), placeholder()]}
+            plugins={[placeholder(), lazyload()]}
             title={item.publicId}
           />
           {item.artist && (

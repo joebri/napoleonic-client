@@ -5,8 +5,11 @@
 
 import '@testing-library/jest-dom';
 import matchers from 'jest-extended/all';
+import dotenv from 'dotenv';
 
 expect.extend(matchers);
+
+dotenv.config({ path: '.env' });
 
 // afterEach(() => {
 //   jest.useRealTimers();

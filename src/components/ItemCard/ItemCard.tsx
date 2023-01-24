@@ -110,12 +110,12 @@ const ItemCard = ({ item }: ItemCardProps) => {
             )}
           </div>
 
-          <Typography variant="body2" color="text.secondary">
+          <Typography color="text.secondary" variant="body2">
             Nationality: {nationalityTags}
           </Typography>
 
           {item.regiments && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography color="text.secondary" variant="body2">
               Regiment(s): {item.regiments}
             </Typography>
           )}
@@ -138,13 +138,14 @@ const ItemCard = ({ item }: ItemCardProps) => {
       </Card>
 
       <Menu
-        id="basic-menu"
         anchorEl={anchorEl}
-        open={open}
-        onClose={handleMenuClose}
+        data-testid="menu"
+        id="basic-menu"
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
+        onClose={handleMenuClose}
+        open={open}
       >
         <MenuItem onClick={handleViewMenuClick}>View</MenuItem>
         <MenuItem onClick={handleEditMenuClick}>Edit</MenuItem>
