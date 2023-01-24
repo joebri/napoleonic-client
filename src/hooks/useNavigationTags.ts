@@ -140,6 +140,8 @@ const useNavigationTags = (): any => {
           isNavigationTag: false,
         },
       ]);
+    } else {
+      setNavigationTags([]);
     }
   }, [setNavigationTags, tags]);
 

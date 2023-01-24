@@ -23,7 +23,7 @@ const classes = createStyles({
   },
   image: {
     boxShadow: '0.25rem 0.25rem 5px #ccc',
-    cursor: 'pointer',
+    cursor: 'url("zoomin.png"), progress',
     maxWidth: '100%',
   },
   imageFull: {

@@ -117,13 +117,14 @@ const Gallery = () => {
 
     // otherwise perform standard search
     setHeaderNavigationTags(NavigationTagType.GALLERY);
-    return buildTagsQueryParams({
+    const queryParams = buildTagsQueryParams({
       queryTags,
       tags,
       selectedRatings,
       yearRange,
       includeUnknownYear,
     });
+    return queryParams.tagNames.length === 0 ? null : queryParams;
   }, [
     includeUnknownYear,
     setHeaderNavigationTags,
@@ -160,6 +161,12 @@ const Gallery = () => {
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
       const queryDetails = cachedGetQueryDetails();
+      if (!queryDetails) {
+        itemsRef.current = [];
+        setPageCount(0);
+        setLoadStatus(LoadStatus.LOADED);
+        return;
+      }
       readItemsByFilter({
         variables: {
           artists: queryDetails.artists,
@@ -223,25 +230,27 @@ const Gallery = () => {
         <div id="scrollableView" css={classes.div1}>
           <ItemCardList items={itemsRef.current}></ItemCardList>
         </div>
-        <Stack direction={'row'} justifyContent="center" gap={4}>
-          <Pagination
-            count={pageCount}
-            css={classes.pager}
-            onChange={handlePaginationChange}
-            page={pageNumber}
-            shape="rounded"
-            variant="outlined"
-          />
-          <TextField
-            css={classes.pageNumber}
-            type="number"
-            size="small"
-            value={requestedPageNumber}
-            onChange={handlePageNumberChange}
-            onKeyDown={handlePageNumberKeyDown}
-            variant="outlined"
-          />
-        </Stack>
+        {pageCount > 0 && (
+          <Stack direction={'row'} justifyContent="center" gap={4}>
+            <Pagination
+              count={pageCount}
+              css={classes.pager}
+              onChange={handlePaginationChange}
+              page={pageNumber}
+              shape="rounded"
+              variant="outlined"
+            />
+            <TextField
+              css={classes.pageNumber}
+              type="number"
+              size="small"
+              value={requestedPageNumber}
+              onChange={handlePageNumberChange}
+              onKeyDown={handlePageNumberKeyDown}
+              variant="outlined"
+            />
+          </Stack>
+        )}
       </div>
     </>
   );
