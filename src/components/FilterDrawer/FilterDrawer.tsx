@@ -111,7 +111,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     });
   };
 
-  const handleYearChange = (event: Event, newValue: number | number[]) => {
+  const handleYearChange = (_: Event, newValue: number | number[]) => {
     setLocalYearRange(newValue as number[]);
   };
 
@@ -146,30 +146,10 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
       onClose={handleDrawerClose}
     >
       <div css={classes.container}>
-        <div css={classes.subcontainer}>
-          <Stack gap={1} direction="row">
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.Search)}
-            >
-              Search
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowArtists)}
-            >
-              Show Artists
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowRegiments)}
-            >
-              Show Regiments
-            </Button>
-          </Stack>
+        <div css={classes.subContainerTop()}>
           <div css={classes.section}>
             <Typography variant="h5">Nationality</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
+            <Stack css={classes.tagGroup} direction={'row'}>
               {tags
                 .filter((tag: Tag) => tag.group === 'Nation')
                 .sort((a: Tag, b: Tag) => {
@@ -182,7 +162,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
           </div>
           <div css={classes.section}>
             <Typography variant="h5">Type</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
+            <Stack css={classes.tagGroup} direction={'row'}>
               {tags
                 .filter((tag: Tag) => tag.group === 'Type')
                 .map((tag: Tag, index: number) => (
@@ -192,7 +172,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
           </div>
           <div css={classes.section}>
             <Typography variant="h5">Sub Type</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
+            <Stack css={classes.tagGroup} direction={'row'}>
               {tags
                 .filter((tag: Tag) => tag.group === 'SubType')
                 .map((tag: Tag, index: number) => (
@@ -200,7 +180,6 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                 ))}
             </Stack>
           </div>
-
           <div css={classes.section}>
             <Typography variant="h5">Rating</Typography>
 
@@ -235,7 +214,6 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               label="Low"
             />
           </div>
-
           <div css={classes.section}>
             <Stack direction={'row'}>
               <Typography variant="h5">Years </Typography>
@@ -268,23 +246,41 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               />
             </Box>
           </div>
-        </div>
-        <div css={classes.section}>
           <Stack gap={1} direction="row">
             <Button
               variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowCollections)}
+              onClick={() => handleButtonClick(ActionEnum.Search)}
             >
-              Show Collections
+              Search
             </Button>
-
             <Button
               variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowBattles)}
+              onClick={() => handleButtonClick(ActionEnum.ShowArtists)}
             >
-              Show Battles
+              Show Artists
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleButtonClick(ActionEnum.ShowRegiments)}
+            >
+              Show Regiments
             </Button>
           </Stack>
+        </div>
+        <div css={classes.subContainerBottom}>
+          <Button
+            variant="contained"
+            onClick={() => handleButtonClick(ActionEnum.ShowCollections)}
+          >
+            Show Collections
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={() => handleButtonClick(ActionEnum.ShowBattles)}
+          >
+            Show Battles
+          </Button>
         </div>
       </div>
     </Drawer>
