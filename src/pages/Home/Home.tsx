@@ -24,6 +24,7 @@ import { Loading } from 'components/Loading/Loading';
 import { MenuBar } from 'components/MenuBar/MenuBar';
 import { RegimentsList } from 'pages/RegimentsList/RegimentsList';
 import { Settings } from 'pages/Settings/Settings';
+import { Sandbox } from 'pages/Sandbox/Sandbox';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useAppContext } from 'AppContext';
@@ -103,6 +104,7 @@ const Home = () => {
           <Route path="artists" element={<ArtistsList />} />
           <Route path="battles" element={<BattlesList />} />
           <Route path="regiments" element={<RegimentsList />} />
+          <Route path="sandbox/" element={<Sandbox />} />
           <Route path="settings/" element={<Settings />} />
 
           <Route path="collections" element={<CollectionList />} />
