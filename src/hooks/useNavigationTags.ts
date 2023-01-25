@@ -1,7 +1,14 @@
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useAppContext } from 'AppContext';
 import { useCallback } from 'react';
-import { Tag } from 'types';
+import { NavigationTag, Tag } from 'types';
+
+interface HeaderNavigationTagsProps {
+  id: string;
+  names: string[];
+  tagType: NavigationTagType;
+  title: string;
+}
 
 const useNavigationTags = (): any => {
   const { navigationTags, setNavigationTags, tags } = useAppContext();
@@ -89,16 +96,21 @@ const useNavigationTags = (): any => {
   );
 
   const setCollectionNavigationTags = useCallback(
-    (collectionNames: string[], collectionId: string) => {
+    (
+      collectionId: string,
+      collectionNames: string[],
+      title: string | undefined
+    ) => {
       const collectionNamesTitle = collectionNames.join(' / ');
 
       setNavigationTags([
         {
-          type: NavigationTagType.COLLECTION,
-          title: collectionNamesTitle,
           isNavigationTag: true,
+          name: collectionNamesTitle,
+          title: title,
+          type: NavigationTagType.COLLECTION,
           url: `/collectionDetailView/${collectionId}`,
-        },
+        } as NavigationTag,
       ]);
     },
     [setNavigationTags]
@@ -108,15 +120,15 @@ const useNavigationTags = (): any => {
     (collectionTitle: string) => {
       setNavigationTags([
         {
-          type: NavigationTagType.COLLECTIONS,
-          title: 'Collections',
           isNavigationTag: true,
+          title: 'Collections',
+          type: NavigationTagType.COLLECTIONS,
           url: '/collections',
         },
         {
-          type: NavigationTagType.COLLECTIONS,
-          title: collectionTitle,
           isNavigationTag: false,
+          title: collectionTitle,
+          type: NavigationTagType.COLLECTIONS,
         },
       ]);
     },
@@ -146,7 +158,7 @@ const useNavigationTags = (): any => {
   }, [setNavigationTags, tags]);
 
   const setHeaderNavigationTags = useCallback(
-    (tagType: NavigationTagType, names: string[], id: string) => {
+    ({ id, names, tagType, title }: HeaderNavigationTagsProps) => {
       switch (tagType) {
         case NavigationTagType.GALLERY:
           setGalleryNavigationTags();
@@ -161,7 +173,7 @@ const useNavigationTags = (): any => {
           setRegimentsNavigationTags(names);
           break;
         case NavigationTagType.COLLECTION:
-          setCollectionNavigationTags(names, id);
+          setCollectionNavigationTags(id, names, title);
           break;
         case NavigationTagType.COLLECTIONS:
           setCollectionsNavigationTags(names[0]);
@@ -185,4 +197,4 @@ const useNavigationTags = (): any => {
   };
 };
 
-export { useNavigationTags };
+export { type HeaderNavigationTagsProps, useNavigationTags };

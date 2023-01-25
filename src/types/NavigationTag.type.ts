@@ -1,10 +1,11 @@
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 
 type NavigationTag = {
-  type: NavigationTagType;
-  title: string;
-  url: string;
   isNavigationTag: boolean;
+  name: string;
+  title: string;
+  type: NavigationTagType;
+  url: string;
 };
 
 export type { NavigationTag };

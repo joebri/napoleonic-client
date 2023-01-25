@@ -17,7 +17,10 @@ import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'utilities/helper';
 import { useAppContext } from 'AppContext';
-import { useNavigationTags } from 'hooks/useNavigationTags';
+import {
+  HeaderNavigationTagsProps,
+  useNavigationTags,
+} from 'hooks/useNavigationTags';
 import { useLogError } from 'hooks/useLogError';
 import readItemsByFilterQuery from './queries/readItemsByFilterQuery';
 import {
@@ -63,7 +66,12 @@ const Gallery = () => {
     if (queryArtists) {
       const artistNames = queryArtists.split('||');
 
-      setHeaderNavigationTags(NavigationTagType.ARTISTS, artistNames);
+      setHeaderNavigationTags({
+        id: '',
+        names: artistNames,
+        tagType: NavigationTagType.ARTISTS,
+        title: artistNames.join(' / '),
+      } as HeaderNavigationTagsProps);
 
       return buildArtistsQueryParams({
         includeUnknownYear,
@@ -78,7 +86,12 @@ const Gallery = () => {
     if (queryBattles) {
       const battleNames = queryBattles.split('||');
 
-      setHeaderNavigationTags(NavigationTagType.BATTLES, battleNames);
+      setHeaderNavigationTags({
+        id: '',
+        names: battleNames,
+        tagType: NavigationTagType.BATTLES,
+        title: battleNames.join(' / '),
+      } as HeaderNavigationTagsProps);
 
       return buildBattlesQueryParams(queryBattles, selectedRatings);
     }
@@ -87,7 +100,12 @@ const Gallery = () => {
     if (queryRegiments) {
       const regimentNames = queryRegiments.split('||');
 
-      setHeaderNavigationTags(NavigationTagType.REGIMENTS, regimentNames);
+      setHeaderNavigationTags({
+        id: '',
+        names: regimentNames,
+        tagType: NavigationTagType.REGIMENTS,
+        title: regimentNames.join(' / '),
+      } as HeaderNavigationTagsProps);
 
       return buildRegimentsQueryParams({
         includeUnknownYear,
@@ -102,11 +120,12 @@ const Gallery = () => {
     if (queryCollection) {
       const queryCollectionData = queryCollection.split('||');
 
-      setHeaderNavigationTags(
-        NavigationTagType.COLLECTION,
-        [queryCollectionData[0]],
-        queryCollectionData[1]
-      );
+      setHeaderNavigationTags({
+        id: queryCollectionData[2],
+        names: [queryCollectionData[0]],
+        tagType: NavigationTagType.COLLECTION,
+        title: queryCollectionData[1],
+      } as HeaderNavigationTagsProps);
 
       return buildCollectionsQueryParams(
         queryCollectionData[0],
@@ -116,7 +135,13 @@ const Gallery = () => {
     }
 
     // otherwise perform standard search
-    setHeaderNavigationTags(NavigationTagType.GALLERY);
+    setHeaderNavigationTags({
+      id: '',
+      names: [],
+      tagType: NavigationTagType.GALLERY,
+      title: '',
+    } as HeaderNavigationTagsProps);
+
     const queryParams = buildTagsQueryParams({
       queryTags,
       tags,

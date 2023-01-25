@@ -16,7 +16,10 @@ import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
-import { useNavigationTags } from 'hooks/useNavigationTags';
+import {
+  HeaderNavigationTagsProps,
+  useNavigationTags,
+} from 'hooks/useNavigationTags';
 import { View } from './View';
 import deleteCollectionMutation from './queries/deleteCollectionMutation';
 import readCollectionQuery from './queries/readCollectionQuery';
@@ -41,9 +44,12 @@ const CollectionDetailView = () => {
     onCompleted: (data) => {
       setCollection(data.readCollection);
 
-      setHeaderNavigationTags(NavigationTagType.COLLECTIONS, [
-        data.readCollection.title,
-      ]);
+      setHeaderNavigationTags({
+        id: '',
+        names: [data.readCollection.title],
+        tagType: NavigationTagType.COLLECTIONS,
+        title: data.readCollection.title,
+      } as HeaderNavigationTagsProps);
 
       setLoadStatus(LoadStatus.LOADED);
     },
