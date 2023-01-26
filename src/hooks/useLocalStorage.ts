@@ -11,7 +11,7 @@ function useLocalStorage<T>(key: string, initialValue: T) {
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // If error also return initialValue
-      console.error(`%c${error}`, 'color:red');
+      console.error(`%cError: ${JSON.stringify(error)}`, 'color:red');
       return initialValue;
     }
   });
@@ -29,7 +29,7 @@ function useLocalStorage<T>(key: string, initialValue: T) {
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
       // A more advanced implementation would handle the error case
-      console.error(error);
+      console.error(`%cError: ${JSON.stringify(error)}`, 'color:red');
     }
   };
 

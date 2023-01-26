@@ -28,7 +28,10 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // logErrorToMyService(error, errorInfo);
-    console.error(error, errorInfo);
+    console.error(
+      `%cError: ${JSON.stringify(error)}, ${JSON.stringify(errorInfo)}`,
+      'color:red'
+    );
   }
 
   render() {

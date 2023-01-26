@@ -15,7 +15,7 @@ const useLogError = (moduleName: string) => {
       moduleName: moduleName,
       name,
     };
-    console.error(`Error: ${error}`, 'color:red');
+    console.error(`%cError: ${JSON.stringify(error)}`, 'color:red');
   };
 
   return { logError };
