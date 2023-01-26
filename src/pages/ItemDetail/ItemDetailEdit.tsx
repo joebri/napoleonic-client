@@ -16,7 +16,6 @@ import { initialisedItem } from 'utilities/helper';
 import { Item } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Rating } from 'enums/rating.enum';
-import { useAppContext } from 'AppContext';
 import { useConfirmExit } from 'hooks/useConfirmExit';
 import { useLogError } from 'hooks/useLogError';
 import readItemQuery from './queries/readItemQuery';
@@ -27,8 +26,6 @@ const ItemDetailEdit = () => {
   let { itemId } = useParams();
   const navigate = useNavigate();
   const { logError } = useLogError(ItemDetailEdit.name);
-
-  const { navigationTags } = useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
@@ -56,7 +53,7 @@ const ItemDetailEdit = () => {
 
   useEffect(() => {
     enableLastNavigationTag();
-  }, [enableLastNavigationTag, navigationTags]);
+  }, [enableLastNavigationTag]);
 
   const [updateItem] = useMutation(updateItemMutation);
 
@@ -142,8 +139,6 @@ const ItemDetailEdit = () => {
         onClose={handleMessageClose}
         open={showMessage}
       ></AppSnackBar>
-
-      {/* <Alert when={isDirty} message={() => 'Do you really want to leave?'} /> */}
     </>
   );
 };

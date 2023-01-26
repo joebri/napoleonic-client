@@ -13,7 +13,6 @@ import { Loading } from 'components/Loading/Loading';
 
 import { initialisedItem } from 'utilities/helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import { View } from './View';
 import deleteItemMutation from './queries/deleteItemMutation';
@@ -24,8 +23,6 @@ const ItemDetailView = () => {
   const { itemId } = useParams();
   const navigate = useNavigate();
   const { logError } = useLogError(ItemDetailView.name);
-
-  const { navigationTags } = useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
@@ -50,7 +47,7 @@ const ItemDetailView = () => {
 
   useEffect(() => {
     enableLastNavigationTag();
-  }, [enableLastNavigationTag, navigationTags]);
+  }, [enableLastNavigationTag]);
 
   useEffect(() => {
     const loadForm = () => {

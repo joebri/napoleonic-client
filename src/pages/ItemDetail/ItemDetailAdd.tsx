@@ -12,7 +12,6 @@ import { classes } from './ItemDetail.style';
 import { Edit } from './Edit';
 import { Item } from 'types';
 import { initialisedItem } from 'utilities/helper';
-import { useAppContext } from 'AppContext';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
 import createItemMutation from './queries/createItemMutation';
@@ -29,8 +28,6 @@ const ItemDetailAdd = () => {
     yearFrom: '',
   });
 
-  const { navigationTags } = useAppContext();
-
   const [item, setItem] = useState({
     ...initialisedItem,
     artist: template.artist,
@@ -44,7 +41,7 @@ const ItemDetailAdd = () => {
 
   useEffect(() => {
     enableLastNavigationTag();
-  }, [enableLastNavigationTag, navigationTags]);
+  }, [enableLastNavigationTag]);
 
   const [createItem] = useMutation(createItemMutation);
 
