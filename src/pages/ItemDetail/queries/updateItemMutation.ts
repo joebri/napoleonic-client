@@ -2,17 +2,17 @@ import gql from 'graphql-tag';
 
 export default gql`
   mutation updateItem(
-    $artist: String
-    $descriptionLong: String
-    $descriptionShort: String
+    $artist: String!
+    $descriptionLong: String!
+    $descriptionShort: String!
     $id: ID!
-    $publicId: String
-    $rating: Int
-    $regiments: String
+    $publicId: String!
+    $rating: Int!
+    $regiments: String!
     $tags: [String!]!
-    $title: String
-    $yearFrom: String
-    $yearTo: String
+    $title: String!
+    $yearFrom: String!
+    $yearTo: String!
   ) {
     updateItem(
       input: {
