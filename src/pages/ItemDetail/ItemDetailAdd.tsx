@@ -1,20 +1,20 @@
 /** @jsxImportSource @emotion/react */
 
 import { Helmet } from 'react-helmet-async';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 
 import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { classes } from './ItemDetail.style';
-
 import { Edit } from './Edit';
-import { Item } from 'types';
+
+import { createItemMutation } from './queries/createItemMutation';
 import { initialisedItem } from 'utilities/helper';
+import { Item } from 'types';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
-import createItemMutation from './queries/createItemMutation';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const ItemDetailAdd = () => {
@@ -106,7 +106,7 @@ const ItemDetailAdd = () => {
         message="Unable to create item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      ></AppSnackBar>
+      />
     </>
   );
 };

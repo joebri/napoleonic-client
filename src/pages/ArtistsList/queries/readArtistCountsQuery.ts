@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readArtistCountsQuery = gql`
   query readArtistCounts(
     $ratings: [Int!]!
     $tags: [String!]!
@@ -20,3 +20,5 @@ export default gql`
     }
   }
 `;
+
+export { readArtistCountsQuery };

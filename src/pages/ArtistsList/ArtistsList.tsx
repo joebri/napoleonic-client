@@ -13,10 +13,10 @@ import { Loading } from 'components/Loading/Loading';
 import { ArtistTag, Tag } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ratingsToArray } from 'utilities/helper';
+import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
-import readArtistCountsQuery from './queries/readArtistCountsQuery';
 
 const ArtistsList = () => {
   const navigate = useNavigate();
