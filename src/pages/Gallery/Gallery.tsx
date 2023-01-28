@@ -67,7 +67,7 @@ const Gallery = () => {
 
   const { setHeaderNavigationTags } = useNavigationTags();
 
-  const cachedGetQueryDetails = useCallback(() => {
+  const getQueryDetails = useCallback(() => {
     const selectedRatings = ratingsToArray(ratings);
 
     const queryArtists = searchParams.get('artists');
@@ -193,7 +193,7 @@ const Gallery = () => {
 
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
-      const queryDetails = cachedGetQueryDetails();
+      const queryDetails = getQueryDetails();
       if (!queryDetails) {
         itemsRef.current = [];
         setPageCount(0);
@@ -219,7 +219,7 @@ const Gallery = () => {
 
     loadForm(pageNumber);
     document.getElementById('scrollableView')?.scrollTo({ top: 0 });
-  }, [cachedGetQueryDetails, pageNumber, readItemsByFilter, sortField, tags]);
+  }, [getQueryDetails, pageNumber, readItemsByFilter, sortField, tags]);
 
   const handlePaginationChange = (
     _: ChangeEvent<unknown>,
