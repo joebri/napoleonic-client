@@ -82,6 +82,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
           Save
         </Button>
         <Button
+          aria-label="cancel"
           onClick={handleCancelClick}
           size="small"
           startIcon={<BackspaceOutlinedIcon />}

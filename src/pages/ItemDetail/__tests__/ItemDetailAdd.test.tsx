@@ -112,7 +112,24 @@ describe('ItemDetailAdd', () => {
     await user.tab();
 
     expect(button).toBeEnabled();
+  });
 
+  it('should go to ItemDetailView when Save clicked', async () => {
+    const mockGraphQL = {
+      ...mockGraphQLTemplate,
+    };
+
+    const router = setupRouter(mockGraphQL);
+
+    render(<RouterProvider router={router} />);
+
+    const user = userEvent.setup();
+
+    const title = await screen.findByLabelText('Title');
+    const button = screen.getByRole('button', { name: 'save' });
+
+    await user.type(title, 'title');
+    await user.tab();
     await user.click(button);
 
     // screen.debug(undefined, 30000000);
@@ -121,6 +138,28 @@ describe('ItemDetailAdd', () => {
       expect(router.state.location.pathname).toEqual(
         '/itemDetailView/636e2a7d27fe63c9179fcb6e'
       );
+    });
+  });
+
+  it('should go to Gallery when Cancel clicked', async () => {
+    const mockGraphQL = {
+      ...mockGraphQLTemplate,
+    };
+
+    const router = setupRouter(mockGraphQL);
+
+    render(<RouterProvider router={router} />);
+
+    const user = userEvent.setup();
+
+    const button = screen.getByRole('button', { name: 'cancel' });
+
+    await user.click(button);
+
+    // screen.debug(undefined, 30000000);
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toEqual('/');
     });
   });
 
