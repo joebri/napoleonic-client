@@ -20,7 +20,7 @@ const useNavigationTags = (): any => {
   const enableLastNavigationTag = useCallback(() => {
     let updated = [...navigationTags];
     const lastNavigationTag = updated.at(-1);
-    if (lastNavigationTag) {
+    if (lastNavigationTag && !lastNavigationTag.isNavigationTag) {
       lastNavigationTag.isNavigationTag = true;
       setNavigationTags(updated);
     }
