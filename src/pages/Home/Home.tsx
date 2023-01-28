@@ -1,35 +1,35 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 
-import {
-  ActionEnum,
-  FilterDrawer,
-} from '../../components/FilterDrawer/FilterDrawer';
+import { Error } from 'components/Error/Error';
+import { Loading } from 'components/Loading/Loading';
+import { MenuBar } from 'components/MenuBar/MenuBar';
 import { ArtistsList } from 'pages/ArtistsList/ArtistsList';
 import { BattlesList } from 'pages/BattlesList/BattlesList';
-import { classes } from './Home.style';
 import { CollectionDetailAdd } from 'pages/CollectionDetail/CollectionDetailAdd';
 import { CollectionDetailEdit } from 'pages/CollectionDetail/CollectionDetailEdit';
 import { CollectionDetailView } from 'pages/CollectionDetail/CollectionDetailView';
 import { CollectionList } from 'pages/CollectionList/CollectionList';
-import { Error } from 'components/Error/Error';
 import { Gallery } from 'pages/Gallery/Gallery';
 import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
 import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
-import { Loading } from 'components/Loading/Loading';
-import { MenuBar } from 'components/MenuBar/MenuBar';
 import { RegimentsList } from 'pages/RegimentsList/RegimentsList';
-import { Settings } from 'pages/Settings/Settings';
 import { Sandbox } from 'pages/Sandbox/Sandbox';
+import { Settings } from 'pages/Settings/Settings';
+import {
+  ActionEnum,
+  FilterDrawer,
+} from '../../components/FilterDrawer/FilterDrawer';
+import { classes } from './Home.style';
 
-import { LoadStatus } from 'enums/loadStatus.enum';
 import { useAppContext } from 'AppContext';
+import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
-import readTagsQuery from './queries/readTagsQuery';
+import { readTagsQuery } from './queries/readTagsQuery';
 
 const Home = () => {
   const navigate = useNavigate();

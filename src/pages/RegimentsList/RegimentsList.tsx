@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
-import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import { Button, Chip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { classes } from './RegimentsList.style';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './RegimentsList.style';
 
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { ratingsToArray } from 'utilities/helper';
-import { RegimentTag } from 'types/RegimentTag.type';
-import { Tag } from 'types/Tag.type';
 import { useAppContext } from 'AppContext';
+import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
-import readRegimentCountsQuery from './queries/readRegimentCountsQuery';
+import { RegimentTag } from 'types/RegimentTag.type';
+import { Tag } from 'types/Tag.type';
+import { ratingsToArray } from 'utilities/helper';
+import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 
 const RegimentsList = () => {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
-import { Cloudinary } from '@cloudinary/url-gen';
 import { useLazyQuery } from '@apollo/client';
+import { Cloudinary } from '@cloudinary/url-gen';
 
-import readItemMetaDataQuery from './queries/readItemMetaDataQuery';
 import { useLogError } from 'hooks/useLogError';
 import { ItemMetaData } from 'types';
+import { readItemMetaDataQuery } from './queries/readItemMetaDataQuery';
 
 const imageService: any = (() => {
   console.info(

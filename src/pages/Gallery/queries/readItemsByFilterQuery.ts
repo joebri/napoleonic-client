@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readItemsByFilterQuery = gql`
   query readItemsByFilter(
     $artists: [String!]
     $battles: [String!]
@@ -46,3 +46,5 @@ export default gql`
     }
   }
 `;
+
+export { readItemsByFilterQuery };

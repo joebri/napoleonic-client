@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readItemQuery = gql`
   query readItem($id: ID!) {
     readItem(id: $id) {
       artist
@@ -17,3 +17,5 @@ export default gql`
     }
   }
 `;
+
+export { readItemQuery };

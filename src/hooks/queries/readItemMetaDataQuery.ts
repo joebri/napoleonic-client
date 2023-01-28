@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readItemMetaDataQuery = gql`
   query readItemMetaData($publicId: String!) {
     readItemMetaData(publicId: $publicId) {
       bytes
@@ -10,3 +10,5 @@ export default gql`
     }
   }
 `;
+
+export { readItemMetaDataQuery };

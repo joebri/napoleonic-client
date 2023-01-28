@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readCollectionsQuery = gql`
   query readCollections {
     readCollections {
       descriptionLong
@@ -12,3 +12,5 @@ export default gql`
     }
   }
 `;
+
+export { readCollectionsQuery };

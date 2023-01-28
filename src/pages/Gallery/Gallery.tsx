@@ -1,28 +1,37 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, KeyboardEvent, LegacyRef, MutableRefObject } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Stack, TextField } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
-import { useSearchParams } from 'react-router-dom';
+import { Stack, TextField } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  LegacyRef,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 
-import { classes } from './Gallery.style';
 import { Error } from 'components/Error/Error';
 import { ItemCardList } from 'components/ItemCardList/ItemCardList';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './Gallery.style';
 
-import { Item } from 'types';
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { ratingsToArray } from 'utilities/helper';
 import { useAppContext } from 'AppContext';
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { NavigationTagType } from 'enums/navigationTagType.enum';
+import { useLogError } from 'hooks/useLogError';
 import {
   HeaderNavigationTagsProps,
   useNavigationTags,
 } from 'hooks/useNavigationTags';
-import { useLogError } from 'hooks/useLogError';
-import readItemsByFilterQuery from './queries/readItemsByFilterQuery';
+import { Item } from 'types';
+import { ratingsToArray } from 'utilities/helper';
+import { readItemsByFilterQuery } from './queries/readItemsByFilterQuery';
 import {
   buildArtistsQueryParams,
   buildBattlesQueryParams,
@@ -30,7 +39,6 @@ import {
   buildRegimentsQueryParams,
   buildTagsQueryParams,
 } from './queryBuilder';
-import { NavigationTagType } from 'enums/navigationTagType.enum';
 
 const PAGE_SIZE = 20;
 

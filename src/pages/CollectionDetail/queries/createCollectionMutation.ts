@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const createCollectionMutation = gql`
   mutation createCollection(
     $descriptionLong: String!
     $descriptionShort: String!
@@ -19,3 +19,5 @@ export default gql`
     )
   }
 `;
+
+export { createCollectionMutation };

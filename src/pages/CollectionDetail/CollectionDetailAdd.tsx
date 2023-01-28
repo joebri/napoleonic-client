@@ -1,20 +1,20 @@
 /** @jsxImportSource @emotion/react */
 
-import { Helmet } from 'react-helmet-async';
 import { useMutation } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
 
-import { Collection } from 'types';
-import { Edit } from './Edit';
-import { initialisedCollection } from 'utilities/helper';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useLogError } from 'hooks/useLogError';
-import createCollectionMutation from './queries/createCollectionMutation';
+import { Collection } from 'types';
+import { initialisedCollection } from 'utilities/helper';
+import { Edit } from './Edit';
+import { createCollectionMutation } from './queries/createCollectionMutation';
 
 const CollectionDetailAdd = () => {
   const navigate = useNavigate();

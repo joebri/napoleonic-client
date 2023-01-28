@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
-import { Helmet } from 'react-helmet-async';
-import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useNavigate, useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
+import { useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { classes } from './CollectionDetail.style';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
-
-import { Collection } from 'types';
+import { classes } from './CollectionDetail.style';
 import { Edit } from './Edit';
-import { initialisedCollection } from 'utilities/helper';
+
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
-import readCollectionQuery from './queries/readCollectionQuery';
-import updateCollectionMutation from './queries/updateCollectionMutation';
+import { Collection } from 'types';
+import { initialisedCollection } from 'utilities/helper';
+import { readCollectionQuery } from './queries/readCollectionQuery';
+import { updateCollectionMutation } from './queries/updateCollectionMutation';
 
 const CollectionDetailEdit = () => {
   let { collectionId } = useParams();

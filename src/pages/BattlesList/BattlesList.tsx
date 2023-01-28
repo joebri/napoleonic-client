@@ -1,22 +1,22 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, Chip, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
+import { Button, Chip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { classes } from './BattlesList.style';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './BattlesList.style';
 
-import { BattleTag } from 'types';
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { ratingsToArray } from 'utilities/helper';
 import { useAppContext } from 'AppContext';
+import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
-import readBattleCountsQuery from './queries/readBattleCountsQuery';
+import { BattleTag } from 'types';
+import { ratingsToArray } from 'utilities/helper';
+import { readBattleCountsQuery } from './queries/readBattleCountsQuery';
 
 const BattlesList = () => {
   const navigate = useNavigate();

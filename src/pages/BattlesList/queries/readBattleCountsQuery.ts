@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readBattleCountsQuery = gql`
   query readBattleCounts($ratings: [Int!]!) {
     readBattleCounts(input: { ratings: $ratings }) {
       name
@@ -8,3 +8,5 @@ export default gql`
     }
   }
 `;
+
+export { readBattleCountsQuery };

@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
-import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { classes } from './ItemDetail.style';
 import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './ItemDetail.style';
 
-import { initialisedItem } from 'utilities/helper';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
-import { View } from './View';
-import deleteItemMutation from './queries/deleteItemMutation';
-import readItemQuery from './queries/readItemQuery';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import { initialisedItem } from 'utilities/helper';
+import { deleteItemMutation } from './queries/deleteItemMutation';
+import { readItemQuery } from './queries/readItemQuery';
+import { View } from './View';
 
 const ItemDetailView = () => {
   const { itemId } = useParams();

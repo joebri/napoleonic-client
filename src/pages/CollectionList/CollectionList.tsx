@@ -1,21 +1,21 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
+import { Button } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
-import { classes } from './CollectionList.style';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './CollectionList.style';
 
-import { Collection } from 'types';
-import { LoadStatus } from 'enums/loadStatus.enum';
 import { useAppContext } from 'AppContext';
+import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
-import readCollectionsQuery from './queries/readCollectionsQuery';
+import { Collection } from 'types';
+import { readCollectionsQuery } from './queries/readCollectionsQuery';
 
 const CollectionList = () => {
   const navigate = useNavigate();

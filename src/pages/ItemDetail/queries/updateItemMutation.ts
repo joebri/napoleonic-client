@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const updateItemMutation = gql`
   mutation updateItem(
     $artist: String!
     $descriptionLong: String!
@@ -31,3 +31,5 @@ export default gql`
     )
   }
 `;
+
+export { updateItemMutation };

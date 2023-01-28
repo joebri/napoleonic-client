@@ -1,28 +1,28 @@
 /** @jsxImportSource @emotion/react */
 
-import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { classes } from './CollectionDetail.style';
 import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
 import { Error } from 'components/Error/Error';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './CollectionDetail.style';
 
-import { initialisedCollection } from 'utilities/helper';
+import { useAppContext } from 'AppContext';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import {
   HeaderNavigationTagsProps,
   useNavigationTags,
 } from 'hooks/useNavigationTags';
+import { initialisedCollection } from 'utilities/helper';
+import { deleteCollectionMutation } from './queries/deleteCollectionMutation';
+import { readCollectionQuery } from './queries/readCollectionQuery';
 import { View } from './View';
-import deleteCollectionMutation from './queries/deleteCollectionMutation';
-import readCollectionQuery from './queries/readCollectionQuery';
 
 const CollectionDetailView = () => {
   let { collectionId } = useParams();

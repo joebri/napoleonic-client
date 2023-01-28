@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readRegimentCountsQuery = gql`
   query readRegimentCounts(
     $ratings: [Int!]!
     $tags: [String!]!
@@ -20,3 +20,5 @@ export default gql`
     }
   }
 `;
+
+export { readRegimentCountsQuery };
