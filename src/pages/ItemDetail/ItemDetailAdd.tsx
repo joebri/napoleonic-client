@@ -43,7 +43,19 @@ const ItemDetailAdd = () => {
     enableLastNavigationTag();
   }, [enableLastNavigationTag]);
 
-  const [createItem] = useMutation(createItemMutation);
+  const [createItem] = useMutation(createItemMutation, {
+    onCompleted: (data) => {
+      navigate(`/itemDetailView/${data.createItem}`);
+    },
+    onError: (exception) => {
+      logError({
+        name: 'createItem',
+        exception,
+        message: 'Create failed.',
+      });
+      setShowMessage(true);
+    },
+  });
 
   const handleEditChange = (field: string, value: string | number) => {
     setItem((priorItem: Item) => ({
@@ -56,31 +68,21 @@ const ItemDetailAdd = () => {
     navigate(`/`);
   };
 
-  const handleEditSaveClick = async () => {
-    try {
-      const result = await createItem({
-        variables: {
-          artist: item.artist?.trim(),
-          descriptionLong: item.descriptionLong?.trim(),
-          descriptionShort: item.descriptionShort?.trim(),
-          publicId: item.publicId?.trim(),
-          rating: parseInt(item.rating.toString()),
-          regiments: item.regiments?.trim(),
-          tags: item.tags,
-          title: item.title?.trim(),
-          yearFrom: item.yearFrom?.trim(),
-          yearTo: item.yearTo?.trim(),
-        },
-      });
-      navigate(`/itemDetailView/${result.data.createItem}`);
-    } catch (exception) {
-      logError({
-        name: 'handleEditSaveClick',
-        exception,
-        message: 'Create failed.',
-      });
-      setShowMessage(true);
-    }
+  const handleEditSaveClick = () => {
+    createItem({
+      variables: {
+        artist: item.artist?.trim(),
+        descriptionLong: item.descriptionLong?.trim(),
+        descriptionShort: item.descriptionShort?.trim(),
+        publicId: item.publicId?.trim(),
+        rating: parseInt(item.rating.toString()),
+        regiments: item.regiments?.trim(),
+        tags: item.tags,
+        title: item.title?.trim(),
+        yearFrom: item.yearFrom?.trim(),
+        yearTo: item.yearTo?.trim(),
+      },
+    });
   };
 
   const handleMessageClose = () => {

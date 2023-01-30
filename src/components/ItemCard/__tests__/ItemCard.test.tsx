@@ -1,79 +1,84 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Router } from 'react-router';
-import { createMemoryHistory } from 'history';
-import {
-  ApolloClient,
-  ApolloProvider,
-  InMemoryCache,
-  NormalizedCacheObject,
-} from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing';
 import { CloudConfig, CloudinaryImage } from '@cloudinary/url-gen';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 import { ItemCard } from '../ItemCard';
+
 import { AppContext, AppContextType } from 'AppContext';
-import { Item, ItemMetaData, Tag } from 'types';
 import { Rating } from 'enums/rating.enum';
 import * as imageServiceModule from 'hooks/useImageService';
+import { mockAppContext } from 'setupTests';
+import { Item, ItemMetaData } from 'types';
+
+const mockItemId = '636e2a7d27fe63c9179fcb6e';
+
+interface MockMemoryRouterProps {
+  mockAppContextValue: AppContextType;
+  mockGraphQL: any[];
+  mockItem: Item;
+}
+
+const setupRouter = ({
+  mockAppContextValue,
+  mockGraphQL,
+  mockItem,
+}: MockMemoryRouterProps) => {
+  const router = createMemoryRouter(
+    [
+      {
+        path: '/',
+        element: <>Home page</>,
+      },
+      {
+        path: `/itemDetailEdit/:itemId`,
+        element: (
+          <MockedProvider mocks={mockGraphQL} addTypename={false}>
+            <AppContext.Provider value={mockAppContextValue}>
+              <ItemCard item={mockItem} />
+            </AppContext.Provider>
+          </MockedProvider>
+        ),
+      },
+      {
+        path: '/itemDetailView/:itemId',
+        element: <>Item Detail View</>,
+      },
+    ],
+    {
+      initialEntries: [`/itemDetailEdit/${mockItemId}`],
+      initialIndex: 1,
+    }
+  );
+  return router;
+};
 
 describe('ItemCard', () => {
-  let routerHistory: any;
-  let mockApolloClient: ApolloClient<NormalizedCacheObject>;
-  let mockAppContextValue: AppContextType;
-  let mockItem: Item;
+  let mockAppContextValue: AppContextType = mockAppContext;
 
-  beforeAll(() => {
-    routerHistory = createMemoryHistory({ initialEntries: ['/'] });
+  let mockItem: Item = {
+    artist: 'artist #1',
+    descriptionLong: 'descriptionLong #1',
+    descriptionShort: 'descriptionShort #1',
+    id: mockItemId,
+    publicId: 'publicId #1',
+    rating: Rating.MEDIUM,
+    regiments: 'regiment #1; regiment #2',
+    tags: ['France', 'Infantry'],
+    title: 'title #1',
+    yearFrom: '1800',
+    yearTo: '1850',
+  };
 
-    mockApolloClient = new ApolloClient({
-      uri: '',
-      cache: new InMemoryCache(),
-    });
-
-    mockAppContextValue = {
-      includeUnknownYear: false,
-      isFilterOpen: true,
-      ratings: { high: false, medium: false, low: false },
-      setIncludeUnknownYear: (() => {}) as Function,
-      setIsFilterOpen: (() => {}) as Function,
-      setRatings: (() => {}) as Function,
-      setTags: (() => {}) as Function,
-      setYearRange: (() => {}) as Function,
-      tags: [
-        {
-          group: 'Nation',
-          isSelected: false,
-          name: 'France',
-        },
-      ] as Tag[],
-      yearRange: [] as number[],
-    } as AppContextType;
-
-    mockItem = {
-      artist: 'artist #1',
-      descriptionLong: 'descriptionLong #1',
-      descriptionShort: 'descriptionShort #1',
-      id: '123456',
-      publicId: 'publicId #1',
-      rating: Rating.MEDIUM,
-      regiments: 'regiment #1; regiment #2',
-      tags: ['France', 'Infantry'],
-      title: 'title #1',
-      yearFrom: '1800',
-      yearTo: '1850',
-    };
-  });
+  beforeAll(() => {});
 
   it('should render Item details', async () => {
-    const { container } = render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <ApolloProvider client={mockApolloClient}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ItemCard item={mockItem} />
-          </AppContext.Provider>
-        </ApolloProvider>
-      </Router>
-    );
+    const mockGraphQL: any = [];
+
+    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
+
+    const { container } = render(<RouterProvider router={router} />);
 
     // screen.debug();
 
@@ -111,15 +116,11 @@ describe('ItemCard', () => {
   });
 
   it('should open menu and handle view click', async () => {
-    render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <ApolloProvider client={mockApolloClient}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ItemCard item={mockItem} />
-          </AppContext.Provider>
-        </ApolloProvider>
-      </Router>
-    );
+    const mockGraphQL: any = [];
+
+    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
+
+    render(<RouterProvider router={router} />);
 
     // screen.debug();
 
@@ -131,19 +132,19 @@ describe('ItemCard', () => {
     const menuItems = screen.getAllByRole('menuitem');
     await userEvent.click(menuItems[0]);
 
-    expect(routerHistory.location.pathname).toEqual('/itemDetailView/123456');
+    await waitFor(() => {
+      expect(router.state.location.pathname).toEqual(
+        `/itemDetailView/${mockItemId}`
+      );
+    });
   });
 
   it('should open menu and handle edit click', async () => {
-    render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <ApolloProvider client={mockApolloClient}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ItemCard item={mockItem} />
-          </AppContext.Provider>
-        </ApolloProvider>
-      </Router>
-    );
+    const mockGraphQL: any = [];
+
+    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
+
+    render(<RouterProvider router={router} />);
 
     // screen.debug();
 
@@ -155,7 +156,11 @@ describe('ItemCard', () => {
     const menuItems = screen.getAllByRole('menuitem');
     await userEvent.click(menuItems[1]);
 
-    expect(routerHistory.location.pathname).toEqual('/itemDetailEdit/123456');
+    await waitFor(() => {
+      expect(router.state.location.pathname).toEqual(
+        `/itemDetailEdit/${mockItemId}`
+      );
+    });
   });
 
   it('should open menu and handle metadata click', async () => {
@@ -181,15 +186,11 @@ describe('ItemCard', () => {
       };
     });
 
-    render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <ApolloProvider client={mockApolloClient}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ItemCard item={mockItem} />
-          </AppContext.Provider>
-        </ApolloProvider>
-      </Router>
-    );
+    const mockGraphQL: any = [];
+
+    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
+
+    render(<RouterProvider router={router} />);
 
     const button = screen.getByRole('button', { name: 'settings' });
     await userEvent.click(button);

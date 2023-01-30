@@ -4,9 +4,12 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 import '@testing-library/jest-dom';
-import matchers from 'jest-extended/all';
 import dotenv from 'dotenv';
+import matchers from 'jest-extended/all';
 import { enableFetchMocks } from 'jest-fetch-mock';
+
+import { AppContextType } from 'AppContext';
+import { NavigationTag, Tag } from 'types';
 
 enableFetchMocks();
 
@@ -35,3 +38,31 @@ jest.mock('react-helmet-async', () => {
     Helmet: jest.fn().mockImplementation(mockHelmet),
   };
 });
+
+const mockAppContext: AppContextType = {
+  headerTitle: '',
+  includeUnknownYear: false,
+  isFilterOpen: true,
+  navigationTags: [] as NavigationTag[],
+  pageNumber: 1,
+  ratings: { high: false, medium: false, low: false },
+  setHeaderTitle: (() => {}) as Function,
+  setIncludeUnknownYear: (() => {}) as Function,
+  setIsFilterOpen: (() => {}) as Function,
+  setNavigationTags: (() => {}) as Function,
+  setPageNumber: (() => {}) as Function,
+  setRatings: (() => {}) as Function,
+  setSortField: (() => {}) as Function,
+  setTags: (() => {}) as Function,
+  setYearRange: (() => {}) as Function,
+  sortField: '',
+  tags: [
+    {
+      group: 'Nation',
+      isSelected: false,
+      name: 'France',
+    },
+  ] as Tag[],
+  yearRange: [] as number[],
+};
+export { mockAppContext };

@@ -51,11 +51,19 @@ const ItemDetailEdit = () => {
     },
   });
 
+  const [updateItem] = useMutation(updateItemMutation, {
+    onCompleted: () => {
+      navigate(`/itemDetailView/${item.id}`);
+    },
+    onError: (exception) => {
+      logError({ name: 'updateItem', exception, itemId });
+      setShowMessage(true);
+    },
+  });
+
   useEffect(() => {
     enableLastNavigationTag();
   }, [enableLastNavigationTag]);
-
-  const [updateItem] = useMutation(updateItemMutation);
 
   const loadForm = useCallback(() => {
     setLoadStatus(LoadStatus.LOADING);
@@ -79,33 +87,22 @@ const ItemDetailEdit = () => {
     navigate(`/itemDetailView/${itemId}`);
   };
 
-  const handleEditSaveClick = async () => {
-    try {
-      await updateItem({
-        variables: {
-          artist: item.artist?.trim(),
-          descriptionLong: item.descriptionLong?.trim(),
-          descriptionShort: item.descriptionShort?.trim(),
-          id: item.id,
-          publicId: item.publicId?.trim(),
-          rating: parseInt(item.rating.toString()),
-          regiments: item.regiments?.trim(),
-          tags: item.tags,
-          title: item.title?.trim(),
-          yearFrom: item.yearFrom?.trim(),
-          yearTo: item.yearTo?.trim(),
-        },
-      });
-      navigate(`/itemDetailView/${item.id}`);
-    } catch (exception) {
-      logError({
-        name: 'handleEditSaveClick',
-        exception,
-        message: 'Update failed.',
-        itemId: item.id,
-      });
-      setShowMessage(true);
-    }
+  const handleEditSaveClick = () => {
+    updateItem({
+      variables: {
+        artist: item.artist?.trim(),
+        descriptionLong: item.descriptionLong?.trim(),
+        descriptionShort: item.descriptionShort?.trim(),
+        id: item.id,
+        publicId: item.publicId?.trim(),
+        rating: parseInt(item.rating.toString()),
+        regiments: item.regiments?.trim(),
+        tags: item.tags,
+        title: item.title?.trim(),
+        yearFrom: item.yearFrom?.trim(),
+        yearTo: item.yearTo?.trim(),
+      },
+    });
   };
 
   const handleMessageClose = () => {

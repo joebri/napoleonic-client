@@ -1,17 +1,56 @@
-import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { Router } from 'react-router';
-import { createMemoryHistory } from 'history';
+import { render, screen } from '@testing-library/react';
 
 import { ArtistsList } from '../ArtistsList';
-import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
+
 import { AppContext, AppContextType } from 'AppContext';
-import { Tag } from 'types';
 import { GraphQLError } from 'graphql/error';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { mockAppContext } from 'setupTests';
+import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
+
+const mockItemId = '636e2a7d27fe63c9179fcb6e';
+
+interface MockMemoryRouterProps {
+  mockAppContextValue: AppContextType;
+  mockGraphQL: any[];
+}
+
+const setupRouter = ({
+  mockAppContextValue,
+  mockGraphQL,
+}: MockMemoryRouterProps) => {
+  const router = createMemoryRouter(
+    [
+      {
+        path: '/',
+        element: <>Home page</>,
+      },
+      {
+        path: `/itemDetailEdit/:itemId`,
+        element: (
+          <MockedProvider mocks={mockGraphQL} addTypename={false}>
+            <AppContext.Provider value={mockAppContextValue}>
+              <ArtistsList />
+            </AppContext.Provider>
+          </MockedProvider>
+        ),
+      },
+      {
+        path: '/itemDetailView/:itemId',
+        element: <>Item Detail View</>,
+      },
+    ],
+    {
+      initialEntries: [`/itemDetailEdit/${mockItemId}`],
+      initialIndex: 1,
+    }
+  );
+  return router;
+};
 
 describe('ArtistList', () => {
-  let routerHistory: any;
-  let mockAppContextValue: AppContextType;
+  let mockAppContextValue: AppContextType = mockAppContext;
 
   const mockGraphQLTemplate = {
     request: {
@@ -35,47 +74,19 @@ describe('ArtistList', () => {
 
   beforeAll(() => {
     console.error = jest.fn();
-
-    routerHistory = createMemoryHistory({ initialEntries: ['/'] });
-
-    mockAppContextValue = {
-      includeUnknownYear: false,
-      isFilterOpen: true,
-      ratings: { high: false, medium: false, low: false },
-      setHeaderTitle: (() => {}) as Function,
-      setIncludeUnknownYear: (() => {}) as Function,
-      setIsFilterOpen: (() => {}) as Function,
-      setNavigationTags: (() => {}) as Function,
-      setRatings: (() => {}) as Function,
-      setTags: (() => {}) as Function,
-      setYearRange: (() => {}) as Function,
-      tags: [
-        {
-          group: 'Nation',
-          isSelected: false,
-          name: 'France',
-        },
-      ] as Tag[],
-      yearRange: [] as number[],
-    } as AppContextType;
   });
 
   beforeEach(() => {});
 
   it('should render successfully', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-    };
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+      },
+    ];
 
-    render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <MockedProvider mocks={[mockGraphQL]} addTypename={false}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ArtistsList />
-          </AppContext.Provider>
-        </MockedProvider>
-      </Router>
-    );
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    render(<RouterProvider router={router} />);
 
     // screen.debug();
 
@@ -85,43 +96,33 @@ describe('ArtistList', () => {
   });
 
   it('should handle a network error', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-      error: new Error('Network Error'),
-    };
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+        error: new Error('Network Error'),
+      },
+    ];
 
-    render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <MockedProvider mocks={[mockGraphQL]} addTypename={false}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ArtistsList />
-          </AppContext.Provider>
-        </MockedProvider>
-      </Router>
-    );
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    render(<RouterProvider router={router} />);
 
-    // debug();
+    // screen.debug();
 
     expect(await screen.findByText('Network Error')).toBeInTheDocument();
   });
 
   it('should handle a GraphQL error', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-      result: {
-        errors: [new GraphQLError('GraphQL Error')],
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+        result: {
+          errors: [new GraphQLError('GraphQL Error')],
+        },
       },
-    };
+    ];
 
-    render(
-      <Router location={routerHistory.location} navigator={routerHistory}>
-        <MockedProvider mocks={[mockGraphQL]} addTypename={false}>
-          <AppContext.Provider value={mockAppContextValue}>
-            <ArtistsList />
-          </AppContext.Provider>
-        </MockedProvider>
-      </Router>
-    );
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    render(<RouterProvider router={router} />);
 
     // screen.debug();
 

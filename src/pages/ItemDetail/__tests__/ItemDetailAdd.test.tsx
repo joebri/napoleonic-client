@@ -1,16 +1,55 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 import { ItemDetailAdd } from '../ItemDetailAdd';
-import { createItemMutation } from '../queries/createItemMutation';
+
 import { AppContext, AppContextType } from 'AppContext';
-import { NavigationTag, Tag } from 'types';
 import { GraphQLError } from 'graphql/error';
+import { mockAppContext } from 'setupTests';
+import { createItemMutation } from '../queries/createItemMutation';
+
+interface MockMemoryRouterProps {
+  mockAppContextValue: AppContextType;
+  mockGraphQL: any[];
+}
+
+const setupRouter = ({
+  mockAppContextValue,
+  mockGraphQL,
+}: MockMemoryRouterProps) => {
+  const router = createMemoryRouter(
+    [
+      {
+        path: '/',
+        element: <>Home page</>,
+      },
+      {
+        path: '/itemDetailAdd',
+        element: (
+          <MockedProvider mocks={mockGraphQL} addTypename={false}>
+            <AppContext.Provider value={mockAppContextValue}>
+              <ItemDetailAdd />
+            </AppContext.Provider>
+          </MockedProvider>
+        ),
+      },
+      {
+        path: '/itemDetailView/:itemId',
+        element: <>Item Detail View</>,
+      },
+    ],
+    {
+      initialEntries: ['/itemDetailAdd'],
+      initialIndex: 1,
+    }
+  );
+  return router;
+};
 
 describe('ItemDetailAdd', () => {
-  let mockAppContextValue: AppContextType;
+  let mockAppContextValue: AppContextType = mockAppContext;
 
   const mockGraphQLTemplate = {
     request: {
@@ -37,66 +76,16 @@ describe('ItemDetailAdd', () => {
 
   beforeAll(() => {
     console.error = jest.fn();
-
-    mockAppContextValue = {
-      includeUnknownYear: false,
-      isFilterOpen: true,
-      navigationTags: [] as NavigationTag[],
-      ratings: { high: false, medium: false, low: false },
-      setHeaderTitle: (() => {}) as Function,
-      setIncludeUnknownYear: (() => {}) as Function,
-      setIsFilterOpen: (() => {}) as Function,
-      setNavigationTags: (() => {}) as Function,
-      setRatings: (() => {}) as Function,
-      setTags: (() => {}) as Function,
-      setYearRange: (() => {}) as Function,
-      tags: [
-        {
-          group: 'Nation',
-          isSelected: false,
-          name: 'France',
-        },
-      ] as Tag[],
-      yearRange: [] as number[],
-    } as AppContextType;
   });
 
-  const setupRouter = (mockGraphQL: any) => {
-    const router = createMemoryRouter(
-      [
-        {
-          path: '/',
-          element: <>Home page</>,
-        },
-        {
-          path: '/itemDetailAdd',
-          element: (
-            <MockedProvider mocks={[mockGraphQL]} addTypename={false}>
-              <AppContext.Provider value={mockAppContextValue}>
-                <ItemDetailAdd />
-              </AppContext.Provider>
-            </MockedProvider>
-          ),
-        },
-        {
-          path: '/itemDetailView/:itemId',
-          element: <>Item Detail View</>,
-        },
-      ],
-      {
-        initialEntries: ['/itemDetailAdd'],
-        initialIndex: 1,
-      }
-    );
-    return router;
-  };
-
   it('should render successfully', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-    };
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+      },
+    ];
 
-    const router = setupRouter(mockGraphQL);
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
 
     render(<RouterProvider router={router} />);
 
@@ -115,11 +104,13 @@ describe('ItemDetailAdd', () => {
   });
 
   it('should go to ItemDetailView when Save clicked', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-    };
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+      },
+    ];
 
-    const router = setupRouter(mockGraphQL);
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
 
     render(<RouterProvider router={router} />);
 
@@ -142,11 +133,13 @@ describe('ItemDetailAdd', () => {
   });
 
   it('should go to Gallery when Cancel clicked', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-    };
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+      },
+    ];
 
-    const router = setupRouter(mockGraphQL);
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
 
     render(<RouterProvider router={router} />);
 
@@ -163,14 +156,16 @@ describe('ItemDetailAdd', () => {
     });
   });
 
-  it('should handle a network error', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
+  it('should handle a network error when creating Item', async () => {
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
 
-      error: new Error('Network Error'),
-    };
+        error: new Error('Network Error'),
+      },
+    ];
 
-    const router = setupRouter(mockGraphQL);
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
 
     render(<RouterProvider router={router} />);
 
@@ -190,16 +185,17 @@ describe('ItemDetailAdd', () => {
     ).toBeInTheDocument();
   });
 
-  it('should handle a GraphQL error', async () => {
-    const mockGraphQL = {
-      ...mockGraphQLTemplate,
-
-      result: {
-        errors: [new GraphQLError('GraphQL Error')],
+  it('should handle a GraphQL error when creating Item', async () => {
+    const mockGraphQL = [
+      {
+        ...mockGraphQLTemplate,
+        result: {
+          errors: [new GraphQLError('GraphQL Error')],
+        },
       },
-    };
+    ];
 
-    const router = setupRouter(mockGraphQL);
+    const router = setupRouter({ mockAppContextValue, mockGraphQL });
 
     render(<RouterProvider router={router} />);
 

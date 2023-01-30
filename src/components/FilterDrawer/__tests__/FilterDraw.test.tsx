@@ -1,27 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ActionEnum, FilterDrawer } from '../FilterDrawer';
 import { AppContext, AppContextType } from 'AppContext';
+import { mockAppContext } from 'setupTests';
 import { Tag } from 'types';
+import { ActionEnum, FilterDrawer } from '../FilterDrawer';
 
 describe('FilterDraw', () => {
-  let mockAppContextValue: AppContextType;
+  let mockAppContextValue: AppContextType = mockAppContext;
 
-  beforeEach(() => {
-    mockAppContextValue = {
-      includeUnknownYear: false,
-      isFilterOpen: true,
-      ratings: { high: false, medium: false, low: false },
-      setIncludeUnknownYear: (() => {}) as Function,
-      setIsFilterOpen: (() => {}) as Function,
-      setRatings: (() => {}) as Function,
-      setTags: (() => {}) as Function,
-      setYearRange: (() => {}) as Function,
-      tags: [] as Tag[],
-      yearRange: [] as number[],
-    } as AppContextType;
-  });
+  beforeEach(() => {});
 
   it('should handle Search button click', async () => {
     const mockHandleAction = jest.fn(() => {});
