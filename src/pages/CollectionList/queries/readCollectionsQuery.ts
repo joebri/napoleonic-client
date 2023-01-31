@@ -7,7 +7,6 @@ const readCollectionsQuery = gql`
       descriptionShort
       id
       tagName
-      tags
       title
     }
   }

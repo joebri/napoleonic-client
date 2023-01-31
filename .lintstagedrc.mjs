@@ -14,6 +14,8 @@ const removeIgnoredFiles = async (files) => {
 export default {
   'src/**/*.{ts,tsx,js,jsx}': async (files) => {
     const filesToLint = await removeIgnoredFiles(files);
-    return [`eslint --max-warnings=0 ${filesToLint}`];
+    return [
+      `eslint --config ./.precommit.eslintrc --max-warnings=0 ${filesToLint}`,
+    ];
   },
 };
