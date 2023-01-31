@@ -53,6 +53,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
     <div>
       <div css={classes.actionBar}>
         <Button
+          aria-label="edit"
           css={classes.button_spacer_x4}
           onClick={handleEditClick}
           size="small"
@@ -62,6 +63,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
           Edit
         </Button>
         <Button
+          aria-label="delete"
           onClick={handleDeleteClick}
           size="small"
           startIcon={<DeleteForeverIcon />}

@@ -67,6 +67,7 @@ const Gallery = () => {
 
   const { setHeaderNavigationTags } = useNavigationTags();
 
+  //TODO this is too long!
   const getQueryDetails = useCallback(() => {
     const selectedRatings = ratingsToArray(ratings);
 

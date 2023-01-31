@@ -12,7 +12,7 @@ const useLogError = (moduleName: string) => {
     const error = {
       ...rest,
       exception,
-      moduleName: moduleName,
+      moduleName,
       name,
     };
     console.error(`%cError: ${JSON.stringify(error)}`, 'color:red');

@@ -13,12 +13,15 @@ const Error = ({ error }: ErrorProps) => {
   return (
     <>
       <div css={classes.container}>
-        <Typography variant="h2">Error</Typography>
-        <p>
-          The following error has occurred. Please try again; if it persists,
-          contact Support.
-        </p>
-        <p css={classes.message}>{error?.message || ''}</p>
+        <Typography variant="h1">Error!</Typography>
+        {process.env.NODE_ENV === 'production' ? (
+          <p>An error has occurred.</p>
+        ) : (
+          <>
+            <p>The following error has occurred:</p>
+            <p css={classes.message}>{error?.message || ''}</p>
+          </>
+        )}
       </div>
     </>
   );

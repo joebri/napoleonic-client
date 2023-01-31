@@ -7,8 +7,8 @@ const readItemQuery = gql`
       descriptionLong
       descriptionShort
       id
-      rating
       publicId
+      rating
       regiments
       tags
       title
