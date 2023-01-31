@@ -18,16 +18,34 @@ import { classes } from './FilterDraw.style';
 import { useAppContext } from 'AppContext';
 import { Tag } from 'types/Tag.type';
 
-interface FilterDrawerProps {
-  onActionSelect: Function;
-}
-
-export enum ActionEnum {
+enum ActionEnum {
   Search,
   ShowArtists,
   ShowBattles,
   ShowCollections,
   ShowRegiments,
+}
+
+interface TagProps {
+  onClick: Function;
+  tag: Tag;
+}
+
+const TagButton = ({ onClick, tag }: TagProps) => {
+  return (
+    <Chip
+      color="primary"
+      label={tag.name}
+      onClick={() => {
+        onClick(tag);
+      }}
+      variant={tag.isSelected ? undefined : 'outlined'}
+    />
+  );
+};
+
+interface FilterDrawerProps {
+  onActionSelect: Function;
 }
 
 const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
@@ -121,23 +139,6 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     setLocalIncludeUnknownYear(event.target.checked);
   };
 
-  interface TagProps {
-    tag: Tag;
-  }
-
-  const Tag = ({ tag }: TagProps) => {
-    return (
-      <Chip
-        color="primary"
-        label={tag.name}
-        onClick={() => {
-          handleTagClick(tag);
-        }}
-        variant={tag.isSelected ? undefined : 'outlined'}
-      />
-    );
-  };
-
   return (
     <Drawer
       css={classes.filters}
@@ -156,7 +157,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                   return a.name > b.name ? 1 : -1;
                 })
                 .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
+                  <TagButton key={index} onClick={handleTagClick} tag={tag} />
                 ))}
             </Stack>
           </div>
@@ -166,7 +167,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               {tags
                 .filter((tag: Tag) => tag.group === 'Type')
                 .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
+                  <TagButton key={index} onClick={handleTagClick} tag={tag} />
                 ))}
             </Stack>
           </div>
@@ -176,7 +177,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               {tags
                 .filter((tag: Tag) => tag.group === 'SubType')
                 .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
+                  <TagButton key={index} onClick={handleTagClick} tag={tag} />
                 ))}
             </Stack>
           </div>
@@ -287,4 +288,4 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
   );
 };
 
-export { FilterDrawer };
+export { ActionEnum, FilterDrawer };
