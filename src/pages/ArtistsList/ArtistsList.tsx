@@ -21,7 +21,7 @@ import { useNavigationTags } from 'hooks/useNavigationTags';
 const ArtistsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logError } = useLogError(ArtistsList.name);
+  const { logError } = useLogError(`${ArtistsList.name}.tsx`);
 
   const { ratings, tags, yearRange, includeUnknownYear, setHeaderTitle } =
     useAppContext();

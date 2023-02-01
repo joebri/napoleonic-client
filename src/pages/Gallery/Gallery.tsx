@@ -43,7 +43,7 @@ import {
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
-  const { logError } = useLogError(Gallery.name);
+  const { logError } = useLogError(`${Gallery.name}.tsx`);
 
   const {
     includeUnknownYear,
@@ -194,6 +194,7 @@ const Gallery = () => {
 
   useEffect(() => {
     const loadForm = (pageNumber: number) => {
+      setLoadStatus(LoadStatus.LOADING);
       const queryDetails = getQueryDetails();
       if (!queryDetails) {
         itemsRef.current = [];

@@ -19,7 +19,7 @@ import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const ItemDetailAdd = () => {
   const navigate = useNavigate();
-  const { logError } = useLogError(ItemDetailAdd.name);
+  const { logError } = useLogError(`${ItemDetailAdd.name}.tsx`);
 
   const [template] = useLocalStorage<any>('template', {
     artist: '',

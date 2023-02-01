@@ -18,7 +18,7 @@ import { createCollectionMutation } from './queries/createCollectionMutation';
 
 const CollectionDetailAdd = () => {
   const navigate = useNavigate();
-  const { logError } = useLogError(CollectionDetailAdd.name);
+  const { logError } = useLogError(`${CollectionDetailAdd.name}.tsx`);
 
   const [template] = useLocalStorage<any>('template', {
     artist: '',

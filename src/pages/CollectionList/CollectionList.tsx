@@ -19,7 +19,7 @@ import { readCollectionsQuery } from './queries/readCollectionsQuery';
 
 const CollectionList = () => {
   const navigate = useNavigate();
-  const { logError } = useLogError(CollectionList.name);
+  const { logError } = useLogError(`${CollectionList.name}.tsx`);
 
   const { setHeaderTitle } = useAppContext();
 

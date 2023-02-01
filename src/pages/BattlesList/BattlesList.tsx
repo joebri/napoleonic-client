@@ -21,7 +21,7 @@ import { readBattleCountsQuery } from './queries/readBattleCountsQuery';
 const BattlesList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logError } = useLogError(BattlesList.name);
+  const { logError } = useLogError(`${BattlesList.name}.tsx`);
   const { ratings, setHeaderTitle } = useAppContext();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);

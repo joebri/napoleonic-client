@@ -35,7 +35,7 @@ const Home = () => {
   const navigate = useNavigate();
   const { setPageNumber, setTags } = useAppContext();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { logError } = useLogError(Home.name);
+  const { logError } = useLogError(`${Home.name}.tsx`);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 

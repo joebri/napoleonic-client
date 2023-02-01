@@ -25,7 +25,7 @@ import { updateItemMutation } from './queries/updateItemMutation';
 const ItemDetailEdit = () => {
   let { itemId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(ItemDetailEdit.name);
+  const { logError } = useLogError(`${ItemDetailEdit.name}.tsx`);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);

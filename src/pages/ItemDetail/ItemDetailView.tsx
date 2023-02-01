@@ -22,7 +22,7 @@ import { View } from './View';
 const ItemDetailView = () => {
   const { itemId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(ItemDetailView.name);
+  const { logError } = useLogError(`${ItemDetailView.name}.tsx`);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);

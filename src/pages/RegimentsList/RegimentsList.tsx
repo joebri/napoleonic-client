@@ -24,7 +24,7 @@ const RegimentsList = () => {
   const location = useLocation();
   const { includeUnknownYear, ratings, setHeaderTitle, tags, yearRange } =
     useAppContext();
-  const { logError } = useLogError(RegimentsList.name);
+  const { logError } = useLogError(`${RegimentsList.name}.tsx`);
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 

@@ -27,7 +27,7 @@ import { View } from './View';
 const CollectionDetailView = () => {
   let { collectionId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(CollectionDetailView.name);
+  const { logError } = useLogError(`${CollectionDetailView.name}.tsx`);
 
   const EDIT_PAGE_URI = `/collectionDetailEdit/${collectionId}`;
 

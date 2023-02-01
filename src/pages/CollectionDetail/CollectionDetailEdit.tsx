@@ -22,7 +22,7 @@ import { updateCollectionMutation } from './queries/updateCollectionMutation';
 const CollectionDetailEdit = () => {
   let { collectionId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(CollectionDetailEdit.name);
+  const { logError } = useLogError(`${CollectionDetailEdit.name}.tsx`);
 
   const viewPageURI = `/collectionDetailView/${collectionId}`;
 

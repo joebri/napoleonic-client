@@ -7,7 +7,7 @@ import { readItemMetaDataQuery } from './queries/readItemMetaDataQuery';
 
 const imageService: any = (() => {
   console.info(
-    `%cinitialising image service for ${process.env.REACT_APP_CLOUDINARY_NAME}`,
+    `%cInitialising image service for ${process.env.REACT_APP_CLOUDINARY_NAME}`,
     'color:blue'
   );
   return new Cloudinary({
@@ -18,7 +18,7 @@ const imageService: any = (() => {
 })();
 
 const useImageService = () => {
-  const { logError } = useLogError(useImageService.name);
+  const { logError } = useLogError(`${useImageService.name}.ts`);
 
   const [readItemMetaData] = useLazyQuery(readItemMetaDataQuery, {
     onError: (exception) => {

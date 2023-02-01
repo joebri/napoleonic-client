@@ -16,7 +16,9 @@ COPY --chown=node:node package*.json ./
 
 FROM base as production
 ENV \
-  NODE_ENV=production
+  NODE_ENV=production \
+  REACT_APP_SENTRY_DSN='https://5b264e7f43b94f70817ae332884bb1bc@o4504602899251200.ingest.sentry.io/4504602995130369' \
+  REACT_APP_SENTRY_ENVIRONMENT='production'
 
 # RUN npm ci --omit=dev && npm cache clean --force
 
