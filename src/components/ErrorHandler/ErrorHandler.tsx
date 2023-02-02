@@ -3,13 +3,13 @@
 import { ApolloError } from '@apollo/client';
 import { Typography } from '@mui/material';
 
-import { classes } from './Error.style';
+import { classes } from './ErrorHandler.style';
 
-interface ErrorProps {
+interface ErrorHandlerProps {
   error: ApolloError | undefined;
 }
 
-const Error = ({ error }: ErrorProps) => {
+const ErrorHandler = ({ error }: ErrorHandlerProps) => {
   return (
     <>
       <div css={classes.container}>
@@ -27,4 +27,4 @@ const Error = ({ error }: ErrorProps) => {
   );
 };
 
-export { Error };
+export { ErrorHandler };

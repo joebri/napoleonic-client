@@ -7,7 +7,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { classes } from './ArtistsList.style';
-import { Error } from 'components/Error/Error';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 
 import { ArtistTag, Tag } from 'types';
@@ -103,7 +103,7 @@ const ArtistsList = () => {
     return <Loading />;
   }
   if (loadStatus === LoadStatus.ERROR) {
-    return <Error error={error} />;
+    return <ErrorHandler error={error} />;
   }
 
   return (

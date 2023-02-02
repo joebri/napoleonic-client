@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { Error } from 'components/Error/Error';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { Edit } from './Edit';
 import { classes } from './ItemDetail.style';
@@ -113,7 +113,7 @@ const ItemDetailEdit = () => {
     return <Loading />;
   }
   if (loadStatus === LoadStatus.ERROR) {
-    return <Error error={error} />;
+    return <ErrorHandler error={error} />;
   }
 
   return (

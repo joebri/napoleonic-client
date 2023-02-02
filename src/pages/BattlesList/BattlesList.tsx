@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Error } from 'components/Error/Error';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './BattlesList.style';
 
@@ -85,7 +85,7 @@ const BattlesList = () => {
     return <Loading />;
   }
   if (loadStatus === LoadStatus.ERROR) {
-    return <Error error={error} />;
+    return <ErrorHandler error={error} />;
   }
 
   return (

@@ -16,7 +16,7 @@ import {
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
-import { Error } from 'components/Error/Error';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { ItemCardList } from 'components/ItemCardList/ItemCardList';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './Gallery.style';
@@ -253,7 +253,7 @@ const Gallery = () => {
     return <Loading />;
   }
   if (loadStatus === LoadStatus.ERROR) {
-    return <Error error={error} />;
+    return <ErrorHandler error={error} />;
   }
 
   return (

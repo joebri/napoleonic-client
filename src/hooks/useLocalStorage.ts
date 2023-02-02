@@ -1,6 +1,9 @@
+import { useLogError } from './useLogError';
 import { useState } from 'react';
 
 function useLocalStorage<T>(key: string, initialValue: T) {
+  const { logError } = useLogError(`${useLocalStorage.name}.ts`);
+
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -11,12 +14,12 @@ function useLocalStorage<T>(key: string, initialValue: T) {
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // If error also return initialValue
-      console.error(`%cError: ${JSON.stringify(error)}`, 'color:red');
+      logError({ name: 'setStoredValue', exception: error });
       return initialValue;
     }
   });
 
-  // Return a wrapped version of useState's setter function that ...
+  // Return a wrapped version of useState's setter function that...
   // ... persists the new value to localStorage.
   const setValue = (value: T | ((val: T) => T)) => {
     try {
@@ -29,7 +32,7 @@ function useLocalStorage<T>(key: string, initialValue: T) {
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
       // A more advanced implementation would handle the error case
-      console.error(`%cError: ${JSON.stringify(error)}`, 'color:red');
+      logError({ name: 'setValue', exception: error });
     }
   };
 

@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { Error } from 'components/Error/Error';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './ItemDetail.style';
 
@@ -98,7 +98,7 @@ const ItemDetailView = () => {
     return <Loading />;
   }
   if (loadStatus === LoadStatus.ERROR) {
-    return <Error error={error} />;
+    return <ErrorHandler error={error} />;
   }
 
   return (
