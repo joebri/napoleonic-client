@@ -1,14 +1,14 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-import { ArtistsList } from '../ArtistsList';
+import { BattlesList } from '../BattlesList';
 
 import { AppContext, AppContextType } from 'AppContext';
 import { GraphQLError } from 'graphql/error';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { mockAppContext } from 'setupTests';
-import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
-import userEvent from '@testing-library/user-event';
+import { readBattleCountsQuery } from '../queries/readBattleCountsQuery';
 
 interface MockMemoryRouterProps {
   mockAppContextValue: AppContextType;
@@ -26,11 +26,11 @@ const setupRouter = ({
         element: <>Home page</>,
       },
       {
-        path: `/artists`,
+        path: `/battles`,
         element: (
           <MockedProvider mocks={mockGraphQL} addTypename={false}>
             <AppContext.Provider value={mockAppContextValue}>
-              <ArtistsList />
+              <BattlesList />
             </AppContext.Provider>
           </MockedProvider>
         ),
@@ -41,31 +41,28 @@ const setupRouter = ({
       },
     ],
     {
-      initialEntries: [`/artists`],
+      initialEntries: [`/battles`],
       initialIndex: 1,
     }
   );
   return router;
 };
 
-describe('ArtistList', () => {
+describe('BattlesList', () => {
   let mockAppContextValue: AppContextType = mockAppContext;
 
   const mockGraphQLTemplate = {
     request: {
-      query: readArtistCountsQuery,
+      query: readBattleCountsQuery,
       variables: {
         ratings: [],
-        tags: [],
-        yearRange: [],
-        includeUnknownYear: false,
       },
     },
     result: {
       data: {
-        readArtistCounts: [
-          { name: 'name 1', count: 1 },
-          { name: 'name 2', count: 2 },
+        readBattleCounts: [
+          { name: 'battle 1', count: 1 },
+          { name: 'battle 2', count: 2 },
         ],
       },
     },
@@ -90,11 +87,14 @@ describe('ArtistList', () => {
     // screen.debug();
 
     expect(await screen.findByText('Loading...')).toBeInTheDocument();
-    expect(await screen.findByText('name 1 (1)')).toBeInTheDocument();
-    expect(await screen.findByText('name 2 (2)')).toBeInTheDocument();
+    expect(await screen.findByText('battle 1 (1)')).toBeInTheDocument();
+    expect(await screen.findByText('battle 2 (2)')).toBeInTheDocument();
+
+    const button = screen.getByRole('button', { name: 'search' });
+    expect(button).toBeDisabled();
   });
 
-  it('should enable Search button when an Artist clicked', async () => {
+  it('should enable Search button when a Battle clicked', async () => {
     const mockGraphQL = [
       {
         ...mockGraphQLTemplate,
@@ -110,8 +110,8 @@ describe('ArtistList', () => {
     expect(searchButton).toBeDisabled();
 
     const user = userEvent.setup();
-    const artistChip = await screen.findByText('name 1 (1)');
-    await user.click(artistChip);
+    const battleChip = await screen.findByText('battle 1 (1)');
+    await user.click(battleChip);
 
     expect(searchButton).toBeEnabled();
   });
@@ -130,14 +130,14 @@ describe('ArtistList', () => {
     const user = userEvent.setup();
 
     const searchButton = await screen.findByRole('button', { name: 'search' });
-    const artistChip = await screen.findByText('name 1 (1)');
-    await user.click(artistChip);
+    const battleChip = await screen.findByText('battle 1 (1)');
+    await user.click(battleChip);
     await user.click(searchButton);
 
     await waitFor(() => {
       expect(router.state.location.pathname).toEqual(`/`);
     });
-    expect(router.state.location.search).toEqual(`?artists=name%201`);
+    expect(router.state.location.search).toEqual(`?battles=battle%201`);
   });
 
   it('should handle a network error', async () => {

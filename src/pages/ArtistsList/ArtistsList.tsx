@@ -78,7 +78,9 @@ const ArtistsList = () => {
   ]);
 
   const handleChipClick = (index: number) => {
-    let newArtists: ArtistTag[] = [...artists];
+    let newArtists: ArtistTag[] = artists.map((artist) => {
+      return { ...artist };
+    });
     newArtists[index].isSelected = !newArtists[index].isSelected;
 
     const isAnySelected = newArtists.some((artist: ArtistTag) => {
@@ -129,6 +131,7 @@ const ArtistsList = () => {
             />
           ))}
           <Button
+            aria-label="search"
             css={classes.button}
             disabled={!isSearchEnabled}
             onClick={handleSearchClick}

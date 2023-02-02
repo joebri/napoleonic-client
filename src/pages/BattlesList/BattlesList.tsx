@@ -54,13 +54,14 @@ const BattlesList = () => {
     readBattleCounts({
       variables: {
         ratings: selectedRatings,
-        tags: [],
       },
     });
   }, [location.key, ratings, readBattleCounts]);
 
   const handleChipClick = (index: number) => {
-    let newBattles: BattleTag[] = [...battles];
+    let newBattles: BattleTag[] = battles.map((battle) => {
+      return { ...battle };
+    });
     newBattles[index].isSelected = !newBattles[index].isSelected;
 
     const isAnySelected = newBattles.some((battle: BattleTag) => {
@@ -112,6 +113,7 @@ const BattlesList = () => {
             />
           ))}
           <Button
+            aria-label="search"
             css={classes.button}
             disabled={!isSearchEnabled}
             onClick={handleSearchClick}
