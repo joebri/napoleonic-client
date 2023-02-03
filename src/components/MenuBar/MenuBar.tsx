@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
-import { useNavigate } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {
   AppBar,
   Chip,
@@ -9,19 +11,24 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { useNavigate } from 'react-router-dom';
 
-import { classes } from './MenuBar.style';
 import { SortMenu } from 'components/SortMenu/SortMenu';
-import { useAppContext } from 'AppContext';
+import { classes } from './MenuBar.style';
+
+import {
+  useHeaderTitleStateGet,
+  useIsFilterOpenStateSet,
+  useNavigationTagsStateGet,
+} from 'state';
 import { NavigationTag } from 'types';
 
 const MenuBar = () => {
   const navigate = useNavigate();
 
-  const { setIsFilterOpen, navigationTags, headerTitle } = useAppContext();
+  const headerTitle = useHeaderTitleStateGet();
+  const navigationTags = useNavigationTagsStateGet();
+  const setIsFilterOpen = useIsFilterOpenStateSet();
 
   const handleAddItemClick = () => {
     navigate(`/itemDetailAdd`);

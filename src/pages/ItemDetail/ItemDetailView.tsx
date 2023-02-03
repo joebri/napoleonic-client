@@ -10,6 +10,7 @@ import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDelet
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './ItemDetail.style';
+import { View } from './View';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
@@ -17,7 +18,6 @@ import { useNavigationTags } from 'hooks/useNavigationTags';
 import { initialisedItem } from 'utilities/helper';
 import { deleteItemMutation } from './queries/deleteItemMutation';
 import { readItemQuery } from './queries/readItemQuery';
-import { View } from './View';
 
 const ItemDetailView = () => {
   const { itemId } = useParams();

@@ -1,30 +1,39 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, Chip, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
+import { Button, Chip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { classes } from './ArtistsList.style';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
+import { classes } from './ArtistsList.style';
 
-import { ArtistTag, Tag } from 'types';
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { ratingsToArray } from 'utilities/helper';
-import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
-import { useAppContext } from 'AppContext';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import {
+  useHeaderTitleState,
+  useIncludeUnknownYearStateGet,
+  useRatingsStateGet,
+  useTagsStateGet,
+  useYearRangeStateGet,
+} from 'state';
+import { ArtistTag, Tag } from 'types';
+import { ratingsToArray } from 'utilities/helper';
+import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 const ArtistsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logError } = useLogError(`${ArtistsList.name}.tsx`);
 
-  const { ratings, tags, yearRange, includeUnknownYear, setHeaderTitle } =
-    useAppContext();
+  const [, setHeaderTitle] = useHeaderTitleState();
+  const ratings = useRatingsStateGet();
+  const tags = useTagsStateGet();
+  const yearRange = useYearRangeStateGet();
+  const includeUnknownYear = useIncludeUnknownYearStateGet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 

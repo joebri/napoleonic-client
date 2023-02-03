@@ -5,10 +5,11 @@ import { IconButton, Menu, MenuItem } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 
 import { classes } from './SortMenu.style';
-import { useAppContext } from 'AppContext';
+
+import { useSortFieldState } from 'state';
 
 const SortMenu = () => {
-  const { sortField, setSortField } = useAppContext();
+  const [sortField, setSortField] = useSortFieldState();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

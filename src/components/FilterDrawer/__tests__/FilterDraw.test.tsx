@@ -1,26 +1,25 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { RecoilRoot } from 'recoil';
 
-import { AppContext, AppContextType } from 'AppContext';
-import { mockAppContext } from 'setupTests';
+import { createMockState } from 'setupTests';
 import { Tag } from 'types';
 import { ActionEnum, FilterDrawer } from '../FilterDrawer';
 
 describe('FilterDraw', () => {
-  let mockAppContextValue: AppContextType = mockAppContext;
-
   beforeEach(() => {});
 
   it('should handle Search button click', async () => {
     const mockHandleAction = jest.fn(() => {});
+    const mockState = createMockState({});
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const searchButton = screen.getByText('Search');
+    const searchButton = await screen.findByText('Search');
     await userEvent.click(searchButton);
 
     expect(mockHandleAction).toBeCalledWith(ActionEnum.Search);
@@ -28,63 +27,67 @@ describe('FilterDraw', () => {
 
   it('should render Nation tags', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.tags = [
-      { group: 'Nation', isSelected: true, name: 'Anhalt' } as Tag,
-    ];
+    const mockState = createMockState({
+      tags: [{ group: 'Nation', isSelected: true, name: 'Anhalt' } as Tag],
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const nationTag = screen.getByText('Anhalt');
+    const nationTag = await screen.findByText('Anhalt');
     expect(nationTag).toBeInTheDocument();
   });
 
   it('should render Type tags', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.tags = [
-      { group: 'Type', isSelected: true, name: 'Infantry' } as Tag,
-    ];
+    const mockState = createMockState({
+      tags: [{ group: 'Type', isSelected: true, name: 'Infantry' } as Tag],
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const typeTag = screen.getByText('Infantry');
+    const typeTag = await screen.findByText('Infantry');
     expect(typeTag).toBeInTheDocument();
   });
 
   it('should render SubType tags', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.tags = [
-      { group: 'SubType', isSelected: true, name: 'Hussar' } as Tag,
-    ];
+    const mockState = createMockState({
+      tags: [{ group: 'SubType', isSelected: true, name: 'Hussar' } as Tag],
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const subTypeTag = screen.getByText('Hussar');
+    const subTypeTag = await screen.findByText('Hussar');
     expect(subTypeTag).toBeInTheDocument();
   });
 
   it('should render High Ratings', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.ratings = { high: true, medium: false, low: false };
+    const mockState = createMockState({
+      ratings: { high: true, medium: false, low: false },
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const checkBoxHigh = screen.getByLabelText('High') as HTMLInputElement;
+    const checkBoxHigh = (await screen.findByLabelText(
+      'High'
+    )) as HTMLInputElement;
     const checkBoxMedium = screen.getByLabelText('Medium') as HTMLInputElement;
     const checkBoxLow = screen.getByLabelText('Low') as HTMLInputElement;
     expect(checkBoxHigh.checked).toEqual(true);
@@ -94,12 +97,14 @@ describe('FilterDraw', () => {
 
   it('should render Medium Ratings', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.ratings = { high: false, medium: true, low: false };
+    const mockState = createMockState({
+      ratings: { high: false, medium: true, low: false },
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
     const checkBoxHigh = screen.getByLabelText('High') as HTMLInputElement;
@@ -112,15 +117,19 @@ describe('FilterDraw', () => {
 
   it('should render Low Ratings', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.ratings = { high: false, medium: false, low: true };
+    const mockState = createMockState({
+      ratings: { high: false, medium: false, low: true },
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const checkBoxHigh = screen.getByLabelText('High') as HTMLInputElement;
+    const checkBoxHigh = (await screen.findByLabelText(
+      'High'
+    )) as HTMLInputElement;
     const checkBoxMedium = screen.getByLabelText('Medium') as HTMLInputElement;
     const checkBoxLow = screen.getByLabelText('Low') as HTMLInputElement;
     expect(checkBoxHigh.checked).toEqual(false);
@@ -130,15 +139,17 @@ describe('FilterDraw', () => {
 
   it('should render Year Range', async () => {
     const mockHandleAction = jest.fn(() => {});
-    mockAppContextValue.yearRange = [1770, 1820];
+    const mockState = createMockState({
+      yearRange: [1770, 1820],
+    });
 
     render(
-      <AppContext.Provider value={mockAppContextValue}>
+      <RecoilRoot initializeState={mockState}>
         <FilterDrawer onActionSelect={mockHandleAction} />
-      </AppContext.Provider>
+      </RecoilRoot>
     );
 
-    const yearRange = screen.getByTestId('year-range');
+    const yearRange = await screen.findByTestId('year-range');
     expect(yearRange.textContent).toEqual('1770 - 1820');
   });
 });

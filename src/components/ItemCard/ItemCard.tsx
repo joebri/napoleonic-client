@@ -1,26 +1,26 @@
 /** @jsxImportSource @emotion/react */
 
-import { MouseEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
+import { MouseEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { classes } from './ItemCard.style';
-import { ImageMetaData } from './ImageMetaData';
-import { ItemCardImage } from './ItemCardImage';
 import { TagTooltip } from 'components/TagTooltip/TagTooltip';
+import { ImageMetaData } from './ImageMetaData';
+import { classes } from './ItemCard.style';
+import { ItemCardImage } from './ItemCardImage';
 
-import { Item, ItemMetaData, Tag } from 'types';
-import { useAppContext } from 'AppContext';
 import { useImageService } from 'hooks/useImageService';
 import { useRatings } from 'pages/ItemDetail/useRatings';
+import { useTagsStateGet } from 'state';
+import { Item, ItemMetaData, Tag } from 'types';
 
 interface ItemCardProps {
   item: Item;
@@ -29,13 +29,14 @@ interface ItemCardProps {
 const ItemCard = ({ item }: ItemCardProps) => {
   const navigate = useNavigate();
 
+  const availableTags = useTagsStateGet();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [nationalityTags, setNationalityTags] = useState('');
   const [rating, setRating] = useState(0);
   const [metaData, setMetaData] = useState<ItemMetaData>({} as ItemMetaData);
   const [isShowMetaData, setIsShowMetaData] = useState(false);
 
-  const { tags: availableTags } = useAppContext();
   const { getMetaData } = useImageService();
   const { toUiRating } = useRatings();
 

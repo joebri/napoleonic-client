@@ -10,18 +10,18 @@ import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './CollectionList.style';
 
-import { useAppContext } from 'AppContext';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { Collection } from 'types';
 import { readCollectionsQuery } from './queries/readCollectionsQuery';
+import { useHeaderTitleState } from 'state';
 
 const CollectionList = () => {
   const navigate = useNavigate();
   const { logError } = useLogError(`${CollectionList.name}.tsx`);
 
-  const { setHeaderTitle } = useAppContext();
+  const [, setHeaderTitle] = useHeaderTitleState();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 

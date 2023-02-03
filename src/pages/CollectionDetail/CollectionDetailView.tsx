@@ -10,8 +10,8 @@ import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDelet
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './CollectionDetail.style';
+import { View } from './View';
 
-import { useAppContext } from 'AppContext';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useLogError } from 'hooks/useLogError';
@@ -22,7 +22,7 @@ import {
 import { initialisedCollection } from 'utilities/helper';
 import { deleteCollectionMutation } from './queries/deleteCollectionMutation';
 import { readCollectionQuery } from './queries/readCollectionQuery';
-import { View } from './View';
+import { useHeaderTitleState } from 'state';
 
 const CollectionDetailView = () => {
   let { collectionId } = useParams();
@@ -36,7 +36,8 @@ const CollectionDetailView = () => {
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
-  const { setHeaderTitle } = useAppContext();
+  const [, setHeaderTitle] = useHeaderTitleState();
+
   const { setHeaderNavigationTags } = useNavigationTags();
 
   const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {

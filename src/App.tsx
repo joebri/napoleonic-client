@@ -2,11 +2,11 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CssBaseline from '@mui/material/CssBaseline';
+import { RecoilRoot } from 'recoil';
 
 import { Home } from 'pages/Home/Home';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
-import { AppProvider } from 'AppContext';
 import { theme, ThemeProvider } from 'theme';
 
 function App() {
@@ -30,9 +30,9 @@ function App() {
         <ErrorBoundary>
           <ApolloProvider client={client}>
             <ThemeProvider theme={theme}>
-              <AppProvider>
+              <RecoilRoot>
                 <Home />
-              </AppProvider>
+              </RecoilRoot>
             </ThemeProvider>
           </ApolloProvider>
         </ErrorBoundary>

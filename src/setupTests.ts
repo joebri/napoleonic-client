@@ -8,8 +8,14 @@ import dotenv from 'dotenv';
 import matchers from 'jest-extended/all';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
-import { AppContextType } from 'AppContext';
-import { NavigationTag, Tag } from 'types';
+import {
+  includeUnknownYearAtom,
+  isFilterOpenAtom,
+  ratingsAtom,
+  tagsAtom,
+  yearRangeAtom,
+} from 'state';
+import { Tag } from 'types';
 
 enableFetchMocks();
 
@@ -17,9 +23,9 @@ expect.extend(matchers);
 
 dotenv.config({ path: '.env' });
 
-// afterEach(() => {
-//   jest.useRealTimers();
-// });
+afterEach(() => {
+  jest.useRealTimers();
+});
 
 jest.mock('react-helmet-async', () => {
   const React = require('react');
@@ -39,30 +45,26 @@ jest.mock('react-helmet-async', () => {
   };
 });
 
-const mockAppContext: AppContextType = {
-  headerTitle: '',
-  includeUnknownYear: false,
-  isFilterOpen: true,
-  navigationTags: [] as NavigationTag[],
-  pageNumber: 1,
-  ratings: { high: false, medium: false, low: false },
-  setHeaderTitle: (() => {}) as Function,
-  setIncludeUnknownYear: (() => {}) as Function,
-  setIsFilterOpen: (() => {}) as Function,
-  setNavigationTags: (() => {}) as Function,
-  setPageNumber: (() => {}) as Function,
-  setRatings: (() => {}) as Function,
-  setSortField: (() => {}) as Function,
-  setTags: (() => {}) as Function,
-  setYearRange: (() => {}) as Function,
-  sortField: '',
-  tags: [
+function createMockState({
+  includeUnknownYear = false,
+  ratings = { high: false, medium: false, low: false },
+  tags = [
     {
       group: 'Nation',
       isSelected: false,
       name: 'France',
     },
   ] as Tag[],
-  yearRange: [] as number[],
-};
-export { mockAppContext };
+  yearRange = [] as number[],
+}: any) {
+  const mockState = ({ set }: any) => {
+    set(isFilterOpenAtom, true);
+    set(includeUnknownYearAtom, includeUnknownYear);
+    set(ratingsAtom, ratings);
+    set(tagsAtom, tags);
+    set(yearRangeAtom, yearRange);
+  };
+  return mockState;
+}
+
+export { createMockState };

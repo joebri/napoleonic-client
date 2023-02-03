@@ -21,7 +21,6 @@ import { ItemCardList } from 'components/ItemCardList/ItemCardList';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './Gallery.style';
 
-import { useAppContext } from 'AppContext';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useLogError } from 'hooks/useLogError';
@@ -29,6 +28,15 @@ import {
   HeaderNavigationTagsProps,
   useNavigationTags,
 } from 'hooks/useNavigationTags';
+import {
+  useHeaderTitleState,
+  useIncludeUnknownYearStateGet,
+  usePageNumberState,
+  useRatingsStateGet,
+  useSortFieldStateGet,
+  useTagsStateGet,
+  useYearRangeStateGet,
+} from 'state';
 import { Item } from 'types';
 import { ratingsToArray } from 'utilities/helper';
 import { readItemsByFilterQuery } from './queries/readItemsByFilterQuery';
@@ -45,16 +53,13 @@ const PAGE_SIZE = 20;
 const Gallery = () => {
   const { logError } = useLogError(`${Gallery.name}.tsx`);
 
-  const {
-    includeUnknownYear,
-    ratings,
-    sortField,
-    tags,
-    pageNumber,
-    setPageNumber,
-    setHeaderTitle,
-    yearRange,
-  } = useAppContext();
+  const [, setHeaderTitle] = useHeaderTitleState();
+  const [pageNumber, setPageNumber] = usePageNumberState();
+  const includeUnknownYear = useIncludeUnknownYearStateGet();
+  const ratings = useRatingsStateGet();
+  const sortField = useSortFieldStateGet();
+  const tags = useTagsStateGet();
+  const yearRange = useYearRangeStateGet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [pageCount, setPageCount] = useState(1);

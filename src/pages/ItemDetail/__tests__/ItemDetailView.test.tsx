@@ -2,26 +2,23 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
 
 import { ItemDetailView } from '../ItemDetailView';
 
-import { AppContext, AppContextType } from 'AppContext';
-import { GraphQLError } from 'graphql/error';
-import { mockAppContext } from 'setupTests';
-import { readItemQuery } from '../queries/readItemQuery';
 import { Rating } from 'enums/rating.enum';
+import { GraphQLError } from 'graphql/error';
+import { createMockState } from 'setupTests';
+import { readItemQuery } from '../queries/readItemQuery';
 
 const mockItemId = '636e2a7d27fe63c9179fcb6e';
 
 interface MockMemoryRouterProps {
-  mockAppContextValue: AppContextType;
   mockGraphQL: any[];
+  mockState: any; //TODO fix this
 }
 
-const setupRouter = ({
-  mockAppContextValue,
-  mockGraphQL,
-}: MockMemoryRouterProps) => {
+const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {
   const router = createMemoryRouter(
     [
       {
@@ -32,9 +29,9 @@ const setupRouter = ({
         path: '/itemDetailView/:itemId',
         element: (
           <MockedProvider mocks={mockGraphQL} addTypename={false}>
-            <AppContext.Provider value={mockAppContextValue}>
+            <RecoilRoot initializeState={mockState}>
               <ItemDetailView />
-            </AppContext.Provider>
+            </RecoilRoot>
           </MockedProvider>
         ),
       },
@@ -52,8 +49,6 @@ const setupRouter = ({
 };
 
 describe('ItemDetailView', () => {
-  let mockAppContextValue: AppContextType = mockAppContext;
-
   const mockGraphQLTemplate = {
     request: {
       query: readItemQuery,
@@ -80,6 +75,8 @@ describe('ItemDetailView', () => {
     },
   };
 
+  const mockState = createMockState({});
+
   beforeAll(() => {
     console.error = jest.fn();
   });
@@ -91,7 +88,7 @@ describe('ItemDetailView', () => {
       },
     ];
 
-    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    const router = setupRouter({ mockGraphQL, mockState });
 
     render(<RouterProvider router={router} />);
 
@@ -119,7 +116,7 @@ describe('ItemDetailView', () => {
       },
     ];
 
-    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    const router = setupRouter({ mockGraphQL, mockState });
 
     render(<RouterProvider router={router} />);
 
@@ -144,7 +141,7 @@ describe('ItemDetailView', () => {
       },
     ];
 
-    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    const router = setupRouter({ mockGraphQL, mockState });
 
     render(<RouterProvider router={router} />);
 
@@ -168,7 +165,7 @@ describe('ItemDetailView', () => {
       },
     ];
 
-    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    const router = setupRouter({ mockGraphQL, mockState });
 
     render(<RouterProvider router={router} />);
 
@@ -187,7 +184,7 @@ describe('ItemDetailView', () => {
       },
     ];
 
-    const router = setupRouter({ mockAppContextValue, mockGraphQL });
+    const router = setupRouter({ mockGraphQL, mockState });
 
     render(<RouterProvider router={router} />);
 

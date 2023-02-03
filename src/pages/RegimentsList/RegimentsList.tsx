@@ -10,10 +10,16 @@ import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { classes } from './RegimentsList.style';
 
-import { useAppContext } from 'AppContext';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import {
+  useHeaderTitleStateSet,
+  useIncludeUnknownYearStateGet,
+  useRatingsStateGet,
+  useTagsStateGet,
+  useYearRangeStateGet,
+} from 'state';
 import { RegimentTag } from 'types/RegimentTag.type';
 import { Tag } from 'types/Tag.type';
 import { ratingsToArray } from 'utilities/helper';
@@ -22,9 +28,13 @@ import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 const RegimentsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { includeUnknownYear, ratings, setHeaderTitle, tags, yearRange } =
-    useAppContext();
   const { logError } = useLogError(`${RegimentsList.name}.tsx`);
+
+  const setHeaderTitle = useHeaderTitleStateSet();
+  const includeUnknownYear = useIncludeUnknownYearStateGet();
+  const ratings = useRatingsStateGet();
+  const tags = useTagsStateGet();
+  const yearRange = useYearRangeStateGet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 

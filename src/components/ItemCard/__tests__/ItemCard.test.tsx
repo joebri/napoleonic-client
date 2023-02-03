@@ -3,27 +3,27 @@ import { CloudConfig, CloudinaryImage } from '@cloudinary/url-gen';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
 
 import { ItemCard } from '../ItemCard';
 
-import { AppContext, AppContextType } from 'AppContext';
 import { Rating } from 'enums/rating.enum';
 import * as imageServiceModule from 'hooks/useImageService';
-import { mockAppContext } from 'setupTests';
+import { createMockState } from 'setupTests';
 import { Item, ItemMetaData } from 'types';
 
 const mockItemId = '636e2a7d27fe63c9179fcb6e';
 
 interface MockMemoryRouterProps {
-  mockAppContextValue: AppContextType;
   mockGraphQL: any[];
   mockItem: Item;
+  mockState: any; //TODO fix this
 }
 
 const setupRouter = ({
-  mockAppContextValue,
   mockGraphQL,
   mockItem,
+  mockState,
 }: MockMemoryRouterProps) => {
   const router = createMemoryRouter(
     [
@@ -35,9 +35,9 @@ const setupRouter = ({
         path: `/itemDetailEdit/:itemId`,
         element: (
           <MockedProvider mocks={mockGraphQL} addTypename={false}>
-            <AppContext.Provider value={mockAppContextValue}>
+            <RecoilRoot initializeState={mockState}>
               <ItemCard item={mockItem} />
-            </AppContext.Provider>
+            </RecoilRoot>
           </MockedProvider>
         ),
       },
@@ -55,7 +55,7 @@ const setupRouter = ({
 };
 
 describe('ItemCard', () => {
-  let mockAppContextValue: AppContextType = mockAppContext;
+  const mockState = createMockState({});
 
   let mockItem: Item = {
     artist: 'artist #1',
@@ -75,9 +75,7 @@ describe('ItemCard', () => {
 
   it('should render Item details', async () => {
     const mockGraphQL: any = [];
-
-    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
-
+    const router = setupRouter({ mockState, mockGraphQL, mockItem });
     const { container } = render(<RouterProvider router={router} />);
 
     // screen.debug();
@@ -117,9 +115,7 @@ describe('ItemCard', () => {
 
   it('should open menu and handle view click', async () => {
     const mockGraphQL: any = [];
-
-    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
-
+    const router = setupRouter({ mockState, mockGraphQL, mockItem });
     render(<RouterProvider router={router} />);
 
     // screen.debug();
@@ -141,9 +137,7 @@ describe('ItemCard', () => {
 
   it('should open menu and handle edit click', async () => {
     const mockGraphQL: any = [];
-
-    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
-
+    const router = setupRouter({ mockState, mockGraphQL, mockItem });
     render(<RouterProvider router={router} />);
 
     // screen.debug();
@@ -187,9 +181,7 @@ describe('ItemCard', () => {
     });
 
     const mockGraphQL: any = [];
-
-    const router = setupRouter({ mockAppContextValue, mockGraphQL, mockItem });
-
+    const router = setupRouter({ mockState, mockGraphQL, mockItem });
     render(<RouterProvider router={router} />);
 
     const button = screen.getByRole('button', { name: 'settings' });

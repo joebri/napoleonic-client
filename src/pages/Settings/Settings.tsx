@@ -12,9 +12,9 @@ import { classes } from './Settings.style';
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 
 import { Template } from 'types';
-import { useAppContext } from 'AppContext';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import { useHeaderTitleState } from 'state';
 
 const initialisedTemplate: Template = {
   artist: '',
@@ -29,7 +29,7 @@ const Settings = () => {
     initialisedTemplate
   );
 
-  const { setHeaderTitle } = useAppContext();
+  const [, setHeaderTitle] = useHeaderTitleState();
 
   const [template, setTemplate] = useState(templateLS);
   const [showMessage, setShowMessage] = useState(false);

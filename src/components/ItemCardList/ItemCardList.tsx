@@ -2,18 +2,18 @@
 
 import Typography from '@mui/material/Typography';
 
-import { classes } from './ItemCardList.style';
 import { ItemCard } from 'components/ItemCard/ItemCard';
+import { classes } from './ItemCardList.style';
 
+import { useTagsStateGet } from 'state';
 import { Item, Tag } from '../../types';
-import { useAppContext } from 'AppContext';
 
 interface ItemCardListProps {
   items: Item[];
 }
 
 const ItemCardList = ({ items }: ItemCardListProps) => {
-  const { tags } = useAppContext();
+  const tags = useTagsStateGet();
 
   if (items?.length > 0) {
     return (

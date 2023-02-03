@@ -1,7 +1,8 @@
 import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useAppContext } from 'AppContext';
 import { useCallback } from 'react';
-import { NavigationTag, Tag } from 'types';
+
+import { useNavigationTagsState, useTagsStateGet } from 'state';
+import { Tag } from 'types';
 
 interface HeaderNavigationTagsProps {
   id: string;
@@ -11,7 +12,9 @@ interface HeaderNavigationTagsProps {
 }
 
 const useNavigationTags = (): any => {
-  const { navigationTags, setNavigationTags, tags } = useAppContext();
+  const tags = useTagsStateGet();
+
+  const [navigationTags, setNavigationTags] = useNavigationTagsState();
 
   const clearHeaderNavigationTags = useCallback(() => {
     setNavigationTags([]);
@@ -19,9 +22,12 @@ const useNavigationTags = (): any => {
 
   const enableLastNavigationTag = useCallback(() => {
     let updated = [...navigationTags];
-    const lastNavigationTag = updated.at(-1);
+    let lastNavigationTag = updated.pop();
     if (lastNavigationTag && !lastNavigationTag.isNavigationTag) {
-      lastNavigationTag.isNavigationTag = true;
+      updated.push({
+        ...lastNavigationTag,
+        isNavigationTag: true,
+      });
       setNavigationTags(updated);
     }
   }, [navigationTags, setNavigationTags]);
@@ -33,16 +39,16 @@ const useNavigationTags = (): any => {
 
       setNavigationTags([
         {
-          type: NavigationTagType.ARTISTS,
-          title: 'Artists',
-          url: '/artists',
           isNavigationTag: true,
+          title: 'Artists',
+          type: NavigationTagType.ARTISTS,
+          url: '/artists',
         },
         {
-          type: NavigationTagType.ARTISTS,
-          title: artistNamesTitle,
-          url: `/?artists=${artistNamesQuery}`,
           isNavigationTag: false,
+          title: artistNamesTitle,
+          type: NavigationTagType.ARTISTS,
+          url: `/?artists=${artistNamesQuery}`,
         },
       ]);
     },
@@ -56,16 +62,16 @@ const useNavigationTags = (): any => {
 
       setNavigationTags([
         {
-          type: NavigationTagType.BATTLES,
-          title: 'Battles',
-          url: '/battles',
           isNavigationTag: true,
+          title: 'Battles',
+          type: NavigationTagType.BATTLES,
+          url: '/battles',
         },
         {
-          type: NavigationTagType.BATTLES,
-          title: battleNamesTitle,
-          url: `/?battles=${battleNamesQuery}`,
           isNavigationTag: false,
+          title: battleNamesTitle,
+          type: NavigationTagType.BATTLES,
+          url: `/?battles=${battleNamesQuery}`,
         },
       ]);
     },
@@ -79,16 +85,16 @@ const useNavigationTags = (): any => {
 
       setNavigationTags([
         {
-          type: NavigationTagType.REGIMENTS,
-          title: 'Regiments',
-          url: '/regiments',
           isNavigationTag: true,
+          title: 'Regiments',
+          type: NavigationTagType.REGIMENTS,
+          url: '/regiments',
         },
         {
-          type: NavigationTagType.REGIMENTS,
-          title: regimentNamesTitle,
-          url: `/?regiments=${regimentNamesQuery}`,
           isNavigationTag: false,
+          title: regimentNamesTitle,
+          type: NavigationTagType.REGIMENTS,
+          url: `/?regiments=${regimentNamesQuery}`,
         },
       ]);
     },
@@ -107,10 +113,10 @@ const useNavigationTags = (): any => {
         {
           isNavigationTag: true,
           name: collectionNamesTitle,
-          title: title,
+          title: title || '',
           type: NavigationTagType.COLLECTION,
           url: `/collectionDetailView/${collectionId}`,
-        } as NavigationTag,
+        },
       ]);
     },
     [setNavigationTags]
@@ -129,6 +135,7 @@ const useNavigationTags = (): any => {
           isNavigationTag: false,
           title: collectionTitle,
           type: NavigationTagType.COLLECTIONS,
+          url: '',
         },
       ]);
     },
@@ -146,10 +153,10 @@ const useNavigationTags = (): any => {
     if (tagNames) {
       setNavigationTags([
         {
-          type: NavigationTagType.GALLERY,
-          title: tagNames,
-          url: '/',
           isNavigationTag: false,
+          title: tagNames,
+          type: NavigationTagType.GALLERY,
+          url: '/',
         },
       ]);
     } else {

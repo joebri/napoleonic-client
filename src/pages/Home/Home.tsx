@@ -26,16 +26,18 @@ import {
 } from '../../components/FilterDrawer/FilterDrawer';
 import { classes } from './Home.style';
 
-import { useAppContext } from 'AppContext';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useLogError } from 'hooks/useLogError';
+import { usePageNumberState, useTagsState } from 'state';
 import { readTagsQuery } from './queries/readTagsQuery';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { setPageNumber, setTags } = useAppContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const { logError } = useLogError(`${Home.name}.tsx`);
+
+  const [, setPageNumber] = usePageNumberState();
+  const [, setTags] = useTagsState();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
