@@ -11,10 +11,9 @@ import { Loading } from 'components/Loading/Loading';
 import { classes } from './ArtistsList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import {
-  useHeaderTitleState,
+  useHeaderTitleStateSet,
   useIncludeUnknownYearStateGet,
   useRatingsStateGet,
   useTagsStateGet,
@@ -22,18 +21,19 @@ import {
 } from 'state';
 import { ArtistTag, Tag } from 'types';
 import { ratingsToArray } from 'utilities/helper';
+import { logError } from 'utilities/logError';
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 const ArtistsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logError } = useLogError(`${ArtistsList.name}.tsx`);
+  const moduleName = `${ArtistsList.name}.tsx`;
 
-  const [, setHeaderTitle] = useHeaderTitleState();
+  const includeUnknownYear = useIncludeUnknownYearStateGet();
   const ratings = useRatingsStateGet();
+  const setHeaderTitle = useHeaderTitleStateSet();
   const tags = useTagsStateGet();
   const yearRange = useYearRangeStateGet();
-  const includeUnknownYear = useIncludeUnknownYearStateGet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
@@ -49,7 +49,7 @@ const ArtistsList = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readArtistCounts', exception });
+      logError({ moduleName, name: 'readArtistCounts', exception });
       setLoadStatus(LoadStatus.ERROR);
     },
   });

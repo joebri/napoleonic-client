@@ -10,7 +10,7 @@ import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
 
 import { useLocalStorage } from 'hooks/useLocalStorage';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import { Collection } from 'types';
 import { initialisedCollection } from 'utilities/helper';
 import { Edit } from './Edit';
@@ -18,7 +18,7 @@ import { createCollectionMutation } from './queries/createCollectionMutation';
 
 const CollectionDetailAdd = () => {
   const navigate = useNavigate();
-  const { logError } = useLogError(`${CollectionDetailAdd.name}.tsx`);
+  const moduleName = `${CollectionDetailAdd.name}.tsx`;
 
   const [template] = useLocalStorage<any>('template', {
     artist: '',
@@ -60,6 +60,7 @@ const CollectionDetailAdd = () => {
       navigate(`/collectionDetailView/${result.data.createCollection}`);
     } catch (exception) {
       logError({
+        moduleName,
         name: 'handleEditSaveClick',
         exception,
         message: 'Create failed.',

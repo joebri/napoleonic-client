@@ -4,12 +4,18 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 
 import { classes } from './ErrorBoundary.style';
 
+import { logError, LogErrorBaseProps } from 'utilities/logError';
+
 interface Props {
   children?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
+}
+
+interface LogErrorProps extends LogErrorBaseProps {
+  errorInfo: ErrorInfo;
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -27,11 +33,12 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // logErrorToMyService(error, errorInfo);
-    console.error(
-      `%cError: ${JSON.stringify(error)}, ${JSON.stringify(errorInfo)}`,
-      'color:red'
-    );
+    logError<LogErrorProps>({
+      moduleName: 'ErrorBoundary',
+      name: 'componentDidCatch',
+      exception: error,
+      errorInfo,
+    });
   }
 
   render() {

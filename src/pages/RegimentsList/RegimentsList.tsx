@@ -11,7 +11,7 @@ import { Loading } from 'components/Loading/Loading';
 import { classes } from './RegimentsList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import {
   useHeaderTitleStateSet,
@@ -28,7 +28,7 @@ import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 const RegimentsList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logError } = useLogError(`${RegimentsList.name}.tsx`);
+  const moduleName = `${RegimentsList.name}.tsx`;
 
   const setHeaderTitle = useHeaderTitleStateSet();
   const includeUnknownYear = useIncludeUnknownYearStateGet();
@@ -52,7 +52,7 @@ const RegimentsList = () => {
         setLoadStatus(LoadStatus.LOADED);
       },
       onError: (exception) => {
-        logError({ name: 'readRegimentCounts', exception });
+        logError({ moduleName, name: 'readRegimentCounts', exception });
         setLoadStatus(LoadStatus.ERROR);
       },
     }

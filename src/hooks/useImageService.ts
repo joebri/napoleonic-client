@@ -1,13 +1,13 @@
 import { useLazyQuery } from '@apollo/client';
 import { Cloudinary } from '@cloudinary/url-gen';
 
-import { useLogError } from 'hooks/useLogError';
 import { ItemMetaData } from 'types';
+import { logError } from 'utilities/logError';
 import { readItemMetaDataQuery } from './queries/readItemMetaDataQuery';
 
 const imageService: any = (() => {
   console.info(
-    `%cInitialising image service for ${process.env.REACT_APP_CLOUDINARY_NAME}`,
+    `%cInitialising image service for '${process.env.REACT_APP_CLOUDINARY_NAME}'`,
     'color:blue'
   );
   return new Cloudinary({
@@ -18,11 +18,15 @@ const imageService: any = (() => {
 })();
 
 const useImageService = () => {
-  const { logError } = useLogError(`${useImageService.name}.ts`);
+  const moduleName = `${useImageService.name}.ts`;
 
   const [readItemMetaData] = useLazyQuery(readItemMetaDataQuery, {
     onError: (exception) => {
-      logError({ name: 'useImageService', exception });
+      logError({
+        moduleName,
+        name: 'useImageService',
+        exception,
+      });
       throw new Error(exception.message);
     },
   });

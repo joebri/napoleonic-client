@@ -1,20 +1,20 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Button, Stack, TextField, Typography } from '@mui/material';
 import {
   BackspaceOutlined as BackspaceOutlinedIcon,
   Save as SaveIcon,
 } from '@mui/icons-material';
+import { Button, Stack, TextField, Typography } from '@mui/material';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
-import { classes } from './Settings.style';
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+import { classes } from './Settings.style';
 
-import { Template } from 'types';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleState } from 'state';
+import { useHeaderTitleStateSet } from 'state';
+import { Template } from 'types';
 
 const initialisedTemplate: Template = {
   artist: '',
@@ -29,7 +29,7 @@ const Settings = () => {
     initialisedTemplate
   );
 
-  const [, setHeaderTitle] = useHeaderTitleState();
+  const setHeaderTitle = useHeaderTitleStateSet();
 
   const [template, setTemplate] = useState(templateLS);
   const [showMessage, setShowMessage] = useState(false);

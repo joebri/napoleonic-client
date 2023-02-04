@@ -23,13 +23,13 @@ import { classes } from './Gallery.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import {
   HeaderNavigationTagsProps,
   useNavigationTags,
 } from 'hooks/useNavigationTags';
 import {
-  useHeaderTitleState,
+  useHeaderTitleStateSet,
   useIncludeUnknownYearStateGet,
   usePageNumberState,
   useRatingsStateGet,
@@ -51,9 +51,9 @@ import {
 const PAGE_SIZE = 20;
 
 const Gallery = () => {
-  const { logError } = useLogError(`${Gallery.name}.tsx`);
+  const moduleName = `${Gallery.name}.tsx`;
 
-  const [, setHeaderTitle] = useHeaderTitleState();
+  const setHeaderTitle = useHeaderTitleStateSet();
   const [pageNumber, setPageNumber] = usePageNumberState();
   const includeUnknownYear = useIncludeUnknownYearStateGet();
   const ratings = useRatingsStateGet();
@@ -182,6 +182,7 @@ const Gallery = () => {
     },
     onError: (exception) => {
       logError({
+        moduleName,
         name: 'readItemsByFilter',
         exception,
         ratings,
@@ -201,6 +202,7 @@ const Gallery = () => {
     const loadForm = (pageNumber: number) => {
       setLoadStatus(LoadStatus.LOADING);
       const queryDetails = getQueryDetails();
+
       if (!queryDetails) {
         itemsRef.current = [];
         setPageCount(0);

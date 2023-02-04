@@ -11,17 +11,17 @@ import { Loading } from 'components/Loading/Loading';
 import { classes } from './BattlesList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { useHeaderTitleStateSet, useRatingsStateGet } from 'state';
 import { BattleTag } from 'types';
 import { ratingsToArray } from 'utilities/helper';
+import { logError } from 'utilities/logError';
 import { readBattleCountsQuery } from './queries/readBattleCountsQuery';
 
 const BattlesList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logError } = useLogError(`${BattlesList.name}.tsx`);
+  const moduleName = `${BattlesList.name}.tsx`;
 
   const setHeaderTitle = useHeaderTitleStateSet();
   const ratings = useRatingsStateGet();
@@ -38,7 +38,7 @@ const BattlesList = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readBattleCounts', exception });
+      logError({ moduleName, name: 'readBattleCounts', exception });
       setLoadStatus(LoadStatus.ERROR);
     },
   });

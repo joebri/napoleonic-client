@@ -13,7 +13,7 @@ import { classes } from './CollectionDetail.style';
 import { Edit } from './Edit';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import { Collection } from 'types';
 import { initialisedCollection } from 'utilities/helper';
 import { readCollectionQuery } from './queries/readCollectionQuery';
@@ -22,7 +22,7 @@ import { updateCollectionMutation } from './queries/updateCollectionMutation';
 const CollectionDetailEdit = () => {
   let { collectionId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(`${CollectionDetailEdit.name}.tsx`);
+  const moduleName = `${CollectionDetailEdit.name}.tsx`;
 
   const viewPageURI = `/collectionDetailView/${collectionId}`;
 
@@ -39,7 +39,7 @@ const CollectionDetailEdit = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readCollection', exception, collectionId });
+      logError({ moduleName, name: 'readCollection', exception, collectionId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -82,6 +82,7 @@ const CollectionDetailEdit = () => {
       navigate(viewPageURI);
     } catch (exception) {
       logError({
+        moduleName,
         name: 'handleEditSaveClick',
         exception,
         message: 'Update failed.',

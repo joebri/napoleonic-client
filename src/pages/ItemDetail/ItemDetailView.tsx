@@ -13,7 +13,7 @@ import { classes } from './ItemDetail.style';
 import { View } from './View';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { initialisedItem } from 'utilities/helper';
 import { deleteItemMutation } from './queries/deleteItemMutation';
@@ -22,7 +22,7 @@ import { readItemQuery } from './queries/readItemQuery';
 const ItemDetailView = () => {
   const { itemId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(`${ItemDetailView.name}.tsx`);
+  const moduleName = `${ItemDetailView.name}.tsx`;
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
@@ -40,7 +40,7 @@ const ItemDetailView = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readItem', exception, itemId });
+      logError({ moduleName, name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -80,6 +80,7 @@ const ItemDetailView = () => {
       navigate(`/`);
     } catch (exception) {
       logError({
+        moduleName,
         name: 'handleDeleteConfirmed',
         exception,
         message: 'Delete failed.',

@@ -14,29 +14,29 @@ import { View } from './View';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useLogError } from 'hooks/useLogError';
 import {
   HeaderNavigationTagsProps,
   useNavigationTags,
 } from 'hooks/useNavigationTags';
+import { useHeaderTitleStateSet } from 'state';
 import { initialisedCollection } from 'utilities/helper';
+import { logError } from 'utilities/logError';
 import { deleteCollectionMutation } from './queries/deleteCollectionMutation';
 import { readCollectionQuery } from './queries/readCollectionQuery';
-import { useHeaderTitleState } from 'state';
 
 const CollectionDetailView = () => {
   let { collectionId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(`${CollectionDetailView.name}.tsx`);
+  const moduleName = `${CollectionDetailView.name}.tsx`;
 
   const EDIT_PAGE_URI = `/collectionDetailEdit/${collectionId}`;
+
+  const setHeaderTitle = useHeaderTitleStateSet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [collection, setCollection] = useState(initialisedCollection);
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
-
-  const [, setHeaderTitle] = useHeaderTitleState();
 
   const { setHeaderNavigationTags } = useNavigationTags();
 
@@ -55,7 +55,7 @@ const CollectionDetailView = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readCollection', exception, collectionId });
+      logError({ moduleName, name: 'readCollection', exception, collectionId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -97,6 +97,7 @@ const CollectionDetailView = () => {
       navigate(`/`);
     } catch (exception) {
       logError({
+        moduleName,
         name: 'handleDeleteConfirmed',
         exception,
         message: 'Delete failed.',

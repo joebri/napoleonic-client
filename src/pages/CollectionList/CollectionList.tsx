@@ -11,17 +11,17 @@ import { Loading } from 'components/Loading/Loading';
 import { classes } from './CollectionList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import { useHeaderTitleStateSet } from 'state';
 import { Collection } from 'types';
+import { logError } from 'utilities/logError';
 import { readCollectionsQuery } from './queries/readCollectionsQuery';
-import { useHeaderTitleState } from 'state';
 
 const CollectionList = () => {
   const navigate = useNavigate();
-  const { logError } = useLogError(`${CollectionList.name}.tsx`);
+  const moduleName = `${CollectionList.name}.tsx`;
 
-  const [, setHeaderTitle] = useHeaderTitleState();
+  const setHeaderTitle = useHeaderTitleStateSet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
@@ -35,7 +35,7 @@ const CollectionList = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readCollections', exception });
+      logError({ moduleName, name: 'readCollections', exception });
       setLoadStatus(LoadStatus.ERROR);
     },
   });

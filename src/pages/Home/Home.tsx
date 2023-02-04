@@ -27,17 +27,17 @@ import {
 import { classes } from './Home.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useLogError } from 'hooks/useLogError';
-import { usePageNumberState, useTagsState } from 'state';
+import { usePageNumberStateSet, useTagsStateSet } from 'state';
+import { logError } from 'utilities/logError';
 import { readTagsQuery } from './queries/readTagsQuery';
 
 const Home = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { logError } = useLogError(`${Home.name}.tsx`);
+  const moduleName = `${Home.name}.tsx`;
 
-  const [, setPageNumber] = usePageNumberState();
-  const [, setTags] = useTagsState();
+  const setPageNumber = usePageNumberStateSet();
+  const setTags = useTagsStateSet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
@@ -47,7 +47,7 @@ const Home = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'getTags', exception });
+      logError({ moduleName, name: 'getTags', exception });
       setTags([]);
       setLoadStatus(LoadStatus.ERROR);
     },

@@ -14,12 +14,12 @@ import { createItemMutation } from './queries/createItemMutation';
 import { initialisedItem } from 'utilities/helper';
 import { Item } from 'types';
 import { useLocalStorage } from 'hooks/useLocalStorage';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const ItemDetailAdd = () => {
   const navigate = useNavigate();
-  const { logError } = useLogError(`${ItemDetailAdd.name}.tsx`);
+  const moduleName = `${ItemDetailAdd.name}.tsx`;
 
   const [template] = useLocalStorage<any>('template', {
     artist: '',
@@ -49,6 +49,7 @@ const ItemDetailAdd = () => {
     },
     onError: (exception) => {
       logError({
+        moduleName,
         name: 'createItem',
         exception,
         message: 'Create failed.',

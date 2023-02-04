@@ -15,7 +15,7 @@ import { classes } from './ItemDetail.style';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Rating } from 'enums/rating.enum';
 import { useConfirmExit } from 'hooks/useConfirmExit';
-import { useLogError } from 'hooks/useLogError';
+import { logError } from 'utilities/logError';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { Item } from 'types';
 import { initialisedItem } from 'utilities/helper';
@@ -25,7 +25,7 @@ import { updateItemMutation } from './queries/updateItemMutation';
 const ItemDetailEdit = () => {
   let { itemId } = useParams();
   const navigate = useNavigate();
-  const { logError } = useLogError(`${ItemDetailEdit.name}.tsx`);
+  const moduleName = `${ItemDetailEdit.name}.tsx`;
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
@@ -46,7 +46,7 @@ const ItemDetailEdit = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      logError({ name: 'readItem', exception, itemId });
+      logError({ moduleName, name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
@@ -56,7 +56,7 @@ const ItemDetailEdit = () => {
       navigate(`/itemDetailView/${item.id}`);
     },
     onError: (exception) => {
-      logError({ name: 'updateItem', exception, itemId });
+      logError({ moduleName, name: 'updateItem', exception, itemId });
       setShowMessage(true);
     },
   });
