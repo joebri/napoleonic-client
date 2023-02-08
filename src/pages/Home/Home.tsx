@@ -52,8 +52,8 @@ const Home = () => {
       // When Authenticating from this page, the query is being re-run.
       if (tags.length === 0) {
         setTags(data.readTags);
+        setLoadStatus(LoadStatus.LOADED);
       }
-      setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
       logError({ moduleName, name: 'getTags', exception });
@@ -64,7 +64,10 @@ const Home = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
+      setLoadStatus(LoadStatus.LOADING);
       getTags();
+    } else {
+      setLoadStatus(LoadStatus.LOADED);
     }
   }, [getTags, isAuthenticated]);
 

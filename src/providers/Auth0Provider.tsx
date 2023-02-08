@@ -24,7 +24,7 @@ const Provider = ({ children }: Auth0ProviderProps): ReactElement => {
     },
     redirectUri: window.location.origin,
     useRefreshTokens: true,
-    cacheLocation: 'localstorage' as CacheLocation,
+    cacheLocation: 'memory' as CacheLocation,
     grant_type: 'client_credentials',
   };
 

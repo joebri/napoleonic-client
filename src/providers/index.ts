@@ -1,4 +1,4 @@
-import { Provider as ApolloProvider } from 'providers/ApolloProvider';
-import { Provider as Auth0Provider } from './Auth0Provider';
+import { Provider as GraphQLProvider } from 'providers/ApolloProvider';
+import { Provider as AuthProvider } from './Auth0Provider';
 
-export { Auth0Provider, ApolloProvider };
+export { AuthProvider, GraphQLProvider };
