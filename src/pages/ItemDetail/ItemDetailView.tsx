@@ -77,7 +77,7 @@ const ItemDetailView = () => {
           id: itemId,
         },
       });
-      navigate(`/`);
+      navigate(`/gallery`);
     } catch (exception) {
       logError({
         moduleName,

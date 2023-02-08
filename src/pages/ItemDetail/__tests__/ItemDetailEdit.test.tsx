@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { MutableSnapshot, RecoilRoot } from 'recoil';
 
 import { ItemDetailEdit } from '../ItemDetailEdit';
 
@@ -16,7 +16,7 @@ const mockItemId = '636e2a7d27fe63c9179fcb6e';
 
 interface MockMemoryRouterProps {
   mockGraphQL: any[];
-  mockState: any; //TODO fix this
+  mockState: ({ set }: MutableSnapshot) => void;
 }
 
 const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {

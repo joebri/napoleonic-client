@@ -4,6 +4,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 
+import { AuthenticationGuard } from 'components/AuthenticationGuard/AuthenticationGuard';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { MenuBar } from 'components/MenuBar/MenuBar';
@@ -17,6 +18,7 @@ import { Gallery } from 'pages/Gallery/Gallery';
 import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
 import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
+import { NotFound } from 'pages/NotFound/NotFound';
 import { RegimentsList } from 'pages/RegimentsList/RegimentsList';
 import { Sandbox } from 'pages/Sandbox/Sandbox';
 import { Settings } from 'pages/Settings/Settings';
@@ -27,23 +29,30 @@ import {
 import { classes } from './Home.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { usePageNumberStateSet, useTagsStateSet } from 'state';
+import { Login } from 'pages/Login/Login';
+import { usePageNumberStateSet, useTagsState } from 'state';
 import { logError } from 'utilities/logError';
 import { readTagsQuery } from './queries/readTagsQuery';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Home = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleName = `${Home.name}.tsx`;
 
+  const { isAuthenticated } = useAuth0();
+
   const setPageNumber = usePageNumberStateSet();
-  const setTags = useTagsStateSet();
+  const [tags, setTags] = useTagsState();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
   const [getTags, { error }] = useLazyQuery(readTagsQuery, {
     onCompleted: (data) => {
-      setTags(data.readTags);
+      // When Authenticating from this page, the query is being re-run.
+      if (tags.length === 0) {
+        setTags(data.readTags);
+      }
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
@@ -54,8 +63,10 @@ const Home = () => {
   });
 
   useEffect(() => {
-    getTags();
-  }, [getTags]);
+    if (isAuthenticated) {
+      getTags();
+    }
+  }, [getTags, isAuthenticated]);
 
   const handleFilterDrawAction = (action: ActionEnum) => {
     setPageNumber(1);
@@ -85,7 +96,7 @@ const Home = () => {
     searchParams.delete('tags');
     setSearchParams(searchParams);
 
-    navigate(`/`);
+    navigate(`/gallery`);
   };
 
   if (loadStatus === LoadStatus.LOADING) {
@@ -101,31 +112,64 @@ const Home = () => {
       <div css={classes.content}>
         <FilterDrawer onActionSelect={handleFilterDrawAction} />
         <Routes>
-          <Route path="/" element={<Gallery />} />
+          <Route path="login" element={<Login />} />
+          <Route path="/" element={<Login />} />
 
-          <Route path="artists" element={<ArtistsList />} />
-          <Route path="battles" element={<BattlesList />} />
-          <Route path="regiments" element={<RegimentsList />} />
-          <Route path="sandbox/" element={<Sandbox />} />
-          <Route path="settings/" element={<Settings />} />
+          <Route
+            path="artists"
+            element={<AuthenticationGuard component={ArtistsList} />}
+          />
+          <Route
+            path="gallery"
+            element={<AuthenticationGuard component={Gallery} />}
+          />
+          <Route
+            path="battles"
+            element={<AuthenticationGuard component={BattlesList} />}
+          />
+          <Route
+            path="regiments"
+            element={<AuthenticationGuard component={RegimentsList} />}
+          />
 
-          <Route path="collections" element={<CollectionList />} />
+          <Route
+            path="settings"
+            element={<AuthenticationGuard component={Settings} />}
+          />
+          <Route
+            path="collections"
+            element={<AuthenticationGuard component={CollectionList} />}
+          />
+
           <Route
             path="collectionDetailView/:collectionId"
-            element={<CollectionDetailView />}
+            element={<AuthenticationGuard component={CollectionDetailView} />}
           />
           <Route
             path="collectionDetailEdit/:collectionId"
-            element={<CollectionDetailEdit />}
+            element={<AuthenticationGuard component={CollectionDetailEdit} />}
           />
           <Route
             path="collectionDetailAdd/"
-            element={<CollectionDetailAdd />}
+            element={<AuthenticationGuard component={CollectionDetailAdd} />}
           />
 
-          <Route path="itemDetailEdit/:itemId" element={<ItemDetailEdit />} />
-          <Route path="itemDetailView/:itemId" element={<ItemDetailView />} />
-          <Route path="itemDetailAdd/" element={<ItemDetailAdd />} />
+          <Route
+            path="itemDetailView/:itemId"
+            element={<AuthenticationGuard component={ItemDetailView} />}
+          />
+          <Route
+            path="itemDetailEdit/:itemId"
+            element={<AuthenticationGuard component={ItemDetailEdit} />}
+          />
+          <Route
+            path="itemDetailAdd/"
+            element={<AuthenticationGuard component={ItemDetailAdd} />}
+          />
+
+          <Route path="loading" element={<Loading />} />
+          <Route path="sandbox" element={<Sandbox />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>

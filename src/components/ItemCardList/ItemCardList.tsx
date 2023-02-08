@@ -35,8 +35,8 @@ const ItemCardList = ({ items }: ItemCardListProps) => {
   }
 
   return (
-    <Typography css={classes.noItems} variant="h5">
-      Welcome to Uniformology!
+    <Typography css={classes.noItems} variant="h2">
+      Welcome to Napoleonic Uniformology!
     </Typography>
   );
 };

@@ -58,6 +58,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.0",
     "@apollo/sandbox": "^1.0.3",
+    "@auth0/auth0-react": "^2.0.0",
     "@cloudinary/react": "^1.8.1",
     "@cloudinary/url-gen": "^1.8.6",
     "@emotion/react": "^11.10.4",

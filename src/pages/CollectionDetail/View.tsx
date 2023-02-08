@@ -60,7 +60,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
 
       <div css={classes.container__link}>
         <Link
-          to={`/?collection=${collection.tagName}||${collection.title}||${collection.id}`}
+          to={`/gallery?collection=${collection.tagName}||${collection.title}||${collection.id}`}
         >
           Plates
         </Link>
@@ -72,7 +72,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
 
       <div css={classes.container__link}>
         <Link
-          to={`/?collection=${collection.tagName}||${collection.title}||${collection.id}`}
+          to={`/gallery?collection=${collection.tagName}||${collection.title}||${collection.id}`}
         >
           Plates
         </Link>

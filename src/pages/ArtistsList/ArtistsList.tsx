@@ -107,7 +107,7 @@ const ArtistsList = () => {
         .map((tag: ArtistTag) => tag.name)
         .join('||')
     );
-    navigate(`/?artists=${selected}`);
+    navigate(`/gallery?artists=${selected}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) {

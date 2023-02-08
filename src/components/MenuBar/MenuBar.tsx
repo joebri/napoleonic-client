@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import AddIcon from '@mui/icons-material/Add';
+import { useAuth0 } from '@auth0/auth0-react';
 import SearchIcon from '@mui/icons-material/Search';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {
   AppBar,
   Chip,
@@ -13,7 +12,9 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { SortMenu } from 'components/SortMenu/SortMenu';
+import { MenuMain } from 'components/MenuMain/MenuMain';
+import { MenuSort } from 'components/MenuSort/MenuSort';
+import { Profile } from 'components/Profile/Profile';
 import { classes } from './MenuBar.style';
 
 import {
@@ -25,22 +26,11 @@ import { NavigationTag } from 'types';
 
 const MenuBar = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth0();
 
   const headerTitle = useHeaderTitleStateGet();
   const navigationTags = useNavigationTagsStateGet();
   const setIsFilterOpen = useIsFilterOpenStateSet();
-
-  const handleAddItemClick = () => {
-    navigate(`/itemDetailAdd`);
-  };
-
-  const handleAddCollectionClick = () => {
-    navigate(`/collectionDetailAdd`);
-  };
-
-  const handleSettingsClick = () => {
-    navigate(`/settings`);
-  };
 
   const handleFilterClick = () => {
     setIsFilterOpen(true);
@@ -76,48 +66,26 @@ const MenuBar = () => {
         </Stack>
 
         <Stack direction="row" gap={3}>
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={handleSettingsClick}
-            size="small"
-          >
-            <SettingsOutlinedIcon css={classes.icon} />
-            Settings
-          </IconButton>
+          {isAuthenticated && (
+            <>
+              <MenuMain />
 
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={handleAddItemClick}
-            size="small"
-          >
-            <AddIcon css={classes.icon} />
-            Add
-          </IconButton>
+              <MenuSort />
 
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={handleAddCollectionClick}
-            size="small"
-          >
-            <AddIcon css={classes.icon} />
-            Add Collection
-          </IconButton>
+              <IconButton
+                aria-label="menu"
+                color="inherit"
+                edge="start"
+                onClick={handleFilterClick}
+                size="small"
+              >
+                <SearchIcon css={classes.icon} />
+                Search
+              </IconButton>
 
-          <SortMenu />
-
-          <IconButton
-            aria-label="menu"
-            color="inherit"
-            edge="start"
-            onClick={handleFilterClick}
-            size="small"
-          >
-            <SearchIcon css={classes.icon} />
-            Search
-          </IconButton>
+              <Profile />
+            </>
+          )}
         </Stack>
       </Toolbar>
     </AppBar>

@@ -4,11 +4,11 @@ import { MouseEvent, useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 
-import { classes } from './SortMenu.style';
+import { classes } from './MenuSort.style';
 
 import { useSortFieldState } from 'state';
 
-const SortMenu = () => {
+const MenuSort = () => {
   const [sortField, setSortField] = useSortFieldState();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -68,4 +68,4 @@ const SortMenu = () => {
   );
 };
 
-export { SortMenu };
+export { MenuSort };

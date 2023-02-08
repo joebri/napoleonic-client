@@ -66,7 +66,7 @@ const ItemDetailAdd = () => {
   };
 
   const handleEditCancelClick = () => {
-    navigate(`/`);
+    navigate(`/gallery`);
   };
 
   const handleEditSaveClick = () => {

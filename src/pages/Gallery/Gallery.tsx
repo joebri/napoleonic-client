@@ -23,7 +23,6 @@ import { classes } from './Gallery.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { logError } from 'utilities/logError';
 import {
   HeaderNavigationTagsProps,
   useNavigationTags,
@@ -39,6 +38,7 @@ import {
 } from 'state';
 import { Item } from 'types';
 import { ratingsToArray } from 'utilities/helper';
+import { logError } from 'utilities/logError';
 import { readItemsByFilterQuery } from './queries/readItemsByFilterQuery';
 import {
   buildArtistsQueryParams,

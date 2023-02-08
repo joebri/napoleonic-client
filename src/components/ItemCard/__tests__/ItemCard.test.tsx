@@ -3,7 +3,7 @@ import { CloudConfig, CloudinaryImage } from '@cloudinary/url-gen';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { MutableSnapshot, RecoilRoot } from 'recoil';
 
 import { ItemCard } from '../ItemCard';
 
@@ -17,7 +17,7 @@ const mockItemId = '636e2a7d27fe63c9179fcb6e';
 interface MockMemoryRouterProps {
   mockGraphQL: any[];
   mockItem: Item;
-  mockState: any; //TODO fix this
+  mockState: ({ set }: MutableSnapshot) => void;
 }
 
 const setupRouter = ({

@@ -48,7 +48,7 @@ const useNavigationTags = (): any => {
           isNavigationTag: false,
           title: artistNamesTitle,
           type: NavigationTagType.ARTISTS,
-          url: `/?artists=${artistNamesQuery}`,
+          url: `/gallery?artists=${artistNamesQuery}`,
         },
       ]);
     },
@@ -71,7 +71,7 @@ const useNavigationTags = (): any => {
           isNavigationTag: false,
           title: battleNamesTitle,
           type: NavigationTagType.BATTLES,
-          url: `/?battles=${battleNamesQuery}`,
+          url: `/gallery?battles=${battleNamesQuery}`,
         },
       ]);
     },
@@ -94,7 +94,7 @@ const useNavigationTags = (): any => {
           isNavigationTag: false,
           title: regimentNamesTitle,
           type: NavigationTagType.REGIMENTS,
-          url: `/?regiments=${regimentNamesQuery}`,
+          url: `/gallery/?regiments=${regimentNamesQuery}`,
         },
       ]);
     },
@@ -156,7 +156,7 @@ const useNavigationTags = (): any => {
           isNavigationTag: false,
           title: tagNames,
           type: NavigationTagType.GALLERY,
-          url: '/',
+          url: '/gallery',
         },
       ]);
     } else {

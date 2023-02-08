@@ -79,7 +79,7 @@ const BattlesList = () => {
         .map((battle) => battle.name)
         .join('||')
     );
-    navigate(`/?battles=${selected}`);
+    navigate(`/gallery?battles=${selected}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) {

@@ -2,7 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { MutableSnapshot, RecoilRoot } from 'recoil';
 
 import { ItemDetailView } from '../ItemDetailView';
 
@@ -15,7 +15,7 @@ const mockItemId = '636e2a7d27fe63c9179fcb6e';
 
 interface MockMemoryRouterProps {
   mockGraphQL: any[];
-  mockState: any; //TODO fix this
+  mockState: ({ set }: MutableSnapshot) => void;
 }
 
 const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {

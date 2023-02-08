@@ -94,7 +94,7 @@ const CollectionDetailView = () => {
           id: collectionId,
         },
       });
-      navigate(`/`);
+      navigate(`/gallery`);
     } catch (exception) {
       logError({
         moduleName,

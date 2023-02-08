@@ -2,7 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { MutableSnapshot, RecoilRoot } from 'recoil';
 
 import { ItemDetailAdd } from '../ItemDetailAdd';
 
@@ -12,7 +12,7 @@ import { createItemMutation } from '../queries/createItemMutation';
 
 interface MockMemoryRouterProps {
   mockGraphQL: any[];
-  mockState: any; //TODO fix this
+  mockState: ({ set }: MutableSnapshot) => void;
 }
 
 const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {
@@ -149,7 +149,7 @@ describe('ItemDetailAdd', () => {
     // screen.debug(undefined, 30000000);
 
     await waitFor(() => {
-      expect(router.state.location.pathname).toEqual('/');
+      expect(router.state.location.pathname).toEqual('/gallery');
     });
   });
 

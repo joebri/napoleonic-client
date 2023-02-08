@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { MutableSnapshot, RecoilRoot } from 'recoil';
 
 import { ArtistsList } from '../ArtistsList';
 
@@ -12,7 +12,7 @@ import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
 
 interface MockMemoryRouterProps {
   mockGraphQL: any[];
-  mockState: any; //TODO fix this
+  mockState: ({ set }: MutableSnapshot) => void;
 }
 
 const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {
@@ -132,7 +132,7 @@ describe('ArtistList', () => {
     await user.click(searchButton);
 
     await waitFor(() => {
-      expect(router.state.location.pathname).toEqual(`/`);
+      expect(router.state.location.pathname).toEqual(`/gallery`);
     });
     expect(router.state.location.search).toEqual(`?artists=name%201`);
   });

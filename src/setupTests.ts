@@ -7,6 +7,7 @@ import '@testing-library/jest-dom';
 import dotenv from 'dotenv';
 import matchers from 'jest-extended/all';
 import { enableFetchMocks } from 'jest-fetch-mock';
+import { MutableSnapshot } from 'recoil';
 
 import {
   includeUnknownYearAtom,
@@ -45,6 +46,13 @@ jest.mock('react-helmet-async', () => {
   };
 });
 
+type MockState = {
+  includeUnknownYear?: boolean;
+  ratings?: any;
+  tags?: Tag[];
+  yearRange?: number[];
+};
+
 function createMockState({
   includeUnknownYear = false,
   ratings = { high: false, medium: false, low: false },
@@ -56,8 +64,8 @@ function createMockState({
     },
   ] as Tag[],
   yearRange = [] as number[],
-}: any) {
-  const mockState = ({ set }: any) => {
+}: MockState) {
+  const mockState = ({ set }: MutableSnapshot) => {
     set(isFilterOpenAtom, true);
     set(includeUnknownYearAtom, includeUnknownYear);
     set(ratingsAtom, ratings);

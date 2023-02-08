@@ -108,7 +108,7 @@ const RegimentsList = () => {
       .filter((regiment: RegimentTag) => regiment.isSelected)
       .map((regiment: RegimentTag) => encodeURIComponent(regiment.name));
 
-    navigate(`/?regiments=${selected.join('||')}`);
+    navigate(`/gallery?regiments=${selected.join('||')}`);
   };
 
   if (loadStatus === LoadStatus.LOADING) {
