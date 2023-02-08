@@ -1,17 +1,14 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readItemQuery = gql`
   query readItem($id: ID!) {
     readItem(id: $id) {
-      artist {
-        name
-      }
-      contentId
+      artist
       descriptionLong
       descriptionShort
       id
-      rating
       publicId
+      rating
       regiments
       tags
       title
@@ -20,3 +17,5 @@ export default gql`
     }
   }
 `;
+
+export { readItemQuery };

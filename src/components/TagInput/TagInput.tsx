@@ -1,14 +1,21 @@
 /** @jsxImportSource @emotion/react */
 
-import { SyntheticEvent } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
 import { Chip, Stack, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import { SyntheticEvent } from 'react';
 
-import { useAppContext } from '../../AppContext';
-import { Tag } from '../../types';
+import { useTagsStateGet } from 'state';
+import { Tag } from 'types';
 
-const TagInput = ({ tagNames, isEdit, onChange }: any) => {
-  const { tags: availableTags } = useAppContext();
+interface TagInputProps {
+  tagNames: string[];
+  isEdit: boolean;
+  onChange?: Function;
+}
+
+const TagInput = ({ tagNames, isEdit, onChange = () => {} }: TagInputProps) => {
+  const availableTags = useTagsStateGet();
+
   const availbleTagNames = availableTags.map((tag: Tag) => {
     return tag.name;
   });

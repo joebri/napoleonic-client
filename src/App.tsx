@@ -1,35 +1,28 @@
-import React from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { RecoilRoot } from 'recoil';
 
-import { theme, ThemeProvider } from './theme';
-import { AppProvider } from './AppContext';
-import useConfig from './hooks/useConfig';
-import { Home } from './pages/Home/Home';
+import { Home } from 'pages/Home/Home';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+
+import { theme, ThemeProvider } from 'theme';
 
 function App() {
-  const client = new ApolloClient({
-    uri: useConfig('GRAPH_URL'),
-    cache: new InMemoryCache(),
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'network-only',
-      },
-    },
-  });
-
   return (
-    <React.StrictMode>
+    <HelmetProvider>
+      <Helmet>
+        <title>Uniformology: Napoleonic</title>
+      </Helmet>
       <CssBaseline />
-      <ApolloProvider client={client}>
+      <ErrorBoundary>
         <ThemeProvider theme={theme}>
-          <AppProvider>
+          <RecoilRoot>
             <Home />
-          </AppProvider>
+          </RecoilRoot>
         </ThemeProvider>
-      </ApolloProvider>
-    </React.StrictMode>
+      </ErrorBoundary>
+    </HelmetProvider>
   );
 }
 
-export default App;
+export { App };

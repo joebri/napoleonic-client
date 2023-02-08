@@ -1,58 +1,63 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
+import { Loading } from 'components/Loading/Loading';
 import { classes } from './CollectionDetail.style';
-import readItemQuery from './queries/readItemQuery';
-import updateItemMutation from './queries/updateItemMutation';
 import { Edit } from './Edit';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { logError } from 'utilities/logError';
+import { Collection } from 'types';
+import { initialisedCollection } from 'utilities/helper';
+import { readCollectionQuery } from './queries/readCollectionQuery';
+import { updateCollectionMutation } from './queries/updateCollectionMutation';
 
 const CollectionDetailEdit = () => {
-  // const [searchParams] = useSearchParams();
-  // const itemId = searchParams.get('id');
-  let { itemId } = useParams();
-
-  const viewPageURI = `/collectionDetailView/${itemId}`;
-
+  let { collectionId } = useParams();
   const navigate = useNavigate();
+  const moduleName = `${CollectionDetailEdit.name}.tsx`;
+
+  const viewPageURI = `/collectionDetailView/${collectionId}`;
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-  const [item, setItem] = useState(initialisedItem);
+  const [collection, setCollection] = useState(initialisedCollection);
   const [showMessage, setShowMessage] = useState(false);
 
-  const [readItem, { error }] = useLazyQuery(readItemQuery, {
-    variables: { id: itemId },
+  const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
+    variables: { id: collectionId },
     onCompleted: (data) => {
-      setItem({ ...data.readItem, rating: data.readItem.rating || 3 });
+      setCollection({
+        ...data.readCollection,
+      });
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error('error', itemId);
-      console.error(exception);
+      logError({ moduleName, name: 'readCollection', exception, collectionId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
-  const [updateItem] = useMutation(updateItemMutation);
+  const [updateCollection] = useMutation(updateCollectionMutation);
 
-  const loadForm = () => {
+  const loadForm = useCallback(() => {
     setLoadStatus(LoadStatus.LOADING);
-    readItem();
-  };
+    readCollection();
+  }, [readCollection]);
 
   useEffect(() => {
     loadForm();
-  }, [itemId]);
+  }, [collectionId, loadForm]);
 
-  const handleEditChange = (field: string, value: any) => {
-    setItem((priorItem: any) => ({
-      ...priorItem,
+  const handleEditChange = (field: string, value: string | number) => {
+    setCollection((priorCollection: Collection) => ({
+      ...priorCollection,
       [field]: value,
     }));
   };
@@ -64,20 +69,25 @@ const CollectionDetailEdit = () => {
 
   const handleEditSaveClick = async () => {
     try {
-      await updateItem({
+      await updateCollection({
         variables: {
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
-          id: item.id,
-          tags: item.tags,
-          title: item.title,
+          descriptionLong: collection.descriptionLong.trim(),
+          descriptionShort: collection.descriptionShort.trim(),
+          id: collection.id,
+          tagName: collection.tagName.trim(),
+          tags: collection.tags,
+          title: collection.title.trim(),
         },
       });
       navigate(viewPageURI);
-    } catch (exception: any) {
-      console.error(
-        `CollectionDetailEdit exception. Update failed.\n${exception}`
-      );
+    } catch (exception) {
+      logError({
+        moduleName,
+        name: 'handleEditSaveClick',
+        exception,
+        message: 'Update failed.',
+        collectionId: collection.id,
+      });
       setShowMessage(true);
     }
   };
@@ -86,35 +96,33 @@ const CollectionDetailEdit = () => {
     setShowMessage(false);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) {
+    return <Loading />;
+  }
+  if (loadStatus === LoadStatus.ERROR) {
+    return <ErrorHandler error={error} />;
+  }
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Edit Collection</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Edit Collection</Typography>
+        <Typography variant="h5">Edit Collection</Typography>
         <Edit
-          item={item}
+          collection={collection}
           onCancel={handleEditCancelClick}
           onChange={handleEditChange}
           onSave={handleEditSaveClick}
         />
       </div>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to update Collection. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to update item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

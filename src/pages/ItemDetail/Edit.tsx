@@ -1,24 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, KeyboardEvent } from 'react';
 import {
-  Button,
-  FormControlLabel,
-  InputLabel,
-  RadioGroup,
-  Radio,
-  Stack,
-  TextField,
-} from '@mui/material';
+  ChangeEvent,
+  KeyboardEvent,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from 'react';
+import { Button, InputLabel, Rating, Stack, TextField } from '@mui/material';
 import {
   BackspaceOutlined as BackspaceOutlinedIcon,
-  Label,
   Save as SaveIcon,
 } from '@mui/icons-material';
 
 import { classes } from './ItemDetail.style';
-import { TagInput } from '../../components/TagInput/TagInput';
-import { Item } from '../../types';
+import { TagInput } from 'components/TagInput/TagInput';
+import { useRatings } from './useRatings';
+
+import { Item } from 'types';
 
 interface EditProps {
   item: Item;
@@ -28,12 +27,29 @@ interface EditProps {
 }
 
 const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
+  const [isDirty, setIsDirty] = useState(false);
+  const [ratingHovered, setRatingHovered] = useState(-1);
+  const [rating, setRating] = useState(2);
+
+  const { ratingLabels, toItemRating, toUiRating } = useRatings();
+
+  useEffect(() => {
+    setRating(toUiRating(item.rating));
+  }, [toUiRating, item.rating]);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.name, event.target.value);
+    setIsDirty(true);
   };
 
   const handleTagsChange = (tags: string[]) => {
     onChange('tags', tags);
+    setIsDirty(true);
+  };
+
+  const handleRatingChange = (_: SyntheticEvent, value: number | null) => {
+    onChange('rating', toItemRating(value));
+    setIsDirty(true);
   };
 
   const handleCancelClick = () => {
@@ -55,7 +71,9 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
     <div onKeyDown={handleOnKeyDown}>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button__spacer}
+          aria-label="save"
+          css={classes.button_spacer}
+          disabled={!isDirty}
           onClick={handleSaveClick}
           size="small"
           startIcon={<SaveIcon />}
@@ -64,6 +82,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
           Save
         </Button>
         <Button
+          aria-label="cancel"
           onClick={handleCancelClick}
           size="small"
           startIcon={<BackspaceOutlinedIcon />}
@@ -90,7 +109,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         InputLabelProps={{
           shrink: true,
         }}
-        label="Short description"
+        label="Subtitle"
         margin="normal"
         name="descriptionShort"
         onChange={handleChange}
@@ -141,9 +160,9 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         }}
         label="Artist"
         margin="normal"
-        name="artist-name"
+        name="artist"
         onChange={handleChange}
-        value={item.artist?.name}
+        value={item.artist}
         variant="standard"
       />
       <Stack direction={'row'} gap={2}>
@@ -171,12 +190,22 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         />
       </Stack>
 
-      <InputLabel css={classes.radioLabel}>Rating</InputLabel>
-      <RadioGroup name="rating" row onChange={handleChange} value={item.rating}>
-        <FormControlLabel value="1" control={<Radio />} label="High" />
-        <FormControlLabel value="3" control={<Radio />} label="Medium" />
-        <FormControlLabel value="5" control={<Radio />} label="Low" />
-      </RadioGroup>
+      <InputLabel css={classes.ratingLabel}>Rating</InputLabel>
+      <div css={classes.rating}>
+        <Rating
+          defaultValue={2}
+          max={3}
+          name="rating"
+          onChange={handleRatingChange}
+          onChangeActive={(_, newRatingHovered) => {
+            setRatingHovered(newRatingHovered);
+          }}
+          value={rating}
+        />
+        <span>
+          {ratingLabels[ratingHovered !== -1 ? ratingHovered : rating]}
+        </span>
+      </div>
 
       <div css={classes.tags}>
         <TagInput isEdit onChange={handleTagsChange} tagNames={item.tags} />

@@ -1,31 +1,35 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, KeyboardEvent } from 'react';
-import { Button, Stack, TextField } from '@mui/material';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { Button, TextField } from '@mui/material';
 import {
   BackspaceOutlined as BackspaceOutlinedIcon,
   Save as SaveIcon,
 } from '@mui/icons-material';
 
 import { classes } from './CollectionDetail.style';
-import { TagInput } from '../../components/TagInput/TagInput';
-import { Item } from '../../types';
+import { Collection } from 'types';
+// import { TagInput } from 'components/TagInput/TagInput';
 
 interface EditProps {
-  item: Item;
+  collection: Collection;
   onCancel: Function;
   onChange: Function;
   onSave: Function;
 }
 
-const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
+const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
+  const [isDirty, setIsDirty] = useState(false);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.name, event.target.value);
+    setIsDirty(true);
   };
 
-  const handleTagsChange = (tags: string[]) => {
-    onChange('tags', tags);
-  };
+  // const handleTagsChange = (tags: string[]) => {
+  //   onChange('tags', tags);
+  //   setIsDirty(true);
+  // };
 
   const handleCancelClick = () => {
     onCancel();
@@ -47,6 +51,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
       <div css={classes.actionBar}>
         <Button
           css={classes.button_spacer}
+          disabled={!isDirty}
           onClick={handleSaveClick}
           size="small"
           startIcon={<SaveIcon />}
@@ -63,18 +68,18 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
           Cancel
         </Button>
       </div>
-      {/* <TextField
+      <TextField
         fullWidth
         InputLabelProps={{
           shrink: true,
         }}
-        label="Tag Name (to identify items which are part of this collection)"
+        label="Tag Name"
         margin="normal"
-        name="collectionName"
+        name="tagName"
         onChange={handleChange}
-        value={item.collectionName}
+        value={collection.tagName}
         variant="standard"
-      /> */}
+      />
       <TextField
         fullWidth
         InputLabelProps={{
@@ -84,7 +89,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         margin="normal"
         name="title"
         onChange={handleChange}
-        value={item.title}
+        value={collection.title}
         variant="standard"
       />
       <TextField
@@ -96,7 +101,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         margin="normal"
         name="descriptionShort"
         onChange={handleChange}
-        value={item.descriptionShort}
+        value={collection.descriptionShort}
         variant="standard"
       />
       <TextField
@@ -109,12 +114,16 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         multiline
         name="descriptionLong"
         onChange={handleChange}
-        value={item.descriptionLong}
+        value={collection.descriptionLong}
         variant="standard"
       />
-      <div css={classes.tags}>
-        <TagInput isEdit onChange={handleTagsChange} tagNames={item.tags} />
-      </div>
+      {/* <div css={classes.tags}>
+        <TagInput
+          isEdit
+          onChange={handleTagsChange}
+          tagNames={collection.tags}
+        />
+      </div> */}
     </div>
   );
 };

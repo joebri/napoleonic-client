@@ -1,97 +1,75 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useMemo, useState } from 'react';
-import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  AppBar,
-  Button,
-  Chip,
-  IconButton,
-  Stack,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useLazyQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { classes } from './Home.style';
-import { useAppContext } from '../../AppContext';
-import { ArtistsList } from '../ArtistsList/ArtistsList';
-import { BattlesList } from '../BattlesList/BattlesList';
-import { CollectionList } from '../CollectionList/CollectionList';
-import { CollectionDetailView } from '../CollectionDetail/CollectionDetailView';
-import { CollectionDetailEdit } from '../CollectionDetail/CollectionDetailEdit';
-import { CollectionDetailAdd } from '../CollectionDetail/CollectionDetailAdd';
-import { RegimentsList } from '../RegimentsList/RegimentsList';
-import { Gallery } from '../Gallery/Gallery';
-import { SortMenu } from '../../components/SortMenu/SortMenu';
+import { AuthenticationGuard } from 'components/AuthenticationGuard/AuthenticationGuard';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
+import { Loading } from 'components/Loading/Loading';
+import { MenuBar } from 'components/MenuBar/MenuBar';
+import { ArtistsList } from 'pages/ArtistsList/ArtistsList';
+import { BattlesList } from 'pages/BattlesList/BattlesList';
+import { CollectionDetailAdd } from 'pages/CollectionDetail/CollectionDetailAdd';
+import { CollectionDetailEdit } from 'pages/CollectionDetail/CollectionDetailEdit';
+import { CollectionDetailView } from 'pages/CollectionDetail/CollectionDetailView';
+import { CollectionList } from 'pages/CollectionList/CollectionList';
+import { Gallery } from 'pages/Gallery/Gallery';
+import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
+import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
+import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
+import { NotFound } from 'pages/NotFound/NotFound';
+import { RegimentsList } from 'pages/RegimentsList/RegimentsList';
+import { Sandbox } from 'pages/Sandbox/Sandbox';
+import { Settings } from 'pages/Settings/Settings';
 import {
   ActionEnum,
   FilterDrawer,
 } from '../../components/FilterDrawer/FilterDrawer';
-import { ItemDetailEdit } from '../ItemDetail/ItemDetailEdit';
-import { ItemDetailView } from '../ItemDetail/ItemDetailView';
-import { ItemDetailAdd } from '../ItemDetail/ItemDetailAdd';
-import readTagsQuery from './queries/readTagsQuery';
-import { Settings } from '../Settings/Settings';
-import { Tag } from '../../types/Tag.type';
+import { classes } from './Home.style';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { Login } from 'pages/Login/Login';
+import { usePageNumberStateSet, useTagsState } from 'state';
+import { logError } from 'utilities/logError';
+import { readTagsQuery } from './queries/readTagsQuery';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Home = () => {
   const navigate = useNavigate();
-
-  const { setIsFilterOpen, setPageNumber, tags, setTags } = useAppContext();
-
   const [searchParams, setSearchParams] = useSearchParams();
+  const moduleName = `${Home.name}.tsx`;
 
-  const [getTags, {}] = useLazyQuery(readTagsQuery, {
+  const { isAuthenticated } = useAuth0();
+
+  const setPageNumber = usePageNumberStateSet();
+  const [tags, setTags] = useTagsState();
+
+  const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
+
+  const [getTags, { error }] = useLazyQuery(readTagsQuery, {
     onCompleted: (data) => {
-      const mergedTags = [
-        ...data.readTags,
-        {
-          group: 'Collection',
-          name: '1793 Artaria',
-          itemId: `63a1c6a0f54107da9771a75c`,
-        } as Tag,
-        {
-          group: 'Collection',
-          name: 'Friedrich von Koeller Collection',
-          itemId: `6399233689a2743cd476e42d`,
-        } as Tag,
-      ];
-      console.log('Home:mergedTags', mergedTags);
-      setTags(mergedTags);
+      // When Authenticating from this page, the query is being re-run.
+      if (tags.length === 0) {
+        setTags(data.readTags);
+        setLoadStatus(LoadStatus.LOADED);
+      }
     },
     onError: (exception) => {
-      console.error(exception);
+      logError({ moduleName, name: 'getTags', exception });
       setTags([]);
+      setLoadStatus(LoadStatus.ERROR);
     },
   });
 
   useEffect(() => {
-    getTags();
-  }, []);
-
-  const handleGalleryClick = () => {
-    navigate(`/`);
-  };
-
-  const handleAddItemClick = () => {
-    navigate(`/itemDetailAdd`);
-  };
-
-  const handleAddCollectionClick = () => {
-    navigate(`/collectionDetailAdd`);
-  };
-
-  const handleSettingsClick = () => {
-    navigate(`/settings`);
-  };
-
-  const handleFilterClick = () => {
-    setIsFilterOpen(true);
-  };
+    if (isAuthenticated) {
+      setLoadStatus(LoadStatus.LOADING);
+      getTags();
+    } else {
+      setLoadStatus(LoadStatus.LOADED);
+    }
+  }, [getTags, isAuthenticated]);
 
   const handleFilterDrawAction = (action: ActionEnum) => {
     setPageNumber(1);
@@ -111,133 +89,90 @@ const Home = () => {
       return;
     }
 
-    // const tagNames = selectedTags.map((selectedTag) => selectedTag.name);
-    // if (action === ActionEnum.ShowRegiments) {
-    //   navigate(`/regiments?tags=${tagNames.join(',')}`);
-    //   return;
-    // }
-
-    // This triggers refresh of gallery
-    // setTags((tags: any) => {
-    //   return [...tags];
-    // });
+    if (action === ActionEnum.ShowRegiments) {
+      navigate(`/regiments`);
+      return;
+    }
 
     searchParams.delete('artists');
     searchParams.delete('regiments');
     searchParams.delete('tags');
     setSearchParams(searchParams);
 
-    navigate(`/`);
+    navigate(`/gallery`);
   };
 
-  const handleTagClick = (tag: Tag) => {
-    if (tag.itemId) {
-      const updatedTags: any = tags.map((tag: Tag) => {
-        tag.isSelected = false;
-        return tag;
-      });
-
-      console.log('Home:handleTagClick:updatedTags', updatedTags);
-      setTags(updatedTags);
-      const collectionUri = `/collectionDetailView/${tag.itemId || ''}`;
-      navigate(collectionUri);
-    }
-  };
+  if (loadStatus === LoadStatus.LOADING) {
+    return <Loading />;
+  }
+  if (loadStatus === LoadStatus.ERROR) {
+    return <ErrorHandler error={error} />;
+  }
 
   return (
     <div css={classes.container}>
-      <AppBar css={classes.appbar} position="relative">
-        <Toolbar>
-          <span css={classes.appbar__left}>
-            <Button color="inherit" onClick={handleGalleryClick} variant="text">
-              <Typography variant="h6">Gallery</Typography>
-            </Button>
-            {tags
-              .filter((tag: Tag) => tag.isSelected)
-              .map((tag: Tag, ix: number) => (
-                <Chip
-                  css={classes.chip}
-                  key={ix}
-                  label={tag.name}
-                  onClick={() => handleTagClick(tag)}
-                  variant={'outlined'}
-                />
-              ))}
-          </span>
-          <Stack direction="row" gap={3}>
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleSettingsClick}
-              size="small"
-            >
-              <SettingsOutlinedIcon css={classes.icon} />
-              Settings
-            </IconButton>
-
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleAddItemClick}
-              size="small"
-            >
-              <AddIcon css={classes.icon} />
-              Add
-            </IconButton>
-
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleAddCollectionClick}
-              size="small"
-            >
-              <AddIcon css={classes.icon} />
-              Add Collection
-            </IconButton>
-
-            <SortMenu />
-
-            <IconButton
-              aria-label="menu"
-              color="inherit"
-              edge="start"
-              onClick={handleFilterClick}
-              size="small"
-            >
-              <SearchIcon css={classes.icon} />
-              Search
-            </IconButton>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-
+      <MenuBar></MenuBar>
       <div css={classes.content}>
         <FilterDrawer onActionSelect={handleFilterDrawAction} />
         <Routes>
-          <Route path="/" element={<Gallery />} />
+          <Route path="login" element={<Login />} />
+          <Route path="/" element={<Login />} />
 
-          <Route path="artists" element={<ArtistsList />} />
-          <Route path="battles" element={<BattlesList />} />
-          <Route path="regiments" element={<RegimentsList />} />
-          <Route path="settings/" element={<Settings />} />
-
-          <Route path="collections" element={<CollectionList />} />
           <Route
-            path="collectionDetailView/:itemId"
-            element={<CollectionDetailView />}
+            path="artists"
+            element={<AuthenticationGuard component={ArtistsList} />}
           />
           <Route
-            path="collectionDetailEdit/:itemId"
-            element={<CollectionDetailEdit />}
+            path="gallery"
+            element={<AuthenticationGuard component={Gallery} />}
+          />
+          <Route
+            path="battles"
+            element={<AuthenticationGuard component={BattlesList} />}
+          />
+          <Route
+            path="regiments"
+            element={<AuthenticationGuard component={RegimentsList} />}
+          />
+
+          <Route
+            path="settings"
+            element={<AuthenticationGuard component={Settings} />}
+          />
+          <Route
+            path="collections"
+            element={<AuthenticationGuard component={CollectionList} />}
+          />
+
+          <Route
+            path="collectionDetailView/:collectionId"
+            element={<AuthenticationGuard component={CollectionDetailView} />}
+          />
+          <Route
+            path="collectionDetailEdit/:collectionId"
+            element={<AuthenticationGuard component={CollectionDetailEdit} />}
           />
           <Route
             path="collectionDetailAdd/"
-            element={<CollectionDetailAdd />}
+            element={<AuthenticationGuard component={CollectionDetailAdd} />}
           />
 
-          <Route path="itemDetailEdit/:itemId" element={<ItemDetailEdit />} />
-          <Route path="itemDetailView/:itemId" element={<ItemDetailView />} />
-          <Route path="itemDetailAdd/" element={<ItemDetailAdd />} />
+          <Route
+            path="itemDetailView/:itemId"
+            element={<AuthenticationGuard component={ItemDetailView} />}
+          />
+          <Route
+            path="itemDetailEdit/:itemId"
+            element={<AuthenticationGuard component={ItemDetailEdit} />}
+          />
+          <Route
+            path="itemDetailAdd/"
+            element={<AuthenticationGuard component={ItemDetailAdd} />}
+          />
+
+          <Route path="loading" element={<Loading />} />
+          <Route path="sandbox" element={<Sandbox />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>

@@ -1,16 +1,32 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'utilities/createStyles';
 
-const classes = {
-  container: css({
-    padding: '0 2rem 2rem 2rem',
-  }),
-  title: css({
+const classes = createStyles({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.5rem',
+    margin: '2rem auto 2rem auto',
+    width: '85%',
+  },
+  noItems: {
     alignItems: 'center',
     display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  title: {
+    alignItems: 'center',
+    display: 'flex',
+    margin: '1rem 0 0.5rem 0',
     whiteSpace: 'break-spaces',
-  }),
-  button: css({
-    marginTop: '1rem',
-  }),
-};
+  },
+  button: {
+    flexDirection: 'column',
+    position: 'fixed',
+    right: '2rem',
+    top: '5rem',
+  },
+});
+
 export { classes };

@@ -1,41 +1,74 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
+import { Loading } from 'components/Loading/Loading';
 import { classes } from './BattlesList.style';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import readBattleCountsQuery from './queries/readBattleCountsQuery';
-import { BattleTag } from '../../types/BattleTag.type';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { useNavigationTags } from 'hooks/useNavigationTags';
+import { useHeaderTitleStateSet, useRatingsStateGet } from 'state';
+import { BattleTag } from 'types';
+import { ratingsToArray } from 'utilities/helper';
+import { logError } from 'utilities/logError';
+import { readBattleCountsQuery } from './queries/readBattleCountsQuery';
 
 const BattlesList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const moduleName = `${BattlesList.name}.tsx`;
+
+  const setHeaderTitle = useHeaderTitleStateSet();
+  const ratings = useRatingsStateGet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [battles, setBattles] = useState([] as BattleTag[]);
-  const errorRef: any = useRef();
+  const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-  useEffect(() => {
-    readBattleCounts();
-  }, []);
+  const { clearHeaderNavigationTags } = useNavigationTags();
 
-  const [readBattleCounts, {}] = useLazyQuery(readBattleCountsQuery, {
+  const [readBattleCounts, { error }] = useLazyQuery(readBattleCountsQuery, {
     onCompleted: (data) => {
       setBattles(data.readBattleCounts);
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
-      errorRef.current = exception;
+      logError({ moduleName, name: 'readBattleCounts', exception });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
+  useEffect(() => {
+    setHeaderTitle('Battles');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
+
+  useEffect(() => {
+    const selectedRatings = ratingsToArray(ratings);
+
+    readBattleCounts({
+      variables: {
+        ratings: selectedRatings,
+      },
+    });
+  }, [location.key, ratings, readBattleCounts]);
+
   const handleChipClick = (index: number) => {
-    let newBattles: BattleTag[] = [...battles];
+    let newBattles: BattleTag[] = battles.map((battle) => {
+      return { ...battle };
+    });
     newBattles[index].isSelected = !newBattles[index].isSelected;
+
+    const isAnySelected = newBattles.some((battle: BattleTag) => {
+      return battle.isSelected;
+    });
+    setIsSearchEnabled(isAnySelected);
+
     setBattles(newBattles);
   };
 
@@ -46,40 +79,51 @@ const BattlesList = () => {
         .map((battle) => battle.name)
         .join('||')
     );
-    navigate(`/?battles=${selected}`);
+    navigate(`/gallery?battles=${selected}`);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading..</p>;
+  if (loadStatus === LoadStatus.LOADING) {
+    return <Loading />;
+  }
   if (loadStatus === LoadStatus.ERROR) {
-    return <p>`Error: ${JSON.stringify(errorRef.current)}`</p>;
+    return <ErrorHandler error={error} />;
   }
 
   return (
-    <div css={classes.container}>
-      <Typography variant="h4" css={classes.title}>
-        Battles
-      </Typography>
-      <Stack direction={'row'} gap={1} sx={{ flexWrap: 'wrap' }}>
-        {battles.map((battle: BattleTag, index: number) => (
-          <Chip
-            color="primary"
-            label={`${battle.name || 'Unknown'} (${battle.count})`}
-            key={index}
-            onClick={() => {
-              handleChipClick(index);
-            }}
-            variant={battle.isSelected ? undefined : 'outlined'}
-          />
-        ))}
-      </Stack>
-      <Button
-        variant="contained"
-        css={classes.button}
-        onClick={handleSearchClick}
-      >
-        Search
-      </Button>
-    </div>
+    <>
+      <Helmet>
+        <title>Uniformology: Battles</title>
+      </Helmet>
+
+      {battles.length === 0 ? (
+        <Typography css={classes.noItems} variant="h5">
+          No Battles available.
+        </Typography>
+      ) : (
+        <div css={classes.container}>
+          {battles.map((battle: BattleTag, index: number) => (
+            <Chip
+              color="primary"
+              label={`${battle.name || 'Unknown'} (${battle.count})`}
+              key={index}
+              onClick={() => {
+                handleChipClick(index);
+              }}
+              variant={battle.isSelected ? undefined : 'outlined'}
+            />
+          ))}
+          <Button
+            aria-label="search"
+            css={classes.button}
+            disabled={!isSearchEnabled}
+            onClick={handleSearchClick}
+            variant="contained"
+          >
+            Search
+          </Button>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -1,21 +1,21 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const createItemMutation = gql`
   mutation createItem(
-    $artist: String
-    $descriptionLong: String
-    $descriptionShort: String
-    $publicId: String
-    $rating: Int
-    $regiments: String
-    $tags: [String]
-    $title: String
-    $yearFrom: String
-    $yearTo: String
+    $artist: String!
+    $descriptionLong: String!
+    $descriptionShort: String!
+    $publicId: String!
+    $rating: Int!
+    $regiments: String!
+    $tags: [String!]!
+    $title: String!
+    $yearFrom: String!
+    $yearTo: String!
   ) {
     createItem(
       input: {
-        artist: { name: $artist }
+        artist: $artist
         descriptionLong: $descriptionLong
         descriptionShort: $descriptionShort
         publicId: $publicId
@@ -29,3 +29,5 @@ export default gql`
     )
   }
 `;
+
+export { createItemMutation };

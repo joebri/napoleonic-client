@@ -1,10 +1,24 @@
-import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider, GraphQLProvider } from 'providers';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 
+import { App } from './App';
+import './fonts/Tangerine/Tangerine-Regular.ttf';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+
+console.info(
+  `Starting "${process.env.REACT_APP_NAME}", version: ${process.env.REACT_APP_VERSION}`
+);
+console.info(`Attaching to server url: ${process.env.REACT_APP_GRAPH_URL}`);
+
+let isSentryEnabled =
+  process.env.REACT_APP_SENTRY_ENABLED?.toLowerCase() === 'true' ? true : false;
+if (isSentryEnabled) {
+  (async () => {
+    await import('./sentryInitialisation');
+  })();
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,12 +26,21 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <GraphQLProvider>
+          <App />
+        </GraphQLProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+let isWebVitalsEnabled =
+  process.env.REACT_APP_WEBVITALS_ENABLED?.toLowerCase() === 'true'
+    ? true
+    : false;
+if (isWebVitalsEnabled) {
+  (async () => {
+    await import('./webVitalsInitialisation');
+  })();
+}

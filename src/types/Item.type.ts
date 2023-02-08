@@ -1,12 +1,8 @@
 type Item = {
-  artist: {
-    name: string;
-  };
-  contentId: string;
+  artist: string;
   descriptionLong: string;
   descriptionShort: string;
   id: string;
-  isCollection: boolean;
   publicId: string;
   rating: number;
   regiments: string;

@@ -1,79 +1,89 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Alert, Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 
+import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
 import { classes } from './ItemDetail.style';
-import createItemMutation from './queries/createItemMutation';
 import { Edit } from './Edit';
-import { initialisedItem } from '../../helper';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+
+import { createItemMutation } from './queries/createItemMutation';
+import { initialisedItem } from 'utilities/helper';
+import { Item } from 'types';
+import { useLocalStorage } from 'hooks/useLocalStorage';
+import { logError } from 'utilities/logError';
+import { useNavigationTags } from 'hooks/useNavigationTags';
 
 const ItemDetailAdd = () => {
   const navigate = useNavigate();
+  const moduleName = `${ItemDetailAdd.name}.tsx`;
 
-  const [template, setTemplate] = useLocalStorage<any>('template', {
+  const [template] = useLocalStorage<any>('template', {
     artist: '',
-    tags: [],
+    tags: '',
     urlRoot: '',
+    yearFrom: '',
   });
 
   const [item, setItem] = useState({
     ...initialisedItem,
-    artist: {
-      name: template.artist,
-    },
+    artist: template.artist,
     publicId: template.urlRoot,
     tags: template.tags.split(','),
+    yearFrom: template.yearFrom,
   });
   const [showMessage, setShowMessage] = useState(false);
 
-  const [createItem] = useMutation(createItemMutation);
+  const { enableLastNavigationTag } = useNavigationTags();
 
-  const handleEditChange = (field: string, value: any) => {
-    //TODO need a better approach
-    if (field === 'artist-name') {
-      setItem((priorItem: any) => ({
-        ...priorItem,
-        artist: { name: value },
-      }));
-      return;
-    }
+  useEffect(() => {
+    enableLastNavigationTag();
+  }, [enableLastNavigationTag]);
 
-    setItem((priorItem: any) => ({
+  const [createItem] = useMutation(createItemMutation, {
+    onCompleted: (data) => {
+      navigate(`/itemDetailView/${data.createItem}`);
+    },
+    onError: (exception) => {
+      logError({
+        moduleName,
+        name: 'createItem',
+        exception,
+        message: 'Create failed.',
+      });
+      setShowMessage(true);
+    },
+  });
+
+  const handleEditChange = (field: string, value: string | number) => {
+    setItem((priorItem: Item) => ({
       ...priorItem,
       [field]: value,
     }));
   };
 
   const handleEditCancelClick = () => {
-    navigate(`/`);
+    navigate(`/gallery`);
   };
 
-  const handleEditSaveClick = async () => {
-    try {
-      const result = await createItem({
-        variables: {
-          artist: item.artist.name,
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
-          publicId: item.publicId,
-          rating: parseInt(item.rating.toString()),
-          regiments: item.regiments,
-          tags: item.tags,
-          title: item.title,
-          yearFrom: item.yearFrom,
-          yearTo: item.yearTo,
-        },
-      });
-      navigate(`/itemDetailView/${result.data.createItem}`);
-    } catch (exception: any) {
-      console.error(`ItemDetailAdd exception. Create failed.\n${exception}`);
-      setShowMessage(true);
-    }
+  const handleEditSaveClick = () => {
+    createItem({
+      variables: {
+        artist: item.artist?.trim(),
+        descriptionLong: item.descriptionLong?.trim(),
+        descriptionShort: item.descriptionShort?.trim(),
+        publicId: item.publicId?.trim(),
+        rating: parseInt(item.rating.toString()),
+        regiments: item.regiments?.trim(),
+        tags: item.tags,
+        title: item.title?.trim(),
+        yearFrom: item.yearFrom?.trim(),
+        yearTo: item.yearTo?.trim(),
+      },
+    });
   };
 
   const handleMessageClose = () => {
@@ -82,8 +92,11 @@ const ItemDetailAdd = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Add Item</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Add Item</Typography>
+        <Typography variant="h5">Add Item</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -91,20 +104,12 @@ const ItemDetailAdd = () => {
           onSave={handleEditSaveClick}
         />
       </div>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+
+      <AppSnackBar
+        message="Unable to create item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to create item. Please try again.
-        </Alert>
-      </Snackbar>
+      />
     </>
   );
 };

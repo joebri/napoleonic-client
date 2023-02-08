@@ -1,64 +1,85 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { classes } from './ItemDetail.style';
-import readItemQuery from './queries/readItemQuery';
-import updateItemMutation from './queries/updateItemMutation';
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
+import { Loading } from 'components/Loading/Loading';
 import { Edit } from './Edit';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
+import { classes } from './ItemDetail.style';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { Rating } from 'enums/rating.enum';
+import { useConfirmExit } from 'hooks/useConfirmExit';
+import { logError } from 'utilities/logError';
+import { useNavigationTags } from 'hooks/useNavigationTags';
+import { Item } from 'types';
+import { initialisedItem } from 'utilities/helper';
+import { readItemQuery } from './queries/readItemQuery';
+import { updateItemMutation } from './queries/updateItemMutation';
 
 const ItemDetailEdit = () => {
   let { itemId } = useParams();
   const navigate = useNavigate();
+  const moduleName = `${ItemDetailEdit.name}.tsx`;
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
   const [item, setItem] = useState(initialisedItem);
   const [showMessage, setShowMessage] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { enableLastNavigationTag } = useNavigationTags();
+
+  useConfirmExit(isDirty);
 
   const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
     onCompleted: (data) => {
-      setItem({ ...data.readItem, rating: data.readItem.rating || 3 });
+      setItem({
+        ...data.readItem,
+        rating: data.readItem.rating || Rating.MEDIUM,
+      });
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error('error', itemId);
-      console.error(exception);
+      logError({ moduleName, name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
-  const [updateItem] = useMutation(updateItemMutation);
+  const [updateItem] = useMutation(updateItemMutation, {
+    onCompleted: () => {
+      navigate(`/itemDetailView/${item.id}`);
+    },
+    onError: (exception) => {
+      logError({ moduleName, name: 'updateItem', exception, itemId });
+      setShowMessage(true);
+    },
+  });
 
-  const loadForm = () => {
+  useEffect(() => {
+    enableLastNavigationTag();
+  }, [enableLastNavigationTag]);
+
+  const loadForm = useCallback(() => {
     setLoadStatus(LoadStatus.LOADING);
     readItem();
-  };
+  }, [readItem]);
 
   useEffect(() => {
     loadForm();
-  }, [itemId]);
+  }, [itemId, loadForm]);
 
-  const handleEditChange = (field: string, value: any) => {
-    //TODO need a better approach
-    if (field === 'artist-name') {
-      setItem((priorItem: any) => ({
-        ...priorItem,
-        artist: { name: value },
-      }));
-      return;
-    }
-
-    setItem((priorItem: any) => ({
+  const handleEditChange = (field: string, value: string | number) => {
+    setItem((priorItem: Item) => ({
       ...priorItem,
       [field]: value,
     }));
+    setIsDirty(true);
   };
 
   const handleEditCancelClick = () => {
@@ -66,42 +87,42 @@ const ItemDetailEdit = () => {
     navigate(`/itemDetailView/${itemId}`);
   };
 
-  const handleEditSaveClick = async () => {
-    try {
-      await updateItem({
-        variables: {
-          artist: item.artist.name,
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
-          id: item.id,
-          publicId: item.publicId,
-          rating: parseInt(item.rating.toString()),
-          regiments: item.regiments,
-          tags: item.tags,
-          title: item.title,
-          yearFrom: item.yearFrom,
-          yearTo: item.yearTo,
-        },
-      });
-      navigate(`/itemDetailView/${item.id}`);
-    } catch (exception: any) {
-      console.error(`ItemDetailEdit exception. Update failed.\n${exception}`);
-      setShowMessage(true);
-    }
+  const handleEditSaveClick = () => {
+    updateItem({
+      variables: {
+        artist: item.artist?.trim(),
+        descriptionLong: item.descriptionLong?.trim(),
+        descriptionShort: item.descriptionShort?.trim(),
+        id: item.id,
+        publicId: item.publicId?.trim(),
+        rating: parseInt(item.rating.toString()),
+        regiments: item.regiments?.trim(),
+        tags: item.tags,
+        title: item.title?.trim(),
+        yearFrom: item.yearFrom?.trim(),
+        yearTo: item.yearTo?.trim(),
+      },
+    });
   };
 
   const handleMessageClose = () => {
     setShowMessage(false);
   };
 
-  //TODO JSB rework this
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) {
+    return <Loading />;
+  }
+  if (loadStatus === LoadStatus.ERROR) {
+    return <ErrorHandler error={error} />;
+  }
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Edit Item</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Edit Item</Typography>
+        <Typography variant="h5">Edit Item</Typography>
         <Edit
           item={item}
           onCancel={handleEditCancelClick}
@@ -110,20 +131,11 @@ const ItemDetailEdit = () => {
         />
       </div>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to update item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to update item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readTagsQuery = gql`
   query readTags {
     readTags {
       group
@@ -9,3 +9,5 @@ export default gql`
     }
   }
 `;
+
+export { readTagsQuery };

@@ -1,37 +1,84 @@
 /** @jsxImportSource @emotion/react */
 
-// import { useContext } from 'react';
+import {
+  BackspaceOutlined as BackspaceOutlinedIcon,
+  Save as SaveIcon,
+} from '@mui/icons-material';
 import { Button, Stack, TextField, Typography } from '@mui/material';
-// import {
-//   BackspaceOutlined as BackspaceOutlinedIcon,
-//   Save as SaveIcon,
-// } from '@mui/icons-material';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './Settings.style';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+
+import { useLocalStorage } from 'hooks/useLocalStorage';
+import { useNavigationTags } from 'hooks/useNavigationTags';
+import { useHeaderTitleStateSet } from 'state';
+import { Template } from 'types';
+
+const initialisedTemplate: Template = {
+  artist: '',
+  tags: '',
+  urlRoot: '',
+  yearFrom: '',
+};
 
 const Settings = () => {
-  const [template, setTemplate] = useLocalStorage<any>('template', {
-    artist: '',
-    tags: [],
-    urlRoot: '',
-  });
+  const [templateLS, setTemplateLS] = useLocalStorage<Template>(
+    'template',
+    initialisedTemplate
+  );
 
-  const handleChange = (event: any, field: string) => {
-    setTemplate((priorTemplate: any) => ({
+  const setHeaderTitle = useHeaderTitleStateSet();
+
+  const [template, setTemplate] = useState(templateLS);
+  const [showMessage, setShowMessage] = useState(false);
+
+  const { clearHeaderNavigationTags } = useNavigationTags();
+
+  useEffect(() => {
+    setHeaderTitle('Settings');
+    clearHeaderNavigationTags();
+  }, [clearHeaderNavigationTags, setHeaderTitle]);
+
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: string
+  ) => {
+    setTemplate((priorTemplate: Template) => ({
       ...priorTemplate,
       [field]: event.target.value,
     }));
   };
 
-  // const handleCancelClick = () => {};
+  const handleCancelClick = () => {
+    setTemplate(templateLS);
+  };
 
-  // const handleSaveClick = () => {};
+  const handleSaveClick = () => {
+    const updatedTemplate: Template = {
+      artist: template.artist.trim(),
+      tags: template.tags.trim(),
+      urlRoot: template.urlRoot.trim(),
+      yearFrom: template.yearFrom.trim(),
+    };
+    setTemplate(updatedTemplate);
+    setTemplateLS(updatedTemplate);
+
+    setShowMessage(true);
+  };
+
+  const handleMessageClose = () => {
+    setShowMessage(false);
+  };
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Settings</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h5">Templates</Typography>
+        <Typography variant="h5">Item Template</Typography>
         <TextField
           fullWidth
           InputLabelProps={{
@@ -66,7 +113,19 @@ const Settings = () => {
           variant="standard"
         />
 
-        {/* <div css={classes.actionBar}>
+        <TextField
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          label="Year From"
+          margin="normal"
+          onChange={(event) => handleChange(event, 'yearFrom')}
+          value={template.yearFrom}
+          variant="standard"
+        />
+
+        <div css={classes.actionBar}>
           <Stack direction="row" gap={1}>
             <Button
               onClick={handleCancelClick}
@@ -84,8 +143,15 @@ const Settings = () => {
               Save
             </Button>
           </Stack>
-        </div> */}
+        </div>
       </div>
+
+      <AppSnackBar
+        message="Settings saved!"
+        onClose={handleMessageClose}
+        open={showMessage}
+        severity="success"
+      ></AppSnackBar>
     </>
   );
 };

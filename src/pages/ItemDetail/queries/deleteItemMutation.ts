@@ -1,7 +1,9 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const deleteItemMutation = gql`
   mutation deleteItem($id: ID!) {
     deleteItem(id: $id)
   }
 `;
+
+export { deleteItemMutation };

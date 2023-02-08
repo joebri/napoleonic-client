@@ -15,6 +15,49 @@ declare module '@mui/material/styles' {
 }
 
 const theme = createTheme({
+  components: {
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+          paddingBottom: '0',
+          paddingTop: '0',
+        },
+        title: {
+          fontFamily: 'TangerineBold',
+          fontSize: '2.2rem',
+        },
+        subheader: {
+          fontFamily: 'TangerineBold',
+          fontSize: '1.8rem',
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          paddingTop: '0',
+        },
+      },
+    },
+    MuiTypography: {
+      variants: [
+        {
+          props: { variant: 'h2' },
+          style: {
+            fontFamily: 'Tangerine',
+            fontSize: '4rem',
+          },
+        },
+        {
+          props: { variant: 'h3' },
+          style: {
+            fontFamily: 'Tangerine',
+            fontSize: '2.5rem',
+          },
+        },
+      ],
+    },
+  },
   palette: {
     primary: {
       main: blueGrey[500],

@@ -8,12 +8,22 @@ cd napoleonic-client
 npm install
 ```
 
-# Running the application
+## Running the application locally
 
-- start napoleonic-service (see [repo](https://github.com/joebri/napoleonic-service.git))
+### Pre-requisites
+
+- Start the napoleonic-service (see [repo](https://github.com/joebri/napoleonic-service.git)).
+
+### Run
 
 - `npm run start:dev`
 
-# Testing
+## Testing
 
 - `npm test`
+
+## Deploying to Docker
+
+- Run `npm run build` to create production build (see \build folder).
+
+- Run `npm run docker:up` to build and run the container.

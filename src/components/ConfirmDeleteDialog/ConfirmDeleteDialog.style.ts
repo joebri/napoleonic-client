@@ -1,11 +1,11 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'utilities/createStyles';
 
-const classes = {
-  dialog: css({
+const classes = createStyles({
+  dialog: {
     '& .MuiPaper-root': {
       width: '20vw',
     },
-  }),
-};
+  },
+});
 
 export { classes };

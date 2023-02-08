@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { SyntheticEvent } from 'react';
 
 import { classes } from './ConfirmDeleteDialog.style';
 
@@ -22,7 +23,10 @@ const ConfirmDeleteDialog = ({
   onClose,
   onDeleteConfirmed,
 }: ConfirmDeleteDialogProps) => {
-  const handleClickAwayClose = (_: any, reason: string) => {
+  const handleClickAwayClose = (
+    _: SyntheticEvent<any> | Event,
+    reason: string
+  ) => {
     if (reason && reason === 'backdropClick') {
       return;
     }

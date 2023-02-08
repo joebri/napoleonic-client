@@ -1,28 +1,37 @@
 /** @jsxImportSource @emotion/react */
 
-import * as React from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Alert, Snackbar } from '@mui/material';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
+import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
+import { Loading } from 'components/Loading/Loading';
 import { classes } from './ItemDetail.style';
-import readItemQuery from './queries/readItemQuery';
-import deleteItemMutation from './queries/deleteItemMutation';
 import { View } from './View';
-import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { LoadStatus } from '../../enums/loadStatus.enum';
-import { initialisedItem } from '../../helper';
-// import { Rating } from '../../enums/rating.enum';
+
+import { LoadStatus } from 'enums/loadStatus.enum';
+import { logError } from 'utilities/logError';
+import { useNavigationTags } from 'hooks/useNavigationTags';
+import { initialisedItem } from 'utilities/helper';
+import { deleteItemMutation } from './queries/deleteItemMutation';
+import { readItemQuery } from './queries/readItemQuery';
 
 const ItemDetailView = () => {
-  let { itemId } = useParams();
+  const { itemId } = useParams();
   const navigate = useNavigate();
+  const moduleName = `${ItemDetailView.name}.tsx`;
 
-  const [loadStatus, setLoadStatus] = React.useState(LoadStatus.LOADING);
-  const [item, setItem] = React.useState(initialisedItem);
-  const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] =
-    React.useState(false);
-  const [showMessage, setShowMessage] = React.useState(false);
+  const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
+  const [item, setItem] = useState(initialisedItem);
+  const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+
+  const { enableLastNavigationTag } = useNavigationTags();
+
+  const [deleteItem] = useMutation(deleteItemMutation);
 
   const [readItem, { error }] = useLazyQuery(readItemQuery, {
     variables: { id: itemId },
@@ -31,21 +40,23 @@ const ItemDetailView = () => {
       setLoadStatus(LoadStatus.LOADED);
     },
     onError: (exception) => {
-      console.error(exception);
+      logError({ moduleName, name: 'readItem', exception, itemId });
       setLoadStatus(LoadStatus.ERROR);
     },
   });
 
-  const [deleteItem] = useMutation(deleteItemMutation);
+  useEffect(() => {
+    enableLastNavigationTag();
+  }, [enableLastNavigationTag]);
 
-  const loadForm = () => {
-    setLoadStatus(LoadStatus.LOADING);
-    readItem();
-  };
+  useEffect(() => {
+    const loadForm = () => {
+      setLoadStatus(LoadStatus.LOADING);
+      readItem();
+    };
 
-  React.useEffect(() => {
     loadForm();
-  }, [itemId]);
+  }, [itemId, readItem]);
 
   const handleEditClick = () => {
     navigate(`/itemDetailEdit/${itemId}`);
@@ -66,9 +77,15 @@ const ItemDetailView = () => {
           id: itemId,
         },
       });
-      navigate(`/`);
+      navigate(`/gallery`);
     } catch (exception) {
-      console.error(`ItemDetailView exception. Delete failed.\n${exception}`);
+      logError({
+        moduleName,
+        name: 'handleDeleteConfirmed',
+        exception,
+        message: 'Delete failed.',
+        itemId,
+      });
       setShowConfirmDeleteDialog(false);
       setShowMessage(true);
     }
@@ -78,11 +95,18 @@ const ItemDetailView = () => {
     setShowMessage(false);
   };
 
-  if (loadStatus === LoadStatus.LOADING) return <p>Loading...</p>;
-  if (loadStatus === LoadStatus.ERROR) return <p>Error: {error?.message}</p>;
+  if (loadStatus === LoadStatus.LOADING) {
+    return <Loading />;
+  }
+  if (loadStatus === LoadStatus.ERROR) {
+    return <ErrorHandler error={error} />;
+  }
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Item</title>
+      </Helmet>
       <div css={classes.container}>
         <View
           item={item}
@@ -97,20 +121,11 @@ const ItemDetailView = () => {
         onDeleteConfirmed={handleDeleteConfirmed}
       />
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to delete item. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to delete item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

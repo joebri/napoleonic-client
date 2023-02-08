@@ -1,41 +1,43 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import { Alert, Snackbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { classes } from './CollectionDetail.style';
-import createItemMutation from './queries/createItemMutation';
+
+import { useLocalStorage } from 'hooks/useLocalStorage';
+import { logError } from 'utilities/logError';
+import { Collection } from 'types';
+import { initialisedCollection } from 'utilities/helper';
 import { Edit } from './Edit';
-import { initialisedItem } from '../../helper';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { createCollectionMutation } from './queries/createCollectionMutation';
 
 const CollectionDetailAdd = () => {
   const navigate = useNavigate();
+  const moduleName = `${CollectionDetailAdd.name}.tsx`;
 
-  const [template, setTemplate] = useLocalStorage<any>('template', {
+  const [template] = useLocalStorage<any>('template', {
     artist: '',
-    tags: [],
+    tags: '',
     urlRoot: '',
+    yearFrom: '',
   });
 
-  const [item, setItem] = useState({
-    ...initialisedItem,
-    artist: {
-      name: template.artist,
-    },
-    publicId: '/Napoleonic/GreeceBar_wphbeq.gif',
+  const [collection, setCollection] = useState({
+    ...initialisedCollection,
     tags: template.tags.split(','),
   });
   const [showMessage, setShowMessage] = useState(false);
 
-  const [createItem] = useMutation(createItemMutation);
+  const [createCollection] = useMutation(createCollectionMutation);
 
-  const handleEditChange = (field: string, value: any) => {
-    setItem((priorItem: any) => ({
-      ...priorItem,
+  const handleEditChange = (field: string, value: string | number) => {
+    setCollection((priorCollection: Collection) => ({
+      ...priorCollection,
       [field]: value,
     }));
   };
@@ -46,21 +48,23 @@ const CollectionDetailAdd = () => {
 
   const handleEditSaveClick = async () => {
     try {
-      const result = await createItem({
+      const result = await createCollection({
         variables: {
-          descriptionLong: item.descriptionLong,
-          descriptionShort: item.descriptionShort,
-          tags: item.tags,
-          title: item.title,
+          descriptionLong: collection.descriptionLong.trim(),
+          descriptionShort: collection.descriptionShort.trim(),
+          tagName: collection.tagName.trim(),
+          tags: collection.tags,
+          title: collection.title.trim(),
         },
       });
-      console.info(
-        'Manually create collection record for:',
-        result.data.createItem
-      );
-      navigate(`/collectionDetailView/${result.data.createItem}`);
-    } catch (exception: any) {
-      console.error(`ItemDetailAdd exception. Create failed.\n${exception}`);
+      navigate(`/collectionDetailView/${result.data.createCollection}`);
+    } catch (exception) {
+      logError({
+        moduleName,
+        name: 'handleEditSaveClick',
+        exception,
+        message: 'Create failed.',
+      });
       setShowMessage(true);
     }
   };
@@ -71,30 +75,24 @@ const CollectionDetailAdd = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Uniformology: Add Collection</title>
+      </Helmet>
       <div css={classes.container}>
-        <Typography variant="h4">Add Collection</Typography>
+        <Typography variant="h5">Add Collection</Typography>
         <Edit
-          item={item}
+          collection={collection}
           onCancel={handleEditCancelClick}
           onChange={handleEditChange}
           onSave={handleEditSaveClick}
         />
       </div>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={6000}
+      <AppSnackBar
+        message="Unable to create Collection. Please try again."
         onClose={handleMessageClose}
         open={showMessage}
-      >
-        <Alert
-          css={classes.messageAlert}
-          onClose={handleMessageClose}
-          severity="error"
-        >
-          Unable to create item. Please try again.
-        </Alert>
-      </Snackbar>
+      ></AppSnackBar>
     </>
   );
 };

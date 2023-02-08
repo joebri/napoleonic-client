@@ -1,40 +1,45 @@
-import { css } from '@emotion/react';
+import { createStyles } from 'utilities/createStyles';
 
-const classes = {
-  container: css({
+const classes = createStyles({
+  container: {
     margin: '0.5rem auto 2rem auto',
     width: '80%',
-  }),
-  container__link: css({
+  },
+  container__link: {
     display: 'flex',
     justifyContent: 'center',
     fontSize: '2rem',
-  }),
-  container__image: css({
+  },
+  container__image: {
     display: 'flex',
     justifyContent: 'center',
     marginBottom: '1rem',
     marginTop: '2rem',
-  }),
-  tags: css({
+  },
+  tags: {
     marginTop: '1rem',
-  }),
-  actionBar: css({
+  },
+  actionBar: {
+    display: 'flex',
+    flexDirection: 'column',
     position: 'fixed',
     right: '2rem',
     top: '5rem',
-  }),
-  button_spacer: css({
-    marginRight: '1rem',
-  }),
-  dialog: css({
+  },
+  button_spacer: {
+    marginBottom: '1rem',
+  },
+  button_spacer_x4: {
+    marginBottom: '4rem',
+  },
+  dialog: {
     '& .MuiPaper-root': {
       width: '20vw',
     },
-  }),
-  messageAlert: css({
+  },
+  messageAlert: {
     width: '100%',
-  }),
-};
+  },
+});
 
 export { classes };

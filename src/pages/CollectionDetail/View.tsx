@@ -1,30 +1,27 @@
 /** @jsxImportSource @emotion/react */
 
 import { Link } from 'react-router-dom';
+import { AdvancedImage } from '@cloudinary/react';
 import { Button, Typography } from '@mui/material';
 import {
   Edit as EditIcon,
   DeleteForever as DeleteForeverIcon,
 } from '@mui/icons-material';
-import { Image } from 'cloudinary-react';
 
 import { classes } from './CollectionDetail.style';
-import { imageService, imageAccountName } from '../../services/imageService';
-import { TagInput } from '../../components/TagInput/TagInput';
-import { Item } from '../../types';
 
-const getUrl = (imagePublicId: string) => {
-  const url = imageService.image(`${imagePublicId}`).format('auto').toURL();
-  return url;
-};
+import { Collection } from 'types';
+import { useImageService } from 'hooks/useImageService';
 
 interface ViewProps {
-  item: Item;
+  collection: Collection;
   onDelete: Function;
   onEdit: Function;
 }
 
-const View = ({ item, onDelete, onEdit }: ViewProps) => {
+const View = ({ collection, onDelete, onEdit }: ViewProps) => {
+  const { getImage } = useImageService();
+
   const handleEditClick = () => {
     onEdit();
   };
@@ -37,7 +34,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
     <div>
       <div css={classes.actionBar}>
         <Button
-          css={classes.button_spacer}
+          css={classes.button_spacer_x4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}
@@ -55,33 +52,37 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         </Button>
       </div>
 
-      <Typography variant="h4">{item.title}</Typography>
+      <Typography variant="h2">{collection.title}</Typography>
 
-      {item.descriptionShort && <p>{item.descriptionShort}</p>}
-
-      <div css={classes.container__link}>
-        <Link to={`/?collection=${item.id}`}>Plates</Link>
-      </div>
-
-      {item.descriptionLong && (
-        <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
+      {collection.descriptionShort && (
+        <Typography variant="h3">{collection.descriptionShort}</Typography>
       )}
 
       <div css={classes.container__link}>
-        <Link to={`/?collection=${item.id}`}>Plates</Link>
+        <Link
+          to={`/gallery?collection=${collection.tagName}||${collection.title}||${collection.id}`}
+        >
+          Plates
+        </Link>
+      </div>
+
+      {collection.descriptionLong && (
+        <p dangerouslySetInnerHTML={{ __html: collection.descriptionLong }} />
+      )}
+
+      <div css={classes.container__link}>
+        <Link
+          to={`/gallery?collection=${collection.tagName}||${collection.title}||${collection.id}`}
+        >
+          Plates
+        </Link>
       </div>
 
       <div css={classes.container__image}>
-        <Image
-          cloudName={imageAccountName}
-          publicId={getUrl('/Napoleonic/GreeceBar_wphbeq')}
-          secure="true"
-        />
+        <AdvancedImage cldImg={getImage('/Napoleonic/GreeceBar_wphbeq')} />
       </div>
 
-      <div css={classes.tags}>
-        <TagInput tagNames={item.tags} isEdit={false} />
-      </div>
+      <Typography>Tag Name: "{collection.tagName}"</Typography>
     </div>
   );
 };

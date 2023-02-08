@@ -1,11 +1,15 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const readCollectionsQuery = gql`
   query readCollections {
     readCollections {
-      group
-      name
-      itemId
+      descriptionLong
+      descriptionShort
+      id
+      tagName
+      title
     }
   }
 `;
+
+export { readCollectionsQuery };

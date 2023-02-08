@@ -1,17 +1,30 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, Chip, Drawer, Stack, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  Drawer,
+  FormControlLabel,
+  Slider,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { classes } from './FilterDraw.style';
-import { useAppContext } from '../../AppContext';
-import { Tag } from '../../types/Tag.type';
 
-interface FilterDrawerProps {
-  onActionSelect: Function;
-}
+import {
+  useIncludeUnknownYearState,
+  useIsFilterOpenState,
+  useRatingsState,
+  useTagsState,
+  useYearRangeState,
+} from 'state';
+import { Tag } from 'types/Tag.type';
 
-export enum ActionEnum {
+enum ActionEnum {
   Search,
   ShowArtists,
   ShowBattles,
@@ -19,19 +32,72 @@ export enum ActionEnum {
   ShowRegiments,
 }
 
-const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
-  const { isFilterOpen, setIsFilterOpen, tags, setTags } = useAppContext();
+interface TagProps {
+  onClick: Function;
+  tag: Tag;
+}
 
-  const [localTags, setLocalTags] = useState([] as Tag[]);
+const TagButton = ({ onClick, tag }: TagProps) => {
+  return (
+    <Chip
+      color="primary"
+      label={tag.name}
+      onClick={() => {
+        onClick(tag);
+      }}
+      variant={tag.isSelected ? undefined : 'outlined'}
+    />
+  );
+};
+
+interface FilterDrawerProps {
+  onActionSelect: Function;
+}
+
+const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
+  const [includeUnknownYear, setIncludeUnknownYear] =
+    useIncludeUnknownYearState();
+  const [isFilterOpen, setIsFilterOpen] = useIsFilterOpenState();
+  const [ratings, setRatings] = useRatingsState();
+  const [tags, setTags] = useTagsState();
+  const [yearRange, setYearRange] = useYearRangeState();
+
+  const [localTags, setLocalTags] = useState<Tag[]>([]);
+
+  const [localRatings, setLocalRatings] = useState({
+    high: false,
+    medium: false,
+    low: false,
+  });
+
+  const [localYearRange, setLocalYearRange] = useState<number[]>([1790, 1815]);
+
+  const [localIncludeUnknownYear, setLocalIncludeUnknownYear] =
+    useState<boolean>(true);
 
   useEffect(() => {
     setLocalTags(tags);
   }, [tags]);
 
+  useEffect(() => {
+    setLocalRatings(ratings);
+  }, [ratings]);
+
+  useEffect(() => {
+    setLocalYearRange(yearRange);
+  }, [yearRange]);
+
+  useEffect(() => {
+    setLocalIncludeUnknownYear(includeUnknownYear);
+  }, [includeUnknownYear]);
+
   const handleTagClick = (selectedTag: Tag) => {
-    const updatedTags = tags.map((tag: Tag) => {
+    const updatedTags = localTags.map((tag: Tag) => {
       if (tag.name === selectedTag.name) {
-        tag.isSelected = !tag.isSelected;
+        return {
+          ...tag,
+          isSelected: !tag.isSelected,
+        };
       }
       return tag;
     });
@@ -50,27 +116,30 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
       };
     });
 
-    console.log('FilterDraw:updatedTags', localTags, updatedTags);
     setTags(updatedTags);
+    setRatings(localRatings);
+    setYearRange(localYearRange);
+    setIncludeUnknownYear(localIncludeUnknownYear);
     setIsFilterOpen(false);
+
     onActionSelect(action);
   };
 
-  interface TagProps {
-    tag: Tag;
-  }
+  const handleRatingChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setLocalRatings({
+      ...localRatings,
+      [event.target.name]: event.target.checked,
+    });
+  };
 
-  const Tag = ({ tag }: TagProps) => {
-    return (
-      <Chip
-        color="primary"
-        label={tag.name}
-        onClick={() => {
-          handleTagClick(tag);
-        }}
-        variant={tag.isSelected ? undefined : 'outlined'}
-      />
-    );
+  const handleYearChange = (_: Event, newValue: number | number[]) => {
+    setLocalYearRange(newValue as number[]);
+  };
+
+  const handleIncludeUnknownYearChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocalIncludeUnknownYear(event.target.checked);
   };
 
   return (
@@ -81,7 +150,106 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
       onClose={handleDrawerClose}
     >
       <div css={classes.container}>
-        <div css={classes.subcontainer}>
+        <div css={classes.subContainerTop()}>
+          <div css={classes.section}>
+            <Typography variant="h5">Nationality</Typography>
+            <Stack css={classes.tagGroup} direction={'row'}>
+              {localTags
+                .filter((tag: Tag) => tag.group === 'Nation')
+                .sort((a: Tag, b: Tag) => {
+                  return a.name > b.name ? 1 : -1;
+                })
+                .map((tag: Tag, index: number) => (
+                  <TagButton key={index} onClick={handleTagClick} tag={tag} />
+                ))}
+            </Stack>
+          </div>
+          <div css={classes.section}>
+            <Typography variant="h5">Type</Typography>
+            <Stack css={classes.tagGroup} direction={'row'}>
+              {localTags
+                .filter((tag: Tag) => tag.group === 'Type')
+                .map((tag: Tag, index: number) => (
+                  <TagButton key={index} onClick={handleTagClick} tag={tag} />
+                ))}
+            </Stack>
+          </div>
+          <div css={classes.section}>
+            <Typography variant="h5">Sub Type</Typography>
+            <Stack css={classes.tagGroup} direction={'row'}>
+              {localTags
+                .filter((tag: Tag) => tag.group === 'SubType')
+                .map((tag: Tag, index: number) => (
+                  <TagButton key={index} onClick={handleTagClick} tag={tag} />
+                ))}
+            </Stack>
+          </div>
+          <div css={classes.section}>
+            <Typography variant="h5">Rating</Typography>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={localRatings.high}
+                  onChange={handleRatingChange}
+                  name="high"
+                />
+              }
+              label="High"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={localRatings.medium}
+                  onChange={handleRatingChange}
+                  name="medium"
+                />
+              }
+              label="Medium"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={localRatings.low}
+                  onChange={handleRatingChange}
+                  name="low"
+                />
+              }
+              label="Low"
+            />
+          </div>
+          <div css={classes.section}>
+            <Stack direction={'row'}>
+              <Typography variant="h5">Years </Typography>
+              <Typography
+                variant="h5"
+                css={classes.years}
+                data-testid="year-range"
+              >
+                {localYearRange[0]} - {localYearRange[1]}
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={localIncludeUnknownYear}
+                    onChange={handleIncludeUnknownYearChange}
+                  />
+                }
+                css={classes.years_checkbox}
+                label="Include unknown?"
+              />
+            </Stack>
+            <Box css={classes.slider_container}>
+              <Slider
+                getAriaLabel={() => 'Temperature range'}
+                min={1780}
+                max={1820}
+                onChange={handleYearChange}
+                value={localYearRange}
+                valueLabelDisplay="auto"
+              />
+            </Box>
+          </div>
           <Stack gap={1} direction="row">
             <Button
               variant="contained"
@@ -91,71 +259,36 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             </Button>
             <Button
               variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowRegiments)}
-            >
-              Show Regiments
-            </Button>
-          </Stack>
-          <div css={classes.section}>
-            <Typography variant="h5">Nationality</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {tags
-                .filter((tag: Tag) => tag.group === 'Nation')
-                .sort((a: Tag, b: Tag) => {
-                  return a.name > b.name ? 1 : -1;
-                })
-                .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
-                ))}
-            </Stack>
-          </div>
-          <div css={classes.section}>
-            <Typography variant="h5">Type</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {tags
-                .filter((tag: Tag) => tag.group === 'Type')
-                .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
-                ))}
-            </Stack>
-          </div>
-          <div css={classes.section}>
-            <Typography variant="h5">Sub Type</Typography>
-            <Stack css={classes.tagGroup} direction={'row'} gap={1}>
-              {tags
-                .filter((tag: Tag) => tag.group === 'SubType')
-                .map((tag: Tag, index: number) => (
-                  <Tag tag={tag} key={index} />
-                ))}
-            </Stack>
-          </div>
-        </div>
-        <div css={classes.section}>
-          <Stack gap={1} direction="row">
-            <Button
-              variant="contained"
               onClick={() => handleButtonClick(ActionEnum.ShowArtists)}
             >
               Show Artists
             </Button>
             <Button
               variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowCollections)}
+              onClick={() => handleButtonClick(ActionEnum.ShowRegiments)}
             >
-              Show Collections
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={() => handleButtonClick(ActionEnum.ShowBattles)}
-            >
-              Show Battles
+              Show Regiments
             </Button>
           </Stack>
+        </div>
+        <div css={classes.subContainerBottom}>
+          <Button
+            variant="contained"
+            onClick={() => handleButtonClick(ActionEnum.ShowCollections)}
+          >
+            Show Collections
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={() => handleButtonClick(ActionEnum.ShowBattles)}
+          >
+            Show Battles
+          </Button>
         </div>
       </div>
     </Drawer>
   );
 };
 
-export { FilterDrawer };
+export { ActionEnum, FilterDrawer };
