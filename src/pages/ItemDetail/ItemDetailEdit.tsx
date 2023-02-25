@@ -96,7 +96,7 @@ const ItemDetailEdit = () => {
         id: item.id,
         publicId: item.publicId?.trim(),
         rating: parseInt(item.rating.toString()),
-        regiments: item.regiments?.trim(),
+        regiments: item.regiments?.trim() || '',
         tags: item.tags,
         title: item.title?.trim(),
         yearFrom: item.yearFrom?.trim(),

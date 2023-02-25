@@ -1,25 +1,21 @@
 /** @jsxImportSource @emotion/react */
 
 import { useLazyQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AuthenticationGuard } from 'components/AuthenticationGuard/AuthenticationGuard';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { MenuBar } from 'components/MenuBar/MenuBar';
-import { ArtistsList } from 'pages/ArtistsList/ArtistsList';
-import { BattlesList } from 'pages/BattlesList/BattlesList';
-import { CollectionDetailAdd } from 'pages/CollectionDetail/CollectionDetailAdd';
-import { CollectionDetailEdit } from 'pages/CollectionDetail/CollectionDetailEdit';
-import { CollectionDetailView } from 'pages/CollectionDetail/CollectionDetailView';
+
 import { CollectionList } from 'pages/CollectionList/CollectionList';
 import { Gallery } from 'pages/Gallery/Gallery';
 import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
 import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
 import { NotFound } from 'pages/NotFound/NotFound';
-import { RegimentsList } from 'pages/RegimentsList/RegimentsList';
+
 import { Sandbox } from 'pages/Sandbox/Sandbox';
 import { Settings } from 'pages/Settings/Settings';
 import {
@@ -34,6 +30,37 @@ import { usePageNumberStateSet, useTagsState } from 'state';
 import { logError } from 'utilities/logError';
 import { readTagsQuery } from './queries/readTagsQuery';
 import { useAuth0 } from '@auth0/auth0-react';
+
+const ArtistsList = lazy(() =>
+  import('pages/ArtistsList/ArtistsList').then((module) => ({
+    default: module.ArtistsList,
+  }))
+);
+const BattlesList = lazy(() =>
+  import('pages/BattlesList/BattlesList').then((module) => ({
+    default: module.BattlesList,
+  }))
+);
+const CollectionDetailAdd = lazy(() =>
+  import('pages/CollectionDetail/CollectionDetailAdd').then((module) => ({
+    default: module.CollectionDetailAdd,
+  }))
+);
+const CollectionDetailEdit = lazy(() =>
+  import('pages/CollectionDetail/CollectionDetailEdit').then((module) => ({
+    default: module.CollectionDetailEdit,
+  }))
+);
+const CollectionDetailView = lazy(() =>
+  import('pages/CollectionDetail/CollectionDetailView').then((module) => ({
+    default: module.CollectionDetailView,
+  }))
+);
+const RegimentsList = lazy(() =>
+  import('pages/RegimentsList/RegimentsList').then((module) => ({
+    default: module.RegimentsList,
+  }))
+);
 
 const Home = () => {
   const navigate = useNavigate();
@@ -120,7 +147,11 @@ const Home = () => {
 
           <Route
             path="artists"
-            element={<AuthenticationGuard component={ArtistsList} />}
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthenticationGuard component={ArtistsList} />
+              </Suspense>
+            }
           />
           <Route
             path="gallery"
@@ -128,13 +159,20 @@ const Home = () => {
           />
           <Route
             path="battles"
-            element={<AuthenticationGuard component={BattlesList} />}
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthenticationGuard component={BattlesList} />
+              </Suspense>
+            }
           />
           <Route
             path="regiments"
-            element={<AuthenticationGuard component={RegimentsList} />}
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthenticationGuard component={RegimentsList} />
+              </Suspense>
+            }
           />
-
           <Route
             path="settings"
             element={<AuthenticationGuard component={Settings} />}
@@ -143,20 +181,30 @@ const Home = () => {
             path="collections"
             element={<AuthenticationGuard component={CollectionList} />}
           />
-
           <Route
             path="collectionDetailView/:collectionId"
-            element={<AuthenticationGuard component={CollectionDetailView} />}
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthenticationGuard component={CollectionDetailView} />
+              </Suspense>
+            }
           />
           <Route
             path="collectionDetailEdit/:collectionId"
-            element={<AuthenticationGuard component={CollectionDetailEdit} />}
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthenticationGuard component={CollectionDetailEdit} />
+              </Suspense>
+            }
           />
           <Route
             path="collectionDetailAdd/"
-            element={<AuthenticationGuard component={CollectionDetailAdd} />}
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AuthenticationGuard component={CollectionDetailAdd} />
+              </Suspense>
+            }
           />
-
           <Route
             path="itemDetailView/:itemId"
             element={<AuthenticationGuard component={ItemDetailView} />}

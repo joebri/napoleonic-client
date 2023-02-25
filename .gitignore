@@ -13,6 +13,7 @@ test-report.html
 /build
 
 # misc
+.dccache
 .DS_Store
 .env
 npm-debug.log*
