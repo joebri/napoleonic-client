@@ -11,51 +11,44 @@ import {
   useTagsStateGet,
   useYearRangeStateGet,
 } from 'state';
-import { Tag } from 'types';
-import { RegimentTag } from 'types/RegimentTag.type';
+import { ArtistTag, Tag } from 'types';
 import { ratingsToArray } from 'utilities/helper';
 import { logError } from 'utilities/logError';
-import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
+import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
-const useRegimentList = (moduleName: string) => {
+const useArtistsList = (moduleName: string) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { clearHeaderNavigationTags } = useNavigationTags();
-  const setHeaderTitle = useHeaderTitleStateSet();
-
   const includeUnknownYear = useIncludeUnknownYearStateGet();
   const ratings = useRatingsStateGet();
+  const setHeaderTitle = useHeaderTitleStateSet();
   const tags = useTagsStateGet();
   const yearRange = useYearRangeStateGet();
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-  const [regiments, setRegiments] = useState([] as RegimentTag[]);
+
+  const [artists, setArtists] = useState([] as ArtistTag[]);
+
   const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
+  const { clearHeaderNavigationTags } = useNavigationTags();
+
+  const [readArtistCounts, { error }] = useLazyQuery(readArtistCountsQuery, {
+    onCompleted: (data) => {
+      setArtists(data.readArtistCounts);
+      setLoadStatus(LoadStatus.LOADED);
+    },
+    onError: (exception) => {
+      logError({ moduleName, name: 'readArtistCounts', exception });
+      setLoadStatus(LoadStatus.ERROR);
+    },
+  });
+
   useEffect(() => {
-    setHeaderTitle('Regiments');
+    setHeaderTitle('Artists');
     clearHeaderNavigationTags();
   }, [clearHeaderNavigationTags, setHeaderTitle]);
-
-  const [readRegimentCounts, { error }] = useLazyQuery(
-    readRegimentCountsQuery,
-    {
-      onCompleted: (data) => {
-        const regiments: RegimentTag[] = data.readRegimentCounts.map(
-          (regiment: RegimentTag) => {
-            return { ...regiment, isSelected: false };
-          }
-        );
-        setRegiments(regiments);
-        setLoadStatus(LoadStatus.LOADED);
-      },
-      onError: (exception) => {
-        logError({ moduleName, name: 'readRegimentCounts', exception });
-        setLoadStatus(LoadStatus.ERROR);
-      },
-    }
-  );
 
   useEffect(() => {
     const selectedRatings = ratingsToArray(ratings);
@@ -67,8 +60,7 @@ const useRegimentList = (moduleName: string) => {
       .map((tag: Tag) => {
         return tag.name;
       });
-
-    readRegimentCounts({
+    readArtistCounts({
       variables: {
         ratings: selectedRatings,
         tags: tagNames,
@@ -80,39 +72,43 @@ const useRegimentList = (moduleName: string) => {
     location.key,
     ratings,
     tags,
+    readArtistCounts,
     yearRange,
     includeUnknownYear,
-    readRegimentCounts,
   ]);
 
   const handleChipClick = (index: number) => {
-    let newRegiments: RegimentTag[] = [...regiments];
-    newRegiments[index].isSelected = !newRegiments[index].isSelected;
-
-    const isAnySelected = newRegiments.some((regiment: RegimentTag) => {
-      return regiment.isSelected;
+    let newArtists: ArtistTag[] = artists.map((artist) => {
+      return { ...artist };
     });
+    newArtists[index].isSelected = !newArtists[index].isSelected;
 
+    const isAnySelected = newArtists.some((artist: ArtistTag) => {
+      return artist.isSelected;
+    });
     setIsSearchEnabled(isAnySelected);
-    setRegiments(newRegiments);
+
+    setArtists(newArtists);
   };
 
   const handleSearchClick = () => {
-    const selected = regiments
-      .filter((regiment: RegimentTag) => regiment.isSelected)
-      .map((regiment: RegimentTag) => encodeURIComponent(regiment.name));
-
-    navigate(`/gallery?regiments=${selected.join('||')}`);
+    const selected = encodeURIComponent(
+      artists
+        .filter((tag: ArtistTag) => tag.isSelected)
+        .map((tag: ArtistTag) => tag.name)
+        .join('||')
+    );
+    navigate(`/gallery?artists=${selected}`);
   };
 
   return {
+    artists,
+    error,
     handleChipClick,
     handleSearchClick,
     isSearchEnabled,
     loadStatus,
-    error,
-    regiments,
   };
 };
 
-export { useRegimentList };
+export { useArtistsList };

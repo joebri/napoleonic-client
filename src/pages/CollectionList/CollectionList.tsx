@@ -1,57 +1,21 @@
 /** @jsxImportSource @emotion/react */
 
-import { useLazyQuery } from '@apollo/client';
 import { Button } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
-import { classes } from './CollectionList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet } from 'state';
 import { Collection } from 'types';
-import { logError } from 'utilities/logError';
-import { readCollectionsQuery } from './queries/readCollectionsQuery';
+import { classes } from './CollectionList.style';
+import { useCollectionList } from './useCollectionList';
 
 const CollectionList = () => {
-  const navigate = useNavigate();
   const moduleName = `${CollectionList.name}.tsx`;
 
-  const setHeaderTitle = useHeaderTitleStateSet();
-
-  const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-
-  const [collections, setCollections] = useState([] as Collection[]);
-
-  const { clearHeaderNavigationTags } = useNavigationTags();
-
-  const [readCollections, { error }] = useLazyQuery(readCollectionsQuery, {
-    onCompleted: (data) => {
-      setCollections(data.readCollections);
-      setLoadStatus(LoadStatus.LOADED);
-    },
-    onError: (exception) => {
-      logError({ moduleName, name: 'readCollections', exception });
-      setLoadStatus(LoadStatus.ERROR);
-    },
-  });
-
-  useEffect(() => {
-    setHeaderTitle('Collections');
-    clearHeaderNavigationTags();
-  }, [clearHeaderNavigationTags, setHeaderTitle]);
-
-  useEffect(() => {
-    readCollections();
-  }, [readCollections]);
-
-  const handleSearchClick = (collection: Collection) => {
-    navigate(`/collectionDetailView/${collection.id}`);
-  };
+  const { collections, error, handleSearchClick, loadStatus } =
+    useCollectionList(moduleName);
 
   if (loadStatus === LoadStatus.LOADING) {
     return <Loading />;
