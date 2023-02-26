@@ -1,17 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
 import { useAuth0 } from '@auth0/auth0-react';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MouseEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 import { classes } from './MenuMain.style';
 

@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { classes } from './Login.style';
 
-import { LoginButton } from 'components/LoginButton/LoginButton';
-import { useHeaderTitleStateSet } from 'state';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Loading } from 'components/Loading/Loading';
+import { LoginButton } from 'components/LoginButton/LoginButton';
+import { useHeaderTitleStateSet } from 'state';
 
 const Login = () => {
   const setHeaderTitle = useHeaderTitleStateSet();

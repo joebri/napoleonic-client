@@ -1,17 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import { Link } from 'react-router-dom';
 import { AdvancedImage } from '@cloudinary/react';
+import DeleteForeverIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { Button, Typography } from '@mui/material';
-import {
-  Edit as EditIcon,
-  DeleteForever as DeleteForeverIcon,
-} from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
 import { classes } from './CollectionDetail.style';
 
-import { Collection } from 'types';
 import { useImageService } from 'hooks/useImageService';
+import { Collection } from 'types';
 
 interface ViewProps {
   collection: Collection;

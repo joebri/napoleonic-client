@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Stack, TextField } from '@mui/material';
-import Pagination from '@mui/material/Pagination';
+import { Pagination, Stack, TextField } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';

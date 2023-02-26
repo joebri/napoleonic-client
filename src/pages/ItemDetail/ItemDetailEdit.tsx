@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';

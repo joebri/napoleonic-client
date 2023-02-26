@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Chip, Stack, TextField } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
+import { Autocomplete, Chip, Stack, TextField } from '@mui/material';
 import { SyntheticEvent } from 'react';
 
 import { useTagsStateGet } from 'state';

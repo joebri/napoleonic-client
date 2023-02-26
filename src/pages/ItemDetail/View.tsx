@@ -2,18 +2,16 @@
 
 import { AdvancedImage } from '@cloudinary/react';
 import styled from '@emotion/styled';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Button, Rating, Typography } from '@mui/material';
-import {
-  Edit as EditIcon,
-  DeleteForever as DeleteForeverIcon,
-} from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 
-import { classes } from './ItemDetail.style';
 import { TagInput } from 'components/TagInput/TagInput';
+import { classes } from './ItemDetail.style';
 
-import { Item } from 'types';
 import { useImageService } from 'hooks/useImageService';
+import { Item } from 'types';
 import { useRatings } from './useRatings';
 
 const Label = styled.label`

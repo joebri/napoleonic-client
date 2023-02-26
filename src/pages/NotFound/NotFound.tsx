@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
+import { Button, Typography } from '@mui/material';
 import Box from '@mui/system/Box';
-
-import { Button } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+
 import { classes } from './NotFound.style';
 
 const NotFound = () => {
