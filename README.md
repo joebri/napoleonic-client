@@ -27,3 +27,27 @@ npm install
 - Run `npm run build` to create production build (see \build folder).
 
 - Run `npm run docker:up` to build and run the container.
+
+---
+
+# Documentation
+
+## Screenshots
+
+![Login page](/documentation/screenshot000.png)
+
+![Gallery page](/documentation/screenshot001.png)
+
+![Search filter](/documentation/screenshot002.png)
+
+![Collections page](/documentation/screenshot003.png)
+
+![Collection page](/documentation/screenshot004.png)
+
+![Artists page](/documentation/screenshot005.png)
+
+![Battles page](/documentation/screenshot006.png)
+
+![Regiments page](/documentation/screenshot007.png)
+
+---
