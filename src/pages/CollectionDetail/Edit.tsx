@@ -1,15 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
+import SaveIcon from '@mui/icons-material/Save';
 import { Button, TextField } from '@mui/material';
-import {
-  BackspaceOutlined as BackspaceOutlinedIcon,
-  Save as SaveIcon,
-} from '@mui/icons-material';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
-import { classes } from './CollectionDetail.style';
 import { Collection } from 'types';
-// import { TagInput } from 'components/TagInput/TagInput';
+import { classes } from './CollectionDetail.style';
 
 interface EditProps {
   collection: Collection;

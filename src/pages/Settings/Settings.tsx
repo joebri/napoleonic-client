@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import {
-  BackspaceOutlined as BackspaceOutlinedIcon,
-  Save as SaveIcon,
-} from '@mui/icons-material';
+import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
+import SaveIcon from '@mui/icons-material/Save';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';

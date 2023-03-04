@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
+import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
+import SaveIcon from '@mui/icons-material/Save';
+import { Button, InputLabel, Rating, Stack, TextField } from '@mui/material';
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -7,14 +10,9 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Button, InputLabel, Rating, Stack, TextField } from '@mui/material';
-import {
-  BackspaceOutlined as BackspaceOutlinedIcon,
-  Save as SaveIcon,
-} from '@mui/icons-material';
 
-import { classes } from './ItemDetail.style';
 import { TagInput } from 'components/TagInput/TagInput';
+import { classes } from './ItemDetail.style';
 import { useRatings } from './useRatings';
 
 import { Item } from 'types';

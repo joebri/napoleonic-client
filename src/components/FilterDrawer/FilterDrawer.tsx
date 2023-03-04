@@ -157,6 +157,9 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               {localTags
                 .filter((tag: Tag) => tag.group === 'Nation')
                 .sort((a: Tag, b: Tag) => {
+                  if (a.name === b.name) {
+                    return 0;
+                  }
                   return a.name > b.name ? 1 : -1;
                 })
                 .map((tag: Tag, index: number) => (

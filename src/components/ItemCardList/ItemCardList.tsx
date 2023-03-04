@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 
 import { ItemCard } from 'components/ItemCard/ItemCard';
 import { classes } from './ItemCardList.style';

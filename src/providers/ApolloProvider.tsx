@@ -34,6 +34,11 @@ const Provider = ({ children }: ProviderProps): ReactElement => {
   const client = new ApolloClient({
     link: from([authLink, httpLink]),
     cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'network-only',
+      },
+    },
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

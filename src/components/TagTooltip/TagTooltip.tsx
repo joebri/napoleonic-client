@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useState } from 'react';
-import Tooltip from '@mui/material/Tooltip';
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
+import { Tooltip } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 import { classes } from './TagTooltip.style';
 

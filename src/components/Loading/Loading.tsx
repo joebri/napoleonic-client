@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box, CircularProgress } from '@mui/material';
 
 import { classes } from './Loading.style';
 
