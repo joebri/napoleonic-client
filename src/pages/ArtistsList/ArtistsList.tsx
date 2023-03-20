@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
-
 import { Button, Chip, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
-import { classes } from './ArtistsList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { ArtistTag } from 'types';
+
+import { classes } from './ArtistsList.style';
 import { useArtistsList } from './useArtistsList';
 
 const ArtistsList = () => {

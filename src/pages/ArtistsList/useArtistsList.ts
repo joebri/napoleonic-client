@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useDebugValue, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
@@ -14,6 +14,7 @@ import {
 import { ArtistTag, Tag } from 'types';
 import { ratingsToArray } from 'utilities/helper';
 import { logError } from 'utilities/logError';
+
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 const useArtistsList = (moduleName: string) => {
@@ -25,6 +26,10 @@ const useArtistsList = (moduleName: string) => {
   const setHeaderTitle = useHeaderTitleStateSet();
   const tags = useTagsStateGet();
   const yearRange = useYearRangeStateGet();
+
+  useDebugValue(yearRange, (yearRange) => {
+    return `Year From: ${yearRange[0]}, Year To: ${yearRange[1]}`;
+  });
 
   const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
