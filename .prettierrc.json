@@ -1,5 +1,14 @@
 {
   "endOfLine": "auto",
+
+  "importOrder": [
+    "^components/(.*)$",
+    "^[enums|hooks|state|types|utilities]",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+
   "semi": true,
   "singleQuote": true,
   "tabWidth": 2,
