@@ -1,12 +1,10 @@
-/** @jsxImportSource @emotion/react */
-
 import { Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { classes } from './CollectionDetail.style';
-import { Edit } from './Edit';
 
+import styles from './CollectionDetail.module.scss';
+import { Edit } from './Edit';
 import { useCollectionDetailAdd } from './useCollectionDetailAdd';
 
 const CollectionDetailAdd = () => {
@@ -26,7 +24,7 @@ const CollectionDetailAdd = () => {
       <Helmet>
         <title>Uniformology: Add Collection</title>
       </Helmet>
-      <div css={classes.container}>
+      <div className={styles.container}>
         <Typography variant="h5">Add Collection</Typography>
         <Edit
           collection={collection}

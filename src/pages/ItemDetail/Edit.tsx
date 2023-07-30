@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, InputLabel, Rating, Stack, TextField } from '@mui/material';
@@ -12,10 +10,11 @@ import {
 } from 'react';
 
 import { TagInput } from 'components/TagInput/TagInput';
-import { classes } from './ItemDetail.style';
-import { useRatings } from './useRatings';
 
 import { Item } from 'types';
+
+import styles from './ItemDetail.module.scss';
+import { useRatings } from './useRatings';
 
 interface EditProps {
   item: Item;
@@ -67,10 +66,10 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
 
   return (
     <div onKeyDown={handleOnKeyDown}>
-      <div css={classes.actionBar}>
+      <div className={styles.actionBar}>
         <Button
           aria-label="save"
-          css={classes.button_spacer}
+          className={styles.buttonSpacer}
           disabled={!isDirty}
           onClick={handleSaveClick}
           size="small"
@@ -188,8 +187,8 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         />
       </Stack>
 
-      <InputLabel css={classes.ratingLabel}>Rating</InputLabel>
-      <div css={classes.rating}>
+      <InputLabel className={styles.ratingLabel}>Rating</InputLabel>
+      <div className={styles.rating}>
         <Rating
           defaultValue={2}
           max={3}
@@ -205,7 +204,7 @@ const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
         </span>
       </div>
 
-      <div css={classes.tags}>
+      <div className={styles.tags}>
         <TagInput isEdit onChange={handleTagsChange} tagNames={item.tags} />
       </div>
     </div>

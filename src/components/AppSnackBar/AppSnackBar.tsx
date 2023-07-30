@@ -1,10 +1,7 @@
-/** @jsxImportSource @emotion/react */
-
+import { Alert, AlertColor, Snackbar } from '@mui/material';
 import { SyntheticEvent } from 'react';
 
-import { Alert, AlertColor, Snackbar } from '@mui/material';
-
-import { classes } from './AppSnackBar.style';
+import styles from './AppSnackBar.module.scss';
 
 interface AppSnackBarProps {
   message: string;
@@ -32,7 +29,7 @@ const AppSnackBar = ({
         open={open}
       >
         <Alert
-          css={classes.messageAlert}
+          className={styles.messageAlert}
           onClose={(event: SyntheticEvent<any> | Event) => handleClose(event)}
           severity={severity}
         >

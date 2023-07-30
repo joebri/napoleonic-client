@@ -1,5 +1,5 @@
+import { blueGrey, green, orange } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
-import { green, blueGrey, orange } from '@mui/material/colors';
 
 declare module '@mui/material/styles' {
   interface Theme {

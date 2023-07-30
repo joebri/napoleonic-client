@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import {
   Box,
   Button,
@@ -13,8 +11,6 @@ import {
 } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 
-import { classes } from './FilterDraw.style';
-
 import {
   useIncludeUnknownYearState,
   useIsFilterOpenState,
@@ -23,6 +19,8 @@ import {
   useYearRangeState,
 } from 'state';
 import { Tag } from 'types/Tag.type';
+
+import styles from './FilterDraw.module.scss';
 
 enum ActionEnum {
   Search,
@@ -144,16 +142,16 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
 
   return (
     <Drawer
-      css={classes.filters}
+      className={styles.filters}
       anchor={'right'}
       open={isFilterOpen}
       onClose={handleDrawerClose}
     >
-      <div css={classes.container}>
-        <div css={classes.subContainerTop()}>
-          <div css={classes.section}>
+      <div className={styles.container}>
+        <div className={styles.subContainerTop}>
+          <div className={styles.section}>
             <Typography variant="h5">Nationality</Typography>
-            <Stack css={classes.tagGroup} direction={'row'}>
+            <Stack className={styles.tagGroup} direction={'row'}>
               {localTags
                 .filter((tag: Tag) => tag.group === 'Nation')
                 .sort((a: Tag, b: Tag) => {
@@ -167,9 +165,9 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                 ))}
             </Stack>
           </div>
-          <div css={classes.section}>
+          <div className={styles.section}>
             <Typography variant="h5">Type</Typography>
-            <Stack css={classes.tagGroup} direction={'row'}>
+            <Stack className={styles.tagGroup} direction={'row'}>
               {localTags
                 .filter((tag: Tag) => tag.group === 'Type')
                 .map((tag: Tag, index: number) => (
@@ -177,9 +175,9 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                 ))}
             </Stack>
           </div>
-          <div css={classes.section}>
+          <div className={styles.section}>
             <Typography variant="h5">Sub Type</Typography>
-            <Stack css={classes.tagGroup} direction={'row'}>
+            <Stack className={styles.tagGroup} direction={'row'}>
               {localTags
                 .filter((tag: Tag) => tag.group === 'SubType')
                 .map((tag: Tag, index: number) => (
@@ -187,7 +185,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                 ))}
             </Stack>
           </div>
-          <div css={classes.section}>
+          <div className={styles.section}>
             <Typography variant="h5">Rating</Typography>
 
             <FormControlLabel
@@ -221,12 +219,12 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
               label="Low"
             />
           </div>
-          <div css={classes.section}>
+          <div className={styles.section}>
             <Stack direction={'row'}>
               <Typography variant="h5">Years </Typography>
               <Typography
                 variant="h5"
-                css={classes.years}
+                className={styles.years}
                 data-testid="year-range"
               >
                 {localYearRange[0]} - {localYearRange[1]}
@@ -238,11 +236,11 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                     onChange={handleIncludeUnknownYearChange}
                   />
                 }
-                css={classes.years_checkbox}
+                className={styles.yearsCheckbox}
                 label="Include unknown?"
               />
             </Stack>
-            <Box css={classes.slider_container}>
+            <Box className={styles.sliderContainer}>
               <Slider
                 getAriaLabel={() => 'Temperature range'}
                 min={1780}
@@ -274,7 +272,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             </Button>
           </Stack>
         </div>
-        <div css={classes.subContainerBottom}>
+        <div className={styles.subContainerBottom}>
           <Button
             variant="contained"
             onClick={() => handleButtonClick(ActionEnum.ShowCollections)}

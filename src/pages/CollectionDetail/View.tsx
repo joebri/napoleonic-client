@@ -1,15 +1,13 @@
-/** @jsxImportSource @emotion/react */
-
 import { AdvancedImage } from '@cloudinary/react';
 import DeleteForeverIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import { classes } from './CollectionDetail.style';
-
 import { useImageService } from 'hooks/useImageService';
 import { Collection } from 'types';
+
+import styles from './CollectionDetail.module.scss';
 
 interface ViewProps {
   collection: Collection;
@@ -30,9 +28,9 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
 
   return (
     <div>
-      <div css={classes.actionBar}>
+      <div className={styles.actionBar}>
         <Button
-          css={classes.button_spacer_x4}
+          className={styles.buttonSpacerX4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}
@@ -56,7 +54,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
         <Typography variant="h3">{collection.descriptionShort}</Typography>
       )}
 
-      <div css={classes.container__link}>
+      <div className={styles.container__link}>
         <Link
           to={`/gallery?collection=${collection.tagName}||${collection.title}||${collection.id}`}
         >
@@ -68,7 +66,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
         <p dangerouslySetInnerHTML={{ __html: collection.descriptionLong }} />
       )}
 
-      <div css={classes.container__link}>
+      <div className={styles.container__link}>
         <Link
           to={`/gallery?collection=${collection.tagName}||${collection.title}||${collection.id}`}
         >
@@ -76,7 +74,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
         </Link>
       </div>
 
-      <div css={classes.container__image}>
+      <div className={styles.container__image}>
         <AdvancedImage cldImg={getImage('/Napoleonic/GreeceBar_wphbeq')} />
       </div>
 

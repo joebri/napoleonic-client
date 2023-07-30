@@ -1,11 +1,12 @@
-import { AuthProvider, GraphQLProvider } from 'providers';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
+import { AuthProvider, GraphQLProvider } from 'providers';
+
 import { App } from './App';
 import './fonts/Tangerine/Tangerine-Regular.ttf';
-import './index.css';
+import './index.scss';
 
 console.info(
   `Starting "${process.env.REACT_APP_NAME}", version: ${process.env.REACT_APP_VERSION}`

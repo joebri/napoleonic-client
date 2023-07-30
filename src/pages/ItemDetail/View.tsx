@@ -1,27 +1,16 @@
-/** @jsxImportSource @emotion/react */
-
 import { AdvancedImage } from '@cloudinary/react';
-import styled from '@emotion/styled';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Rating, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import { TagInput } from 'components/TagInput/TagInput';
-import { classes } from './ItemDetail.style';
 
 import { useImageService } from 'hooks/useImageService';
 import { Item } from 'types';
-import { useRatings } from './useRatings';
 
-const Label = styled.label`
-  font-weight: bold;
-  margin-right: 0.25rem;
-`;
-const TagLabel = styled.label`
-  font-weight: bold;
-  margin-right: 0.5rem;
-`;
+import styles from './ItemDetail.module.scss';
+import { useRatings } from './useRatings';
 
 interface ViewProps {
   item: Item;
@@ -49,10 +38,10 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
 
   return (
     <div>
-      <div css={classes.actionBar}>
+      <div className={styles.actionBar}>
         <Button
           aria-label="edit"
-          css={classes.button_spacer_x4}
+          className={styles.buttonSpacerX4}
           onClick={handleEditClick}
           size="small"
           startIcon={<EditIcon />}
@@ -77,19 +66,19 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
       {item.descriptionLong && (
         <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
       )}
-      <div css={classes.container_image}>
+      <div className={styles.containerImage}>
         {item.publicId && (
           <>
             <div>
               <AdvancedImage
                 cldImg={getImage(item.publicId)}
-                css={classes.image}
+                className={styles.image}
                 title={item.publicId}
               />
             </div>
             {item.artist && (
               <Typography
-                css={classes.artist}
+                className={styles.artist}
                 variant="body2"
                 color="text.secondary"
               >
@@ -101,25 +90,25 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
       </div>
       {item.regiments && (
         <p>
-          <Label>Regiment(s):</Label>
+          <label>Regiment(s):</label>
           {item.regiments}
         </p>
       )}
       {(item.yearFrom || item.yearTo) && (
         <p>
-          <Label>Year:</Label>
+          <label>Year:</label>
           {item.yearFrom}
           {item.yearTo ? <span> - {item.yearTo}</span> : ''}
         </p>
       )}
-      <div css={classes.rating}>
-        <Label>Rating:</Label>
+      <div className={styles.rating}>
+        <label>Rating:</label>
         <Rating max={3} readOnly value={rating} />
         <span>{ratingLabels[rating]}</span>
       </div>
 
-      <div css={classes.tags}>
-        <TagLabel>Tags:</TagLabel>
+      <div className={styles.tags}>
+        <label>Tags:</label>
         <TagInput tagNames={item.tags} isEdit={false} />
       </div>
     </div>

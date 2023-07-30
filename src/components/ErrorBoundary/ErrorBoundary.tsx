@@ -1,10 +1,8 @@
-/** @jsxImportSource @emotion/react */
-
 import { Component, ErrorInfo, ReactNode } from 'react';
 
-import { classes } from './ErrorBoundary.style';
+import { LogErrorBaseProps, logError } from 'utilities/logError';
 
-import { logError, LogErrorBaseProps } from 'utilities/logError';
+import styles from './ErrorBoundary.module.scss';
 
 interface Props {
   children?: ReactNode;
@@ -44,7 +42,7 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div css={classes.container}>
+        <div className={styles.container}>
           <h1>Uniformology</h1>
           <h2>Something went wrong!</h2>
           <p>The error has been reported. Please refresh the page.</p>

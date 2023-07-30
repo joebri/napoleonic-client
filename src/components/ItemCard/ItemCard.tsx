@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Card,
@@ -15,14 +13,15 @@ import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { TagTooltip } from 'components/TagTooltip/TagTooltip';
-import { classes } from './ItemCard.style';
-import { ItemCardImage } from './ItemCardImage';
 
 import { useImageService } from 'hooks/useImageService';
 import { useRatings } from 'pages/ItemDetail/useRatings';
 import { useTagsStateGet } from 'state';
 import { Item, ItemMetaData, Tag } from 'types';
+
 import { ImageMetaData } from './ImageMetaData';
+import styles from './ItemCard.module.scss';
+import { ItemCardImage } from './ItemCardImage';
 
 interface ItemCardProps {
   item: Item;
@@ -90,7 +89,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
 
   return (
     <>
-      <Card css={classes.card} data-itemid={item.id}>
+      <Card className={styles.card} data-itemid={item.id}>
         <CardHeader
           title={item.title}
           subheader={item.descriptionShort}
@@ -102,14 +101,14 @@ const ItemCard = ({ item }: ItemCardProps) => {
         ></CardHeader>
 
         <CardContent>
-          <div css={classes.container_image}>
-            {!isShowMetaData ? (
-              <ItemCardImage item={item} />
-            ) : (
+          <div className={styles.containerImage}>
+            {isShowMetaData ? (
               <ImageMetaData
                 metaData={metaData}
                 onClose={handleImageMetaDataClose}
               />
+            ) : (
+              <ItemCardImage item={item} />
             )}
           </div>
 
@@ -130,7 +129,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
             </Typography>
           )}
 
-          <div css={[classes.tagRatingLine]}>
+          <div className={styles.tagRatingLine}>
             <Typography variant="body2" color="text.secondary">
               <TagTooltip tagNames={item.tags} />
             </Typography>

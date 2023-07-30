@@ -1,17 +1,11 @@
-/** @jsxImportSource @emotion/react */
-
-import styled from '@emotion/styled';
 import CodeIcon from '@mui/icons-material/Code';
 import { Button, IconButton } from '@mui/material';
 
 import { Loading } from 'components/Loading/Loading';
-import { ItemMetaData } from 'types';
-import { classes } from './ItemCard.style';
 
-const Label = styled.label`
-  font-weight: bold;
-  margin-right: 0.25rem;
-`;
+import { ItemMetaData } from 'types';
+
+import styles from './ItemCard.module.scss';
 
 interface ImageMetaDataProps {
   metaData: ItemMetaData;
@@ -32,22 +26,22 @@ const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
       {metaData.height ? (
         <>
           <p>
-            <Label>Height:</Label>
+            <label>Height:</label>
             {metaData.height?.toLocaleString()}px
           </p>
           <p>
-            <Label>Width:</Label>
+            <label>Width:</label>
             {metaData.width?.toLocaleString()}px
           </p>
           <p>
-            <Label>Bytes:</Label>
+            <label>Bytes:</label>
             {metaData.bytes?.toLocaleString()}
           </p>
           <p>
-            <Label>Url:</Label>
+            <label>Url:</label>
             <IconButton
               color="inherit"
-              css={classes.url_icon_button}
+              className={styles.url_icon_button}
               edge="start"
               onClick={handleUrlButtonClick}
               size="small"
@@ -60,7 +54,7 @@ const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
           </Button>
         </>
       ) : (
-        <div css={classes.loading_container}>
+        <div className={styles.loading_container}>
           <Loading />
         </div>
       )}

@@ -1,0 +1,16 @@
+.appbar {
+  position: relative;
+  & > div {
+    justify-content: space-between;
+  }
+  &__left {
+    align-items: center;
+  }
+}
+.icon {
+  margin-right: 0.25rem;
+}
+.chip {
+  color: white;
+  margin-left: 1rem;
+}

@@ -1,11 +1,12 @@
 import CssBaseline from '@mui/material/CssBaseline';
+import { StyledEngineProvider } from '@mui/material/styles';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { RecoilRoot } from 'recoil';
 
 import { Home } from 'pages/Home/Home';
-import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+import { ThemeProvider, theme } from 'theme';
 
-import { theme, ThemeProvider } from 'theme';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
   return (
@@ -17,7 +18,9 @@ function App() {
       <ErrorBoundary>
         <ThemeProvider theme={theme}>
           <RecoilRoot>
-            <Home />
+            <StyledEngineProvider injectFirst>
+              <Home />
+            </StyledEngineProvider>
           </RecoilRoot>
         </ThemeProvider>
       </ErrorBoundary>

@@ -1,14 +1,13 @@
-/** @jsxImportSource @emotion/react */
-
 import { Button, Chip, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
-import { classes } from './RegimentsList.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { RegimentTag } from 'types/RegimentTag.type';
+
+import styles from './RegimentsList.module.scss';
 import { useRegimentList } from './useRegimentList';
 
 const RegimentsList = () => {
@@ -37,11 +36,11 @@ const RegimentsList = () => {
       </Helmet>
 
       {regiments.length === 0 ? (
-        <Typography css={classes.noItems} variant="h5">
+        <Typography className={styles.noItems} variant="h5">
           No Regiments available.
         </Typography>
       ) : (
-        <div css={classes.container}>
+        <div className={styles.container}>
           {regiments.map((regiment: RegimentTag, index: number) => (
             <Chip
               color="primary"
@@ -54,7 +53,7 @@ const RegimentsList = () => {
             />
           ))}
           <Button
-            css={classes.button}
+            className={styles.button}
             disabled={!isSearchEnabled}
             onClick={handleSearchClick}
             variant="contained"

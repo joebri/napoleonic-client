@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import {
   Button,
   Dialog,
@@ -10,7 +8,7 @@ import {
 } from '@mui/material';
 import { SyntheticEvent } from 'react';
 
-import { classes } from './ConfirmDeleteDialog.style';
+import styles from './ConfirmDeleteDialog.module.scss';
 
 interface ConfirmDeleteDialogProps {
   isOpen: boolean;
@@ -42,7 +40,11 @@ const ConfirmDeleteDialog = ({
   };
 
   return (
-    <Dialog css={classes.dialog} open={isOpen} onClose={handleClickAwayClose}>
+    <Dialog
+      className={styles.dialog}
+      open={isOpen}
+      onClose={handleClickAwayClose}
+    >
       <DialogTitle>{'Confirm Delete'}</DialogTitle>
       <DialogContent>
         <DialogContentText>Are you sure?</DialogContentText>

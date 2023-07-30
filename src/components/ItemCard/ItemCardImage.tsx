@@ -1,15 +1,13 @@
-/** @jsxImportSource @emotion/react */
-
 import { AdvancedImage } from '@cloudinary/react';
 import { lazyload, placeholder } from '@cloudinary/react';
-import { useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
 import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
 
-import { classes } from './ItemCard.style';
-
-import { Item } from 'types';
 import { useImageService } from 'hooks/useImageService';
+import { Item } from 'types';
+
+import styles from './ItemCard.module.scss';
 
 const parseDescriptionForImage = (descriptionLong: string): string => {
   const match = descriptionLong.match(/<img src="([\w\W]+?)["][ ]?\/>/i);
@@ -50,14 +48,14 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
         <>
           <AdvancedImage
             cldImg={getImage(item.publicId)}
-            css={classes.image}
+            className={styles.image}
             onClick={handleImageClick}
             plugins={[placeholder(), lazyload()]}
             title={item.publicId}
           />
           {item.artist && (
             <Typography
-              css={[classes.artist]}
+              className={styles.artist}
               variant="body2"
               color="text.secondary"
             >
@@ -73,7 +71,7 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
               {item.artist && (
                 <>
                   <Typography
-                    css={[classes.artist]}
+                    className={styles.artist}
                     variant="body2"
                     color="text.secondary"
                   >
@@ -89,7 +87,7 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
       <Dialog onClose={handleImageDialogClose} open={isImageDialogOpen}>
         <AdvancedImage
           cldImg={getImage(item.publicId)}
-          css={classes.imageFull}
+          className={styles.imageFull}
         />
       </Dialog>
     </>

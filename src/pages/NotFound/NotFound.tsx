@@ -1,11 +1,9 @@
-/** @jsxImportSource @emotion/react */
-
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
 import { Button, Typography } from '@mui/material';
 import Box from '@mui/system/Box';
 import { useNavigate } from 'react-router-dom';
 
-import { classes } from './NotFound.style';
+import styles from './NotFound.module.scss';
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -15,9 +13,9 @@ const NotFound = () => {
   };
 
   return (
-    <Box css={classes.container}>
+    <Box className={styles.container}>
       <Typography variant="h1">
-        <CrisisAlertIcon css={classes.icon} />
+        <CrisisAlertIcon className={styles.icon} />
         Page Not Found
       </Typography>
       <div>

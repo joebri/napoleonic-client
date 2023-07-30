@@ -24,6 +24,11 @@ const config: Config = {
   // },
   moduleDirectories: ['node_modules', 'src'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+
+  moduleNameMapper: {
+    '^.+\\.(css|scss)$': 'identity-obj-proxy',
+  },
+
   preset: 'ts-jest',
   reporters: [
     'default',

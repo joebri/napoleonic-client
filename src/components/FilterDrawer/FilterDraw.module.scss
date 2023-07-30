@@ -1,0 +1,44 @@
+@mixin sub-container {
+  border: solid 2px #bfbfbf;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+}
+
+.filters {
+  & > :global(.MuiDrawer-paper) {
+    width: 50%;
+  }
+}
+.container {
+  padding: 0.25rem;
+}
+.subContainerTop {
+  @include sub-container;
+  padding-top: 0;
+}
+.subContainerBottom {
+  @include sub-container;
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+.section {
+  margin-top: 0.75rem;
+}
+.tagGroup {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.sliderContainer {
+  width: 95%;
+}
+.years {
+  font-size: 1rem;
+  margin: 0.4rem 0.5rem 0;
+}
+.yearsCheckbox {
+  margin-left: 1rem;
+  top: -0.3rem;
+  position: relative;
+}

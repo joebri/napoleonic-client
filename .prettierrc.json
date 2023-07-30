@@ -9,6 +9,8 @@
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
 
+  "insert_final_newline": true,
+
   "semi": true,
   "singleQuote": true,
   "tabWidth": 2,

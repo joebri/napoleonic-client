@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import { Button } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
@@ -8,7 +6,8 @@ import { Loading } from 'components/Loading/Loading';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Collection } from 'types';
-import { classes } from './CollectionList.style';
+
+import styles from './CollectionList.module.scss';
 import { useCollectionList } from './useCollectionList';
 
 const CollectionList = () => {
@@ -29,7 +28,7 @@ const CollectionList = () => {
       <Helmet>
         <title>Uniformology: Collections</title>
       </Helmet>
-      <div css={classes.container}>
+      <div className={styles.container}>
         {collections.map((collection: Collection, index: number) => (
           <Button
             key={index}

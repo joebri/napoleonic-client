@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, Stack, TextField, Typography } from '@mui/material';
@@ -7,12 +5,13 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { classes } from './Settings.style';
 
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { useHeaderTitleStateSet } from 'state';
 import { Template } from 'types';
+
+import styles from './Settings.module.scss';
 
 const initialisedTemplate: Template = {
   artist: '',
@@ -75,7 +74,7 @@ const Settings = () => {
       <Helmet>
         <title>Uniformology: Settings</title>
       </Helmet>
-      <div css={classes.container}>
+      <div className={styles.container}>
         <Typography variant="h5">Item Template</Typography>
         <TextField
           fullWidth
@@ -123,7 +122,7 @@ const Settings = () => {
           variant="standard"
         />
 
-        <div css={classes.actionBar}>
+        <div className={styles.actionBar}>
           <Stack direction="row" gap={1}>
             <Button
               onClick={handleCancelClick}

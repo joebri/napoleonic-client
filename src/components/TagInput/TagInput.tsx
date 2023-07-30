@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import { Autocomplete, Chip, Stack, TextField } from '@mui/material';
 import { SyntheticEvent } from 'react';
 

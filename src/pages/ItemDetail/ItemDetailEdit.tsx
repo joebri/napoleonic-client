@@ -1,15 +1,14 @@
-/** @jsxImportSource @emotion/react */
-
 import { Typography } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
-import { Edit } from './Edit';
-import { classes } from './ItemDetail.style';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+
+import { Edit } from './Edit';
+import styles from './ItemDetail.module.scss';
 import { useItemDetailEdit } from './useItemDetailEdit';
 
 const ItemDetailEdit = () => {
@@ -38,7 +37,7 @@ const ItemDetailEdit = () => {
       <Helmet>
         <title>Uniformology: Edit Item</title>
       </Helmet>
-      <div css={classes.container}>
+      <div className={styles.container}>
         <Typography variant="h5">Edit Item</Typography>
         <Edit
           item={item}

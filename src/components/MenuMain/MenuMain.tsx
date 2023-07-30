@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import { useAuth0 } from '@auth0/auth0-react';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CollectionsIcon from '@mui/icons-material/Collections';
@@ -11,7 +9,7 @@ import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MouseEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { classes } from './MenuMain.style';
+import styles from './MenuMain.module.scss';
 
 const MenuMain = () => {
   const navigate = useNavigate();
@@ -63,7 +61,7 @@ const MenuMain = () => {
         onClick={handleClick}
         size="small"
       >
-        <MenuIcon css={classes.icon} />
+        <MenuIcon className={styles.icon} />
         Menu
       </IconButton>
       <Menu
@@ -76,23 +74,23 @@ const MenuMain = () => {
         }}
       >
         <MenuItem onClick={handleGalleryClick}>
-          <CollectionsIcon css={classes.icon} />
+          <CollectionsIcon className={styles.icon} />
           Gallery
         </MenuItem>
         <MenuItem onClick={handleAddItemClick}>
-          <AddPhotoAlternateIcon css={classes.icon} />
+          <AddPhotoAlternateIcon className={styles.icon} />
           Add Item
         </MenuItem>
         <MenuItem onClick={handleAddCollectionClick}>
-          <PostAddIcon css={classes.icon} />
+          <PostAddIcon className={styles.icon} />
           Add Collection
         </MenuItem>
         <MenuItem onClick={handleSettingsClick}>
-          <SettingsOutlinedIcon css={classes.icon} />
+          <SettingsOutlinedIcon className={styles.icon} />
           Settings
         </MenuItem>
         <MenuItem onClick={handleLogout}>
-          <LogoutIcon css={classes.icon} />
+          <LogoutIcon className={styles.icon} />
           Logout
         </MenuItem>
       </Menu>

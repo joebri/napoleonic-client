@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import { useAuth0 } from '@auth0/auth0-react';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -15,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import { MenuMain } from 'components/MenuMain/MenuMain';
 import { MenuSort } from 'components/MenuSort/MenuSort';
 import { Profile } from 'components/Profile/Profile';
-import { classes } from './MenuBar.style';
 
 import {
   useHeaderTitleStateGet,
@@ -23,6 +20,8 @@ import {
   useNavigationTagsStateGet,
 } from 'state';
 import { NavigationTag } from 'types';
+
+import styles from './MenuBar.module.scss';
 
 const MenuBar = () => {
   const navigate = useNavigate();
@@ -41,22 +40,22 @@ const MenuBar = () => {
   };
 
   return (
-    <AppBar css={classes.appbar}>
+    <AppBar className={styles.appbar}>
       <Toolbar>
-        <Stack direction="row" css={classes.appbar__left}>
+        <Stack direction="row" className={styles.appbar__left}>
           <Typography variant="h4">{headerTitle}</Typography>
           {navigationTags.map((navigationTag: NavigationTag, ix: number) => (
             <span key={ix}>
               {navigationTag.isNavigationTag ? (
                 <Chip
-                  css={classes.chip}
+                  className={styles.chip}
                   label={navigationTag.title}
                   onClick={() => handleNavigationTagClick(navigationTag)}
                   variant={'outlined'}
                 />
               ) : (
                 <Chip
-                  css={classes.chip}
+                  className={styles.chip}
                   label={navigationTag.title}
                   variant={'filled'}
                 />
@@ -79,7 +78,7 @@ const MenuBar = () => {
                 onClick={handleFilterClick}
                 size="small"
               >
-                <SearchIcon css={classes.icon} />
+                <SearchIcon className={styles.icon} />
                 Search
               </IconButton>
 

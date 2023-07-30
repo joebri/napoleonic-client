@@ -1,0 +1,39 @@
+.card {
+  margin-bottom: 0.1rem;
+  margin-left: 0.5rem;
+  margin-top: 1rem;
+  max-width: 15rem;
+  min-width: 15rem;
+}
+.artist {
+  font-style: italic;
+  text-align: right;
+}
+.containerImage {
+  margin-bottom: 1rem;
+  width: fit-content;
+  & img {
+    width: 100%;
+  }
+}
+.loading_container {
+  height: 10.75rem;
+}
+.image {
+  box-shadow: 0.25rem 0.25rem 5px #ccc;
+  cursor: url('../../../public/zoomin.png'), progress;
+  max-width: 100%;
+}
+.imageFull {
+  max-height: calc(100vh - 64px);
+}
+.tagRatingLine {
+  align-items: center;
+  display: flex;
+  & > p {
+    display: flex;
+  }
+}
+.url_icon_button {
+  top: -2px;
+}

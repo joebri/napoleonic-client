@@ -1,15 +1,14 @@
-/** @jsxImportSource @emotion/react */
-
 import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
-import { classes } from './CollectionDetail.style';
-import { View } from './View';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+
+import styles from './CollectionDetail.module.scss';
+import { View } from './View';
 import { useCollectionDetailView } from './useCollectionDetailView';
 
 const CollectionDetailView = () => {
@@ -40,7 +39,7 @@ const CollectionDetailView = () => {
       <Helmet>
         <title>Uniformology: Collection</title>
       </Helmet>
-      <div css={classes.container}>
+      <div className={styles.container}>
         <View
           collection={collection}
           onDelete={handleDeleteClick}

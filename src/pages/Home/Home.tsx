@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-
-import { lazy, Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { AuthenticationGuard } from 'components/AuthenticationGuard/AuthenticationGuard';
@@ -8,19 +6,19 @@ import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
 import { MenuBar } from 'components/MenuBar/MenuBar';
 
+import { LoadStatus } from 'enums/loadStatus.enum';
 import { CollectionList } from 'pages/CollectionList/CollectionList';
 import { Gallery } from 'pages/Gallery/Gallery';
 import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
 import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
+import { Login } from 'pages/Login/Login';
 import { NotFound } from 'pages/NotFound/NotFound';
 import { Sandbox } from 'pages/Sandbox/Sandbox';
 import { Settings } from 'pages/Settings/Settings';
-import { FilterDrawer } from '../../components/FilterDrawer/FilterDrawer';
-import { classes } from './Home.style';
 
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { Login } from 'pages/Login/Login';
+import { FilterDrawer } from '../../components/FilterDrawer/FilterDrawer';
+import styles from './Home.module.scss';
 import { useHome } from './useHome';
 
 const ArtistsList = lazy(() =>
@@ -69,9 +67,9 @@ const Home = () => {
   }
 
   return (
-    <div css={classes.container}>
-      <MenuBar></MenuBar>
-      <div css={classes.content}>
+    <div className={styles.container}>
+      <MenuBar />
+      <div className={styles.content}>
         <FilterDrawer onActionSelect={handleFilterDrawAction} />
         <Routes>
           <Route path="login" element={<Login />} />

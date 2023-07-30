@@ -1,12 +1,11 @@
-/** @jsxImportSource @emotion/react */
-
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, TextField } from '@mui/material';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 import { Collection } from 'types';
-import { classes } from './CollectionDetail.style';
+
+import styles from './CollectionDetail.module.scss';
 
 interface EditProps {
   collection: Collection;
@@ -45,9 +44,9 @@ const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
 
   return (
     <div onKeyDown={handleOnKeyDown}>
-      <div css={classes.actionBar}>
+      <div className={styles.actionBar}>
         <Button
-          css={classes.button_spacer}
+          className={styles.buttonSpacer}
           disabled={!isDirty}
           onClick={handleSaveClick}
           size="small"

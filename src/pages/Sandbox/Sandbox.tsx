@@ -1,12 +1,11 @@
-/** @jsxImportSource @emotion/react */
-
 import { ApolloSandbox } from '@apollo/sandbox/react';
-import { classes } from 'pages/Sandbox/Sandbox.style';
+
+import styles from 'pages/Sandbox/Sandbox.module.scss';
 
 function Sandbox() {
   return (
     <ApolloSandbox
-      css={classes.container}
+      className={styles.container}
       initialEndpoint={process.env.REACT_APP_GRAPH_URL}
       includeCookies={false}
     />
