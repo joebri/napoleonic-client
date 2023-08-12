@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
 import {
   HeaderNavigationTagsProps,
@@ -28,6 +29,7 @@ import {
 import { Item } from 'types';
 import { ratingsToArray } from 'utilities/helper';
 import { logError } from 'utilities/logError';
+
 import { readItemsByFilterQuery } from './queries/readItemsByFilterQuery';
 import {
   buildArtistsQueryParams,
@@ -36,8 +38,6 @@ import {
   buildRegimentsQueryParams,
   buildTagsQueryParams,
 } from './queryBuilder';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
 
 const PAGE_SIZE = 20;
 
@@ -63,26 +63,31 @@ const useGallery = (moduleName: string) => {
 
   const tryGetArtistsQuery = useCallback(
     (selectedRatings: number[]) => {
-      const queryArtists = searchParams.get('artists');
+      const queryArtists = (searchParams.get('artists') || '')
+        .split('||')
+        .map((artist) => {
+          return artist === '' ? 'Unknown' : artist;
+        })
+        .join('||');
 
-      if (queryArtists) {
-        const artistNames = queryArtists.split('||');
+      const artistNames = queryArtists.split('||').map((artist) => {
+        return artist === '' ? 'Unknown' : artist;
+      });
 
-        setHeaderNavigationTags({
-          id: '',
-          names: artistNames,
-          tagType: NavigationTagType.ARTISTS,
-          title: artistNames.join(' / '),
-        } as HeaderNavigationTagsProps);
+      setHeaderNavigationTags({
+        id: '',
+        names: artistNames,
+        tagType: NavigationTagType.ARTISTS,
+        title: artistNames.join(' / '),
+      } as HeaderNavigationTagsProps);
 
-        return buildArtistsQueryParams({
-          includeUnknownYear,
-          queryArtists,
-          selectedRatings,
-          tags,
-          yearRange,
-        });
-      }
+      return buildArtistsQueryParams({
+        includeUnknownYear,
+        queryArtists,
+        selectedRatings,
+        tags,
+        yearRange,
+      });
     },
     [includeUnknownYear, searchParams, setHeaderNavigationTags, tags, yearRange]
   );
