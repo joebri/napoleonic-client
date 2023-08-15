@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { TagTooltip } from 'components/TagTooltip/TagTooltip';
 
-import { useImageService } from 'hooks/useImageService';
 import { useRatings } from 'pages/ItemDetail/useRatings';
 import { useTagsStateGet } from 'state';
 import { Item, ItemMetaData, Tag } from 'types';
@@ -38,7 +37,6 @@ const ItemCard = ({ item }: ItemCardProps) => {
   const [metaData, setMetaData] = useState<ItemMetaData>({} as ItemMetaData);
   const [isShowMetaData, setIsShowMetaData] = useState(false);
 
-  const { getMetaData } = useImageService();
   const { toUiRating } = useRatings();
 
   useEffect(() => {
@@ -79,7 +77,9 @@ const ItemCard = ({ item }: ItemCardProps) => {
   const handleMetaMenuClick = async () => {
     setAnchorEl(null);
     setIsShowMetaData(true);
-    const metaData: ItemMetaData = await getMetaData(item.publicId);
+  };
+
+  const handleImageMetaDataChange = (metaData: ItemMetaData) => {
     setMetaData(metaData);
   };
 
@@ -108,7 +108,10 @@ const ItemCard = ({ item }: ItemCardProps) => {
                 onClose={handleImageMetaDataClose}
               />
             ) : (
-              <ItemCardImage item={item} />
+              <ItemCardImage
+                item={item}
+                onMetaDataChange={handleImageMetaDataChange}
+              />
             )}
           </div>
 

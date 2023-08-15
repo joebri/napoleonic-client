@@ -1,11 +1,9 @@
-import { AdvancedImage } from '@cloudinary/react';
-import { lazyload, placeholder } from '@cloudinary/react';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { LegacyRef, createRef, useEffect, useState } from 'react';
 
 import { useImageService } from 'hooks/useImageService';
-import { Item } from 'types';
+import { Item, ItemMetaData } from 'types';
 
 import styles from './ItemCard.module.scss';
 
@@ -17,13 +15,16 @@ const parseDescriptionForImage = (descriptionLong: string): string => {
 
 interface ItemCardImageProps {
   item: Item;
+  onMetaDataChange: (itemMetaData: ItemMetaData) => void;
 }
 
-const ItemCardImage = ({ item }: ItemCardImageProps) => {
+const ItemCardImage = ({ item, onMetaDataChange }: ItemCardImageProps) => {
   const [alternateImageUrl, setAlternateImageUrl] = useState('');
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
 
-  const { getImage } = useImageService();
+  const imgRef: LegacyRef<HTMLImageElement> = createRef();
+
+  const { getLocalImage } = useImageService();
 
   useEffect(() => {
     if (!item.publicId) {
@@ -38,6 +39,29 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
     setIsImageDialogOpen(true);
   };
 
+  const handleImageLoad = async () => {
+    const url = getLocalImage(item.publicId);
+
+    try {
+      const fileImg = await fetch(url).then((response) => response.blob());
+      const itemMetaData: ItemMetaData = {
+        bytes: fileImg?.size || 0,
+        height: imgRef.current?.naturalHeight || 0,
+        width: imgRef.current?.naturalWidth || 0,
+        url,
+      };
+      onMetaDataChange(itemMetaData);
+    } catch (exception) {
+      const itemMetaData: ItemMetaData = {
+        bytes: 0,
+        height: 0,
+        width: 0,
+        url,
+      };
+      onMetaDataChange(itemMetaData);
+    }
+  };
+
   const handleImageDialogClose = () => {
     setIsImageDialogOpen(false);
   };
@@ -46,11 +70,13 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
     <>
       {item.publicId ? (
         <>
-          <AdvancedImage
-            cldImg={getImage(item.publicId)}
+          <img
+            alt=""
             className={styles.image}
             onClick={handleImageClick}
-            plugins={[placeholder(), lazyload()]}
+            onLoad={handleImageLoad}
+            ref={imgRef}
+            src={getLocalImage(item.publicId)}
             title={item.publicId}
           />
           {item.artist && (
@@ -85,9 +111,11 @@ const ItemCardImage = ({ item }: ItemCardImageProps) => {
       )}
 
       <Dialog onClose={handleImageDialogClose} open={isImageDialogOpen}>
-        <AdvancedImage
-          cldImg={getImage(item.publicId)}
-          className={styles.imageFull}
+        <img
+          alt=""
+          className={styles.image}
+          src={getLocalImage(item.publicId)}
+          title={item.publicId}
         />
       </Dialog>
     </>

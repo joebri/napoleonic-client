@@ -74,7 +74,6 @@ const Home = () => {
         <Routes>
           <Route path="login" element={<Login />} />
           <Route path="/" element={<Login />} />
-
           <Route
             path="artists"
             element={
@@ -85,7 +84,11 @@ const Home = () => {
           />
           <Route
             path="gallery"
-            element={<AuthenticationGuard component={Gallery} />}
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthenticationGuard component={Gallery} />
+              </Suspense>
+            }
           />
           <Route
             path="battles"
@@ -105,11 +108,19 @@ const Home = () => {
           />
           <Route
             path="settings"
-            element={<AuthenticationGuard component={Settings} />}
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthenticationGuard component={Settings} />
+              </Suspense>
+            }
           />
           <Route
             path="collections"
-            element={<AuthenticationGuard component={CollectionList} />}
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthenticationGuard component={CollectionList} />
+              </Suspense>
+            }
           />
           <Route
             path="collectionDetailView/:collectionId"
@@ -137,15 +148,27 @@ const Home = () => {
           />
           <Route
             path="itemDetailView/:itemId"
-            element={<AuthenticationGuard component={ItemDetailView} />}
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthenticationGuard component={ItemDetailView} />
+              </Suspense>
+            }
           />
           <Route
             path="itemDetailEdit/:itemId"
-            element={<AuthenticationGuard component={ItemDetailEdit} />}
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthenticationGuard component={ItemDetailEdit} />
+              </Suspense>
+            }
           />
           <Route
             path="itemDetailAdd/"
-            element={<AuthenticationGuard component={ItemDetailAdd} />}
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthenticationGuard component={ItemDetailAdd} />
+              </Suspense>
+            }
           />
 
           <Route path="loading" element={<Loading />} />

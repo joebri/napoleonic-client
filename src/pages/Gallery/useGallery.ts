@@ -63,31 +63,25 @@ const useGallery = (moduleName: string) => {
 
   const tryGetArtistsQuery = useCallback(
     (selectedRatings: number[]) => {
-      const queryArtists = (searchParams.get('artists') || '')
-        .split('||')
-        .map((artist) => {
-          return artist === '' ? 'Unknown' : artist;
-        })
-        .join('||');
+      if (searchParams.get('artists')) {
+        const queryArtists = searchParams.get('artists') || '';
+        const artistNames = queryArtists.split('||');
 
-      const artistNames = queryArtists.split('||').map((artist) => {
-        return artist === '' ? 'Unknown' : artist;
-      });
+        setHeaderNavigationTags({
+          id: '',
+          names: artistNames,
+          tagType: NavigationTagType.ARTISTS,
+          title: artistNames.join(' / '),
+        } as HeaderNavigationTagsProps);
 
-      setHeaderNavigationTags({
-        id: '',
-        names: artistNames,
-        tagType: NavigationTagType.ARTISTS,
-        title: artistNames.join(' / '),
-      } as HeaderNavigationTagsProps);
-
-      return buildArtistsQueryParams({
-        includeUnknownYear,
-        queryArtists,
-        selectedRatings,
-        tags,
-        yearRange,
-      });
+        return buildArtistsQueryParams({
+          includeUnknownYear,
+          queryArtists,
+          selectedRatings,
+          tags,
+          yearRange,
+        });
+      }
     },
     [includeUnknownYear, searchParams, setHeaderNavigationTags, tags, yearRange]
   );

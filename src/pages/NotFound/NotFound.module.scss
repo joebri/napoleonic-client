@@ -1,7 +1,7 @@
 .container {
   align-items: center;
   display: flex;
-  flex-direction: column as column;
+  flex-direction: column;
   height: 100%;
   justify-content: center;
   & :global(.MuiButtonBase-root) {

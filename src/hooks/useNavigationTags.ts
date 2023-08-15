@@ -1,6 +1,6 @@
-import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useCallback } from 'react';
 
+import { NavigationTagType } from 'enums/navigationTagType.enum';
 import { useNavigationTagsState, useTagsStateGet } from 'state';
 import { Tag } from 'types';
 

@@ -36,10 +36,8 @@ root.render(
   </StrictMode>
 );
 
-let isWebVitalsEnabled =
-  process.env.REACT_APP_WEBVITALS_ENABLED?.toLowerCase() === 'true'
-    ? true
-    : false;
+const isWebVitalsEnabled =
+  process.env.REACT_APP_WEBVITALS_ENABLED?.toLowerCase() === 'true';
 if (isWebVitalsEnabled) {
   (async () => {
     await import('./webVitalsInitialisation');

@@ -1,4 +1,3 @@
-import { AdvancedImage } from '@cloudinary/react';
 import DeleteForeverIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Typography } from '@mui/material';
@@ -16,7 +15,7 @@ interface ViewProps {
 }
 
 const View = ({ collection, onDelete, onEdit }: ViewProps) => {
-  const { getImage } = useImageService();
+  const { getLocalImage } = useImageService();
 
   const handleEditClick = () => {
     onEdit();
@@ -75,7 +74,7 @@ const View = ({ collection, onDelete, onEdit }: ViewProps) => {
       </div>
 
       <div className={styles.container__image}>
-        <AdvancedImage cldImg={getImage('/Napoleonic/GreeceBar_wphbeq')} />
+        <img alt="" src={getLocalImage('GreeceBar')} />
       </div>
 
       <Typography>Tag Name: "{collection.tagName}"</Typography>

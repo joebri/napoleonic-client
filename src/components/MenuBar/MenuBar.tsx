@@ -18,6 +18,7 @@ import {
   useHeaderTitleStateGet,
   useIsFilterOpenStateSet,
   useNavigationTagsStateGet,
+  usePageNumberStateSet,
 } from 'state';
 import { NavigationTag } from 'types';
 
@@ -31,11 +32,14 @@ const MenuBar = () => {
   const navigationTags = useNavigationTagsStateGet();
   const setIsFilterOpen = useIsFilterOpenStateSet();
 
+  const setpageNumber = usePageNumberStateSet();
+
   const handleFilterClick = () => {
     setIsFilterOpen(true);
   };
 
   const handleNavigationTagClick = (navigationTag: NavigationTag) => {
+    setpageNumber(1);
     navigate(navigationTag.url);
   };
 

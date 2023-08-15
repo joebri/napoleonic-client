@@ -1,9 +1,9 @@
 import {
   ApolloClient,
   ApolloProvider,
+  InMemoryCache,
   createHttpLink,
   from,
-  InMemoryCache,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -22,6 +22,7 @@ const Provider = ({ children }: ProviderProps): ReactElement => {
 
   const authLink = setContext(async (_, { headers }) => {
     const accessToken = await getAccessTokenSilently();
+    // console.log('accessToken', accessToken);
 
     return {
       headers: {

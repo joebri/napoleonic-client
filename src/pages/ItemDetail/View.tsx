@@ -1,4 +1,3 @@
-import { AdvancedImage } from '@cloudinary/react';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Rating, Typography } from '@mui/material';
@@ -22,7 +21,7 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
   const [rating, setRating] = useState(0);
 
   const { ratingLabels, toUiRating } = useRatings();
-  const { getImage } = useImageService();
+  const { getLocalImage } = useImageService();
 
   useEffect(() => {
     setRating(toUiRating(item.rating));
@@ -70,9 +69,10 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         {item.publicId && (
           <>
             <div>
-              <AdvancedImage
-                cldImg={getImage(item.publicId)}
+              <img
+                alt=""
                 className={styles.image}
+                src={getLocalImage(item.publicId)}
                 title={item.publicId}
               />
             </div>
