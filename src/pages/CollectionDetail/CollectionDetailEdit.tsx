@@ -12,48 +12,48 @@ import { Edit } from './Edit';
 import { useCollectionDetailEdit } from './useCollectionDetailEdit';
 
 const CollectionDetailEdit = () => {
-  const moduleName = `${CollectionDetailEdit.name}.tsx`;
+    const moduleName = `${CollectionDetailEdit.name}.tsx`;
 
-  const {
-    collection,
-    error,
-    handleEditCancelClick,
-    handleEditChange,
-    handleEditSaveClick,
-    handleMessageClose,
-    loadStatus,
-    showMessage,
-  } = useCollectionDetailEdit(moduleName);
+    const {
+        collection,
+        error,
+        handleEditCancelClick,
+        handleEditChange,
+        handleEditSaveClick,
+        handleMessageClose,
+        loadStatus,
+        showMessage,
+    } = useCollectionDetailEdit(moduleName);
 
-  if (loadStatus === LoadStatus.LOADING) {
-    return <Loading />;
-  }
-  if (loadStatus === LoadStatus.ERROR) {
-    return <ErrorHandler error={error} />;
-  }
+    if (loadStatus === LoadStatus.LOADING) {
+        return <Loading />;
+    }
+    if (loadStatus === LoadStatus.ERROR) {
+        return <ErrorHandler error={error} />;
+    }
 
-  return (
-    <>
-      <Helmet>
-        <title>Uniformology: Edit Collection</title>
-      </Helmet>
-      <div className={styles.container}>
-        <Typography variant="h5">Edit Collection</Typography>
-        <Edit
-          collection={collection}
-          onCancel={handleEditCancelClick}
-          onChange={handleEditChange}
-          onSave={handleEditSaveClick}
-        />
-      </div>
+    return (
+        <>
+            <Helmet>
+                <title>Uniformology: Edit Collection</title>
+            </Helmet>
+            <div className={styles.container}>
+                <Typography variant="h5">Edit Collection</Typography>
+                <Edit
+                    collection={collection}
+                    onCancel={handleEditCancelClick}
+                    onChange={handleEditChange}
+                    onSave={handleEditSaveClick}
+                />
+            </div>
 
-      <AppSnackBar
-        message="Unable to update Collection. Please try again."
-        onClose={handleMessageClose}
-        open={showMessage}
-      ></AppSnackBar>
-    </>
-  );
+            <AppSnackBar
+                message="Unable to update Collection. Please try again."
+                onClose={handleMessageClose}
+                open={showMessage}
+            ></AppSnackBar>
+        </>
+    );
 };
 
 export { CollectionDetailEdit };

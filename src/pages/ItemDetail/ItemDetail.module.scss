@@ -1,68 +1,68 @@
 .container {
-  margin: 0.5rem auto 2rem auto;
-  width: 80%;
-  & :global(.MuiAutocomplete-root) {
-    width: 100%;
-  }
+    margin: 0.5rem auto 2rem auto;
+    width: 80%;
+    & :global(.MuiAutocomplete-root) {
+        width: 100%;
+    }
 }
 .containerImage {
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  width: fit-content;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    width: fit-content;
 }
 .image {
-  box-shadow: 0.25rem 0.25rem 5px #ccc;
-  max-width: 100%;
+    box-shadow: 0.25rem 0.25rem 5px #ccc;
+    max-width: 100%;
 }
 .artist {
-  font-style: italic;
-  text-align: right;
+    font-style: italic;
+    text-align: right;
 }
 
 label {
-  font-weight: bold;
-  margin-right: 0.25rem;
+    font-weight: bold;
+    margin-right: 0.25rem;
 }
 
 .ratingLabel {
-  font-size: 0.8rem;
-  margin-bottom: 0.3rem;
-  margin-top: 1rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+    margin-top: 1rem;
 }
 .rating {
-  display: flex;
-  align-items: center;
-  & > span:nth-of-type(1) {
-    top: -1px;
-  }
-  & > span:nth-of-type(2) {
-    margin-left: 1rem;
-  }
+    display: flex;
+    align-items: center;
+    & > span:nth-of-type(1) {
+        top: -1px;
+    }
+    & > span:nth-of-type(2) {
+        margin-left: 1rem;
+    }
 }
 .tags {
-  align-items: center;
-  display: flex;
-  margin-top: 1rem;
+    align-items: center;
+    display: flex;
+    margin-top: 1rem;
 }
 
 .actionBar {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  right: 2rem;
-  top: 5rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 2rem;
+    top: 5rem;
 }
 .buttonSpacer {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 .buttonSpacerX4 {
-  margin-bottom: 4rem;
+    margin-bottom: 4rem;
 }
 .dialog {
-  & :global(.MuiPaper-root) {
-    width: 20vw;
-  }
+    & :global(.MuiPaper-root) {
+        width: 20vw;
+    }
 }
 .messageAlert {
-  width: 100%;
+    width: 100%;
 }

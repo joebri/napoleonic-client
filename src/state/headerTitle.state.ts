@@ -1,33 +1,33 @@
 import {
-  atom,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
+    atom,
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
 } from 'recoil';
 
 const headerTitleAtom = atom({
-  key: 'headerTitle',
-  default: '',
+    key: 'headerTitle',
+    default: '',
 });
 
 const useHeaderTitleState = () => {
-  const state = useRecoilState(headerTitleAtom);
-  return state;
+    const state = useRecoilState(headerTitleAtom);
+    return state;
 };
 
 const useHeaderTitleStateGet = () => {
-  const value = useRecoilValue(headerTitleAtom);
-  return value;
+    const value = useRecoilValue(headerTitleAtom);
+    return value;
 };
 
 const useHeaderTitleStateSet = () => {
-  const value = useSetRecoilState(headerTitleAtom);
-  return value;
+    const value = useSetRecoilState(headerTitleAtom);
+    return value;
 };
 
 export {
-  headerTitleAtom,
-  useHeaderTitleState,
-  useHeaderTitleStateGet,
-  useHeaderTitleStateSet,
+    headerTitleAtom,
+    useHeaderTitleState,
+    useHeaderTitleStateGet,
+    useHeaderTitleStateSet,
 };

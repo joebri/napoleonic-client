@@ -4,5 +4,5 @@ import { reportWebVitals } from './reportWebVitals';
 // to log results (for example: reportWebVitals(console.info))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals((vital) => {
-  console.info(vital);
+    console.info(vital);
 });

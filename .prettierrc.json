@@ -1,18 +1,18 @@
 {
-  "endOfLine": "auto",
+    "endOfLine": "auto",
 
-  "importOrder": [
-    "^components/(.*)$",
-    "^[enums|hooks|state|types|utilities]",
-    "^[./]"
-  ],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
+    "importOrder": [
+        "^components/(.*)$",
+        "^[enums|hooks|state|types|utilities]",
+        "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
 
-  "insert_final_newline": true,
+    "insert_final_newline": true,
 
-  "semi": true,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5"
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "es5"
 }

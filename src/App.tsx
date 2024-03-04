@@ -9,23 +9,23 @@ import { ThemeProvider, theme } from 'theme';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
-  return (
-    <HelmetProvider>
-      <Helmet>
-        <title>Uniformology: Napoleonic</title>
-      </Helmet>
-      <CssBaseline />
-      <ErrorBoundary>
-        <ThemeProvider theme={theme}>
-          <RecoilRoot>
-            <StyledEngineProvider injectFirst>
-              <Home />
-            </StyledEngineProvider>
-          </RecoilRoot>
-        </ThemeProvider>
-      </ErrorBoundary>
-    </HelmetProvider>
-  );
+    return (
+        <HelmetProvider>
+            <Helmet>
+                <title>Uniformology: Napoleonic</title>
+            </Helmet>
+            <CssBaseline />
+            <ErrorBoundary>
+                <ThemeProvider theme={theme}>
+                    <RecoilRoot>
+                        <StyledEngineProvider injectFirst>
+                            <Home />
+                        </StyledEngineProvider>
+                    </RecoilRoot>
+                </ThemeProvider>
+            </ErrorBoundary>
+        </HelmetProvider>
+    );
 }
 
 export { App };

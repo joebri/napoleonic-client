@@ -8,58 +8,58 @@ import { ItemMetaData } from 'types';
 import styles from './ItemCard.module.scss';
 
 interface ImageMetaDataProps {
-  metaData: ItemMetaData;
-  onClose: Function;
+    metaData: ItemMetaData;
+    onClose: Function;
 }
 
 const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
-  const handleMetaDataClose = () => {
-    onClose();
-  };
+    const handleMetaDataClose = () => {
+        onClose();
+    };
 
-  const handleUrlButtonClick = () => {
-    navigator.clipboard.writeText(metaData.url);
-  };
+    const handleUrlButtonClick = () => {
+        navigator.clipboard.writeText(metaData.url);
+    };
 
-  return (
-    <>
-      {metaData.height ? (
+    return (
         <>
-          <p>
-            <label>Height:</label>
-            {metaData.height?.toLocaleString()}px
-          </p>
-          <p>
-            <label>Width:</label>
-            {metaData.width?.toLocaleString()}px
-          </p>
-          <p>
-            <label>Bytes:</label>
-            {metaData.bytes?.toLocaleString()}
-          </p>
-          <p>
-            <label>Url:</label>
-            <IconButton
-              color="inherit"
-              className={styles.url_icon_button}
-              edge="start"
-              onClick={handleUrlButtonClick}
-              size="small"
-            >
-              <CodeIcon />
-            </IconButton>
-          </p>
-          <Button onClick={handleMetaDataClose} variant="contained">
-            Show image
-          </Button>
+            {metaData.height ? (
+                <>
+                    <p>
+                        <label>Height:</label>
+                        {metaData.height?.toLocaleString()}px
+                    </p>
+                    <p>
+                        <label>Width:</label>
+                        {metaData.width?.toLocaleString()}px
+                    </p>
+                    <p>
+                        <label>Bytes:</label>
+                        {metaData.bytes?.toLocaleString()}
+                    </p>
+                    <p>
+                        <label>Url:</label>
+                        <IconButton
+                            color="inherit"
+                            className={styles.url_icon_button}
+                            edge="start"
+                            onClick={handleUrlButtonClick}
+                            size="small"
+                        >
+                            <CodeIcon />
+                        </IconButton>
+                    </p>
+                    <Button onClick={handleMetaDataClose} variant="contained">
+                        Show image
+                    </Button>
+                </>
+            ) : (
+                <div className={styles.loading_container}>
+                    <Loading />
+                </div>
+            )}
         </>
-      ) : (
-        <div className={styles.loading_container}>
-          <Loading />
-        </div>
-      )}
-    </>
-  );
+    );
 };
 
 export { ImageMetaData };

@@ -1,5 +1,5 @@
 export enum Mode {
-  VIEW,
-  EDIT,
-  CREATE,
+    VIEW,
+    EDIT,
+    CREATE,
 }

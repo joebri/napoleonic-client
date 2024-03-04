@@ -4,16 +4,16 @@ import { FunctionComponent } from 'react';
 import { Loading } from 'components/Loading/Loading';
 
 type AuthenticationGuardProps = {
-  component: FunctionComponent;
+    component: FunctionComponent;
 };
 
 const AuthenticationGuard = ({ component }: AuthenticationGuardProps) => {
-  const Component = withAuthenticationRequired(component, {
-    onRedirecting: () => <Loading />,
-    returnTo: () => window.location.pathname,
-  });
+    const Component = withAuthenticationRequired(component, {
+        onRedirecting: () => <Loading />,
+        returnTo: () => window.location.pathname,
+    });
 
-  return <Component />;
+    return <Component />;
 };
 
 export { AuthenticationGuard };

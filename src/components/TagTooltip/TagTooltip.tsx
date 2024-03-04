@@ -5,24 +5,24 @@ import { useEffect, useState } from 'react';
 import styles from './TagTooltip.module.scss';
 
 interface TagTooltipProps {
-  tagNames: string[];
+    tagNames: string[];
 }
 
 const TagTooltip = ({ tagNames }: TagTooltipProps) => {
-  const [tagString, setTagString] = useState('');
+    const [tagString, setTagString] = useState('');
 
-  useEffect(() => {
-    if (tagNames) {
-      const tagString = 'Tags: ' + tagNames.join(', ');
-      setTagString(tagString);
-    }
-  }, [tagNames]);
+    useEffect(() => {
+        if (tagNames) {
+            const tagString = 'Tags: ' + tagNames.join(', ');
+            setTagString(tagString);
+        }
+    }, [tagNames]);
 
-  return (
-    <Tooltip title={tagString} className={styles.tooltip}>
-      <LabelOutlinedIcon />
-    </Tooltip>
-  );
+    return (
+        <Tooltip title={tagString} className={styles.tooltip}>
+            <LabelOutlinedIcon />
+        </Tooltip>
+    );
 };
 
 export { TagTooltip };

@@ -1,39 +1,39 @@
 .container {
-  margin: 0.5rem auto 2rem auto;
-  width: 80%;
-  &__link {
-    display: flex;
-    justify-content: center;
-    font-size: 2rem;
-  }
-  &__image {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-    margin-top: 2rem;
-  }
+    margin: 0.5rem auto 2rem auto;
+    width: 80%;
+    &__link {
+        display: flex;
+        justify-content: center;
+        font-size: 2rem;
+    }
+    &__image {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+        margin-top: 2rem;
+    }
 }
 .tags {
-  margin-top: 1rem;
+    margin-top: 1rem;
 }
 .actionBar {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  right: 2rem;
-  top: 5rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 2rem;
+    top: 5rem;
 }
 .buttonSpacer {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 .buttonSpacerX4 {
-  margin-bottom: 4rem;
+    margin-bottom: 4rem;
 }
 .dialog {
-  & :global(.MuiPaper-root) {
-    width: 20vw;
-  }
+    & :global(.MuiPaper-root) {
+        width: 20vw;
+    }
 }
 .messageAlert {
-  width: 100%;
+    width: 100%;
 }

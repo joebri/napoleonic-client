@@ -5,21 +5,25 @@ import { Loading } from 'components/Loading/Loading';
 import styles from './Profile.module.scss';
 
 const Profile = () => {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+    const { user, isAuthenticated, isLoading } = useAuth0();
 
-  if (isLoading) {
-    return <Loading />;
-  }
+    if (isLoading) {
+        return <Loading />;
+    }
 
-  return (
-    <>
-      {isAuthenticated && (
-        <div className={styles.profile}>
-          <img src={user?.picture} alt={user?.name} title={user?.name} />
-        </div>
-      )}
-    </>
-  );
+    return (
+        <>
+            {isAuthenticated && (
+                <div className={styles.profile}>
+                    <img
+                        src={user?.picture}
+                        alt={user?.name}
+                        title={user?.name}
+                    />
+                </div>
+            )}
+        </>
+    );
 };
 
 export { Profile };
