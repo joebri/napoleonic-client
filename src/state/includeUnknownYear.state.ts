@@ -1,33 +1,33 @@
 import {
-  atom,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
+    atom,
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
 } from 'recoil';
 
 const includeUnknownYearAtom = atom({
-  key: 'includeUnknownYear',
-  default: true,
+    key: 'includeUnknownYear',
+    default: true,
 });
 
 const useIncludeUnknownYearState = () => {
-  const state = useRecoilState(includeUnknownYearAtom);
-  return state;
+    const state = useRecoilState(includeUnknownYearAtom);
+    return state;
 };
 
 const useIncludeUnknownYearStateGet = () => {
-  const value = useRecoilValue(includeUnknownYearAtom);
-  return value;
+    const value = useRecoilValue(includeUnknownYearAtom);
+    return value;
 };
 
 const useIncludeUnknownYearStateSet = () => {
-  const state = useSetRecoilState(includeUnknownYearAtom);
-  return state;
+    const state = useSetRecoilState(includeUnknownYearAtom);
+    return state;
 };
 
 export {
-  includeUnknownYearAtom,
-  useIncludeUnknownYearState,
-  useIncludeUnknownYearStateGet,
-  useIncludeUnknownYearStateSet,
+    includeUnknownYearAtom,
+    useIncludeUnknownYearState,
+    useIncludeUnknownYearStateGet,
+    useIncludeUnknownYearStateSet,
 };

@@ -12,21 +12,21 @@ npm install
 
 ### Pre-requisites
 
-- Start the napoleonic-service (see [repo](https://github.com/joebri/napoleonic-service.git)).
+-   Start the napoleonic-service (see [repo](https://github.com/joebri/napoleonic-service.git)).
 
 ### Run
 
-- `npm run start:dev`
+-   `npm run start:dev`
 
 ## Testing
 
-- `npm test`
+-   `npm test`
 
 ## Deploying to Docker
 
-- Run `npm run build` to create production build (see \build folder).
+-   Run `npm run build` to create production build (see \build folder).
 
-- Run `npm run docker:up` to build and run the container.
+-   Run `npm run docker:up` to build and run the container.
 
 ---
 

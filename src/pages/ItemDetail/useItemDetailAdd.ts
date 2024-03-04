@@ -7,88 +7,87 @@ import { useNavigationTags } from 'hooks/useNavigationTags';
 import { Item } from 'types';
 import { initialisedItem } from 'utilities/helper';
 import { logError } from 'utilities/logError';
+
 import { createItemMutation } from './queries/createItemMutation';
 
-const useItemDetailAdd = (moduleName: string) => {
-  const navigate = useNavigate();
+export const useItemDetailAdd = (moduleName: string) => {
+    const navigate = useNavigate();
 
-  const [template] = useLocalStorage<any>('template', {
-    artist: '',
-    tags: '',
-    urlRoot: '',
-    yearFrom: '',
-  });
-
-  const [item, setItem] = useState({
-    ...initialisedItem,
-    artist: template.artist,
-    publicId: template.urlRoot,
-    tags: template.tags.split(','),
-    yearFrom: template.yearFrom,
-  });
-  const [showMessage, setShowMessage] = useState(false);
-
-  const { enableLastNavigationTag } = useNavigationTags();
-
-  useEffect(() => {
-    enableLastNavigationTag();
-  }, [enableLastNavigationTag]);
-
-  const [createItem] = useMutation(createItemMutation, {
-    onCompleted: (data) => {
-      navigate(`/itemDetailView/${data.createItem}`);
-    },
-    onError: (exception) => {
-      logError({
-        moduleName,
-        name: 'createItem',
-        exception,
-        message: 'Create failed.',
-      });
-      setShowMessage(true);
-    },
-  });
-
-  const handleEditChange = (field: string, value: string | number) => {
-    setItem((priorItem: Item) => ({
-      ...priorItem,
-      [field]: value,
-    }));
-  };
-
-  const handleEditCancelClick = () => {
-    navigate(`/gallery`);
-  };
-
-  const handleEditSaveClick = () => {
-    createItem({
-      variables: {
-        artist: item.artist?.trim(),
-        descriptionLong: item.descriptionLong?.trim(),
-        descriptionShort: item.descriptionShort?.trim(),
-        publicId: item.publicId?.trim(),
-        rating: parseInt(item.rating.toString()),
-        regiments: item.regiments?.trim(),
-        tags: item.tags,
-        title: item.title?.trim(),
-        yearFrom: item.yearFrom?.trim(),
-        yearTo: item.yearTo?.trim(),
-      },
+    const [template] = useLocalStorage<any>('template', {
+        artist: '',
+        tags: '',
+        urlRoot: '',
+        yearFrom: '',
     });
-  };
 
-  const handleMessageClose = () => {
-    setShowMessage(false);
-  };
+    const [item, setItem] = useState({
+        ...initialisedItem,
+        artist: template.artist,
+        publicId: template.urlRoot,
+        tags: template.tags.split(','),
+        yearFrom: template.yearFrom,
+    });
+    const [showMessage, setShowMessage] = useState(false);
 
-  return {
-    handleEditCancelClick,
-    handleEditChange,
-    handleEditSaveClick,
-    handleMessageClose,
-    item,
-    showMessage,
-  };
+    const { enableLastNavigationTag } = useNavigationTags();
+
+    useEffect(() => {
+        enableLastNavigationTag();
+    }, [enableLastNavigationTag]);
+
+    const [createItem] = useMutation(createItemMutation, {
+        onCompleted: (data) => {
+            navigate(`/itemDetailView/${data.createItem}`);
+        },
+        onError: (exception) => {
+            logError({
+                moduleName,
+                name: 'createItem',
+                exception,
+                message: 'Create failed.',
+            });
+            setShowMessage(true);
+        },
+    });
+
+    const handleEditChange = (field: string, value: string | number) => {
+        setItem((priorItem: Item) => ({
+            ...priorItem,
+            [field]: value,
+        }));
+    };
+
+    const handleEditCancelClick = () => {
+        navigate(`/gallery`);
+    };
+
+    const handleEditSaveClick = () => {
+        createItem({
+            variables: {
+                artist: item.artist?.trim(),
+                descriptionLong: item.descriptionLong?.trim(),
+                descriptionShort: item.descriptionShort?.trim(),
+                publicId: item.publicId?.trim(),
+                rating: parseInt(item.rating.toString()),
+                regiments: item.regiments?.trim(),
+                tags: item.tags,
+                title: item.title?.trim(),
+                yearFrom: item.yearFrom?.trim(),
+                yearTo: item.yearTo?.trim(),
+            },
+        });
+    };
+
+    const handleMessageClose = () => {
+        setShowMessage(false);
+    };
+
+    return {
+        handleEditCancelClick,
+        handleEditChange,
+        handleEditSaveClick,
+        handleMessageClose,
+        item,
+        showMessage,
+    };
 };
-
-export { useItemDetailAdd };

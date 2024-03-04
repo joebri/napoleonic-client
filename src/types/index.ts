@@ -9,13 +9,13 @@ import { Tag } from './Tag.type';
 import { Template } from './Template.type';
 
 export type {
-  ArtistTag,
-  BattleTag,
-  Collection,
-  Item,
-  ItemMetaData,
-  NavigationTag,
-  RatingsType,
-  Tag,
-  Template,
+    ArtistTag,
+    BattleTag,
+    Collection,
+    Item,
+    ItemMetaData,
+    NavigationTag,
+    RatingsType,
+    Tag,
+    Template,
 };

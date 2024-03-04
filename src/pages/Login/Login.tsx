@@ -1,15 +1,14 @@
-/** @jsxImportSource @emotion/react */
-
+import { useAuth0 } from '@auth0/auth0-react';
 import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
-import { classes } from './Login.style';
-
-import { useAuth0 } from '@auth0/auth0-react';
 import { Loading } from 'components/Loading/Loading';
 import { LoginButton } from 'components/LoginButton/LoginButton';
+
 import { useHeaderTitleStateSet } from 'state';
+
+import styles from './Login.module.scss';
 
 const Login = () => {
   const setHeaderTitle = useHeaderTitleStateSet();
@@ -27,11 +26,11 @@ const Login = () => {
   }
 
   return (
-    <div css={classes.container}>
+    <div className={styles.container}>
       <Helmet>
         <title>Login</title>
       </Helmet>
-      <Typography css={classes.title} variant="h2">
+      <Typography className={styles.title} variant="h2">
         Napoleonic Uniformology
       </Typography>
       <LoginButton />

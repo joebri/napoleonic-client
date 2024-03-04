@@ -1,30 +1,28 @@
-/** @jsxImportSource @emotion/react */
-
 import { ApolloError } from '@apollo/client';
 import { Typography } from '@mui/material';
 
-import { classes } from './ErrorHandler.style';
+import styles from './ErrorHandler.module.scss';
 
 interface ErrorHandlerProps {
-  error: ApolloError | undefined;
+    error: ApolloError | undefined;
 }
 
 const ErrorHandler = ({ error }: ErrorHandlerProps) => {
-  return (
-    <>
-      <div css={classes.container}>
-        <Typography variant="h1">Error!</Typography>
-        {process.env.NODE_ENV === 'production' ? (
-          <p>An error has occurred.</p>
-        ) : (
-          <>
-            <p>The following error has occurred:</p>
-            <p css={classes.message}>{error?.message || ''}</p>
-          </>
-        )}
-      </div>
-    </>
-  );
+    return (
+        <>
+            <div className={styles.container}>
+                <Typography variant="h1">Error!</Typography>
+                {process.env.NODE_ENV === 'production' ? (
+                    <p>An error has occurred.</p>
+                ) : (
+                    <>
+                        <p>The following error has occurred:</p>
+                        <p className={styles.message}>{error?.message || ''}</p>
+                    </>
+                )}
+            </div>
+        </>
+    );
 };
 
 export { ErrorHandler };

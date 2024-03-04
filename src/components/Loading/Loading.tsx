@@ -1,16 +1,14 @@
-/** @jsxImportSource @emotion/react */
-
 import { Box, CircularProgress } from '@mui/material';
 
-import { classes } from './Loading.style';
+import styles from './Loading.module.scss';
 
 const Loading = () => {
-  return (
-    <Box css={classes.container}>
-      <CircularProgress />
-      Loading...
-    </Box>
-  );
+    return (
+        <Box className={styles.container}>
+            <CircularProgress />
+            Loading...
+        </Box>
+    );
 };
 
 export { Loading };

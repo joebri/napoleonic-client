@@ -7,49 +7,48 @@ import { useNavigationTags } from 'hooks/useNavigationTags';
 import { useHeaderTitleStateSet } from 'state';
 import { Collection } from 'types';
 import { logError } from 'utilities/logError';
+
 import { readCollectionsQuery } from './queries/readCollectionsQuery';
 
-const useCollectionList = (moduleName: string) => {
-  const navigate = useNavigate();
+export const useCollectionList = (moduleName: string) => {
+    const navigate = useNavigate();
 
-  const setHeaderTitle = useHeaderTitleStateSet();
+    const setHeaderTitle = useHeaderTitleStateSet();
 
-  const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
+    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
 
-  const [collections, setCollections] = useState([] as Collection[]);
+    const [collections, setCollections] = useState([] as Collection[]);
 
-  const { clearHeaderNavigationTags } = useNavigationTags();
+    const { clearHeaderNavigationTags } = useNavigationTags();
 
-  const [readCollections, { error }] = useLazyQuery(readCollectionsQuery, {
-    onCompleted: (data) => {
-      setCollections(data.readCollections);
-      setLoadStatus(LoadStatus.LOADED);
-    },
-    onError: (exception) => {
-      logError({ moduleName, name: 'readCollections', exception });
-      setLoadStatus(LoadStatus.ERROR);
-    },
-  });
+    const [readCollections, { error }] = useLazyQuery(readCollectionsQuery, {
+        onCompleted: (data) => {
+            setCollections(data.readCollections);
+            setLoadStatus(LoadStatus.LOADED);
+        },
+        onError: (exception) => {
+            logError({ moduleName, name: 'readCollections', exception });
+            setLoadStatus(LoadStatus.ERROR);
+        },
+    });
 
-  useEffect(() => {
-    setHeaderTitle('Collections');
-    clearHeaderNavigationTags();
-  }, [clearHeaderNavigationTags, setHeaderTitle]);
+    useEffect(() => {
+        setHeaderTitle('Collections');
+        clearHeaderNavigationTags();
+    }, [clearHeaderNavigationTags, setHeaderTitle]);
 
-  useEffect(() => {
-    readCollections();
-  }, [readCollections]);
+    useEffect(() => {
+        readCollections();
+    }, [readCollections]);
 
-  const handleSearchClick = (collection: Collection) => {
-    navigate(`/collectionDetailView/${collection.id}`);
-  };
+    const handleSearchClick = (collection: Collection) => {
+        navigate(`/collectionDetailView/${collection.id}`);
+    };
 
-  return {
-    collections,
-    error,
-    handleSearchClick,
-    loadStatus,
-  };
+    return {
+        collections,
+        error,
+        handleSearchClick,
+        loadStatus,
+    };
 };
-
-export { useCollectionList };

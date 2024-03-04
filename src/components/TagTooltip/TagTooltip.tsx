@@ -1,30 +1,28 @@
-/** @jsxImportSource @emotion/react */
-
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
 import { Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { classes } from './TagTooltip.style';
+import styles from './TagTooltip.module.scss';
 
 interface TagTooltipProps {
-  tagNames: string[];
+    tagNames: string[];
 }
 
 const TagTooltip = ({ tagNames }: TagTooltipProps) => {
-  const [tagString, setTagString] = useState('');
+    const [tagString, setTagString] = useState('');
 
-  useEffect(() => {
-    if (tagNames) {
-      const tagString = 'Tags: ' + tagNames.join(', ');
-      setTagString(tagString);
-    }
-  }, [tagNames]);
+    useEffect(() => {
+        if (tagNames) {
+            const tagString = 'Tags: ' + tagNames.join(', ');
+            setTagString(tagString);
+        }
+    }, [tagNames]);
 
-  return (
-    <Tooltip title={tagString} css={classes.tooltip}>
-      <LabelOutlinedIcon />
-    </Tooltip>
-  );
+    return (
+        <Tooltip title={tagString} className={styles.tooltip}>
+            <LabelOutlinedIcon />
+        </Tooltip>
+    );
 };
 
 export { TagTooltip };

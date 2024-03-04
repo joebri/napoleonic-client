@@ -1,129 +1,115 @@
-/** @jsxImportSource @emotion/react */
-
-import { AdvancedImage } from '@cloudinary/react';
-import styled from '@emotion/styled';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Rating, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import { TagInput } from 'components/TagInput/TagInput';
-import { classes } from './ItemDetail.style';
 
-import { useImageService } from 'hooks/useImageService';
+import { getLocalImage } from 'helpers/imageService';
 import { Item } from 'types';
-import { useRatings } from './useRatings';
 
-const Label = styled.label`
-  font-weight: bold;
-  margin-right: 0.25rem;
-`;
-const TagLabel = styled.label`
-  font-weight: bold;
-  margin-right: 0.5rem;
-`;
+import styles from './ItemDetail.module.scss';
+import { ratingLabels, toUiRating } from './ItemDetailHelper';
 
 interface ViewProps {
-  item: Item;
-  onDelete: Function;
-  onEdit: Function;
+    item: Item;
+    onDelete: Function;
+    onEdit: Function;
 }
 
 const View = ({ item, onDelete, onEdit }: ViewProps) => {
-  const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(0);
 
-  const { ratingLabels, toUiRating } = useRatings();
-  const { getImage } = useImageService();
+    useEffect(() => {
+        setRating(toUiRating(item.rating));
+    }, [item.rating]);
 
-  useEffect(() => {
-    setRating(toUiRating(item.rating));
-  }, [toUiRating, item.rating]);
+    const handleEditClick = () => {
+        onEdit();
+    };
 
-  const handleEditClick = () => {
-    onEdit();
-  };
+    const handleDeleteClick = () => {
+        onDelete();
+    };
 
-  const handleDeleteClick = () => {
-    onDelete();
-  };
-
-  return (
-    <div>
-      <div css={classes.actionBar}>
-        <Button
-          aria-label="edit"
-          css={classes.button_spacer_x4}
-          onClick={handleEditClick}
-          size="small"
-          startIcon={<EditIcon />}
-          variant="contained"
-        >
-          Edit
-        </Button>
-        <Button
-          aria-label="delete"
-          onClick={handleDeleteClick}
-          size="small"
-          startIcon={<DeleteForeverIcon />}
-          variant="outlined"
-        >
-          Delete
-        </Button>
-      </div>
-      <Typography variant="h2">{item.title}</Typography>
-      {item.descriptionShort && (
-        <Typography variant="h3">{item.descriptionShort}</Typography>
-      )}
-      {item.descriptionLong && (
-        <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
-      )}
-      <div css={classes.container_image}>
-        {item.publicId && (
-          <>
-            <div>
-              <AdvancedImage
-                cldImg={getImage(item.publicId)}
-                css={classes.image}
-                title={item.publicId}
-              />
+    return (
+        <div>
+            <div className={styles.actionBar}>
+                <Button
+                    aria-label="edit"
+                    className={styles.buttonSpacerX4}
+                    onClick={handleEditClick}
+                    size="small"
+                    startIcon={<EditIcon />}
+                    variant="contained"
+                >
+                    Edit
+                </Button>
+                <Button
+                    aria-label="delete"
+                    onClick={handleDeleteClick}
+                    size="small"
+                    startIcon={<DeleteForeverIcon />}
+                    variant="outlined"
+                >
+                    Delete
+                </Button>
             </div>
-            {item.artist && (
-              <Typography
-                css={classes.artist}
-                variant="body2"
-                color="text.secondary"
-              >
-                {item.artist}
-              </Typography>
+            <Typography variant="h2">{item.title}</Typography>
+            {item.descriptionShort && (
+                <Typography variant="h3">{item.descriptionShort}</Typography>
             )}
-          </>
-        )}
-      </div>
-      {item.regiments && (
-        <p>
-          <Label>Regiment(s):</Label>
-          {item.regiments}
-        </p>
-      )}
-      {(item.yearFrom || item.yearTo) && (
-        <p>
-          <Label>Year:</Label>
-          {item.yearFrom}
-          {item.yearTo ? <span> - {item.yearTo}</span> : ''}
-        </p>
-      )}
-      <div css={classes.rating}>
-        <Label>Rating:</Label>
-        <Rating max={3} readOnly value={rating} />
-        <span>{ratingLabels[rating]}</span>
-      </div>
+            {item.descriptionLong && (
+                <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
+            )}
+            <div className={styles.containerImage}>
+                {item.publicId && (
+                    <>
+                        <div>
+                            <img
+                                alt=""
+                                className={styles.image}
+                                src={getLocalImage(item.publicId)}
+                                title={item.publicId}
+                            />
+                        </div>
+                        {item.artist && (
+                            <Typography
+                                className={styles.artist}
+                                variant="body2"
+                                color="text.secondary"
+                            >
+                                {item.artist}
+                            </Typography>
+                        )}
+                    </>
+                )}
+            </div>
+            {item.regiments && (
+                <p>
+                    <label>Regiment(s):</label>
+                    {item.regiments}
+                </p>
+            )}
+            {(item.yearFrom || item.yearTo) && (
+                <p>
+                    <label>Year:</label>
+                    {item.yearFrom}
+                    {item.yearTo ? <span> - {item.yearTo}</span> : ''}
+                </p>
+            )}
+            <div className={styles.rating}>
+                <label>Rating:</label>
+                <Rating max={3} readOnly value={rating} />
+                <span>{ratingLabels[rating]}</span>
+            </div>
 
-      <div css={classes.tags}>
-        <TagLabel>Tags:</TagLabel>
-        <TagInput tagNames={item.tags} isEdit={false} />
-      </div>
-    </div>
-  );
+            <div className={styles.tags}>
+                <label>Tags:</label>
+                <TagInput tagNames={item.tags} isEdit={false} />
+            </div>
+        </div>
+    );
 };
 
 export { View };
