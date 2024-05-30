@@ -2,8 +2,8 @@ import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
 import { LegacyRef, createRef, useEffect, useState } from 'react';
 
-import { getLocalImage } from 'helpers/imageService';
 import { Item, ItemMetaData } from 'types';
+import { getLocalImage } from 'utilities/imageService';
 
 import styles from './ItemCard.module.scss';
 

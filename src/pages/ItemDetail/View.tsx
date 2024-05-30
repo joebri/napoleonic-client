@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 
 import { TagInput } from 'components/TagInput/TagInput';
 
-import { getLocalImage } from 'helpers/imageService';
 import { Item } from 'types';
+import { getLocalImage } from 'utilities/imageService';
 
 import styles from './ItemDetail.module.scss';
 import { ratingLabels, toUiRating } from './ItemDetailHelper';
