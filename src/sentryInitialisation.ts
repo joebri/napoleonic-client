@@ -1,9 +1,9 @@
+import { browserTracingIntegration } from '@sentry/browser';
 import * as Sentry from '@sentry/react';
-import { BrowserTracing } from '@sentry/tracing';
 
 Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
-    integrations: [new BrowserTracing()],
+    integrations: [browserTracingIntegration()],
     environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
 
     // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
