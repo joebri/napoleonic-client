@@ -30,9 +30,11 @@ export const useRegimentList = (moduleName: string) => {
     const tags = useTagsStateGet();
     const yearRange = useYearRangeStateGet();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [regiments, setRegiments] = useState([] as RegimentTag[]);
-    const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [regiments, setRegiments] = useState<RegimentTag[]>([]);
+    const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     useEffect(() => {
         setHeaderTitle('Regiments');

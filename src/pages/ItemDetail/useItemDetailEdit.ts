@@ -17,10 +17,12 @@ export const useItemDetailEdit = (moduleName: string) => {
     const { itemId } = useParams();
     const navigate = useNavigate();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [item, setItem] = useState(initialisedItem);
-    const [showMessage, setShowMessage] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [item, setItem] = useState<Item>(initialisedItem);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isDirty, setIsDirty] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
 

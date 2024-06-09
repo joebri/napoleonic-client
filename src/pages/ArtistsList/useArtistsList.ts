@@ -31,11 +31,11 @@ export const useArtistsList = (moduleName: string) => {
         return `Year From: ${yearRange[0]}, Year To: ${yearRange[1]}`;
     });
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-
-    const [artists, setArtists] = useState([] as ArtistTag[]);
-
-    const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [artists, setArtists] = useState<ArtistTag[]>([]);
+    const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 

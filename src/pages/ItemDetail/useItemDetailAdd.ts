@@ -20,14 +20,14 @@ export const useItemDetailAdd = (moduleName: string) => {
         yearFrom: '',
     });
 
-    const [item, setItem] = useState({
+    const [item, setItem] = useState<Item>({
         ...initialisedItem,
         artist: template.artist,
         publicId: template.urlRoot,
         tags: template.tags.split(','),
         yearFrom: template.yearFrom,
     });
-    const [showMessage, setShowMessage] = useState(false);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
 

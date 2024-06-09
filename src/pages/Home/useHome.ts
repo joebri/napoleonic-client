@@ -19,7 +19,9 @@ export const useHome = (moduleName: string) => {
     const setPageNumber = usePageNumberStateSet();
     const [tags, setTags] = useTagsState();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
 
     const [getTags, { error }] = useLazyQuery(readTagsQuery, {
         onCompleted: (data) => {
