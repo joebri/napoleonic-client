@@ -2,9 +2,9 @@ import { browserTracingIntegration } from '@sentry/browser';
 import * as Sentry from '@sentry/react';
 
 Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
+    dsn: import.meta.env.VITE_APP_SENTRY_DSN,
     integrations: [browserTracingIntegration()],
-    environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+    environment: import.meta.env.VITE_APP_SENTRY_ENVIRONMENT,
 
     // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
     // We recommend adjusting this value in production.
@@ -17,6 +17,8 @@ Sentry.init({
 // For some reason following message is concatenated to next error message!
 console.info('');
 console.info(
-    `Sentry initialized. dsn: ${process.env.REACT_APP_SENTRY_DSN}. env: ${process.env.REACT_APP_SENTRY_ENVIRONMENT}`,
+    `Sentry initialized. dsn: ${import.meta.env.VITE_APP_SENTRY_DSN}. env: ${
+        import.meta.env.VITE_APP_SENTRY_ENVIRONMENT
+    }`,
     'color:blue'
 );

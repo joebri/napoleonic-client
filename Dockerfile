@@ -17,18 +17,18 @@ COPY --chown=node:node package*.json ./
 FROM base as production
 ENV \
   NODE_ENV=production \
-  REACT_APP_API_SERVER_URL=http://localhost:3000 \
-  REACT_APP_AUTH0_API_AUDIENCE=http://localhost:4000 \
-  REACT_APP_AUTH0_CALLBACK_URL=http://localhost:3000/loading \
-  REACT_APP_AUTH0_CLIENT_ID=fKPGuQ561QyXBtbOHcsCGN7oFZBC5xSW \
-  REACT_APP_AUTH0_DOMAIN=dev-tnkn47xs8o7a5gid.us.auth0.com \
-  REACT_APP_AUTH0_LOGIN=http://localhost:3000/login \
-  REACT_APP_GRAPH_URL=http://localhost:4001/ \
-  REACT_APP_SENTRY_DSN=https://5b264e7f43b94f70817ae332884bb1bc@o4504602899251200.ingest.sentry.io/4504602995130369 \
-  REACT_APP_SENTRY_ENABLED=true \
-  REACT_APP_SENTRY_ENVIRONMENT=production \
-  REACT_APP_VERSION=$npm_package_version \
-  REACT_APP_WEBVITALS_ENABLED=false
+  VITE_APP_API_SERVER_URL=http://localhost:3000 \
+  VITE_APP_AUTH0_API_AUDIENCE=http://localhost:4000 \
+  VITE_APP_AUTH0_CALLBACK_URL=http://localhost:3000/loading \
+  VITE_APP_AUTH0_CLIENT_ID=fKPGuQ561QyXBtbOHcsCGN7oFZBC5xSW \
+  VITE_APP_AUTH0_DOMAIN=dev-tnkn47xs8o7a5gid.us.auth0.com \
+  VITE_APP_AUTH0_LOGIN=http://localhost:3000/login \
+  VITE_APP_GRAPH_URL=http://localhost:4001/ \
+  VITE_APP_SENTRY_DSN=https://5b264e7f43b94f70817ae332884bb1bc@o4504602899251200.ingest.sentry.io/4504602995130369 \
+  VITE_APP_SENTRY_ENABLED=true \
+  VITE_APP_SENTRY_ENVIRONMENT=production \
+  VITE_APP_VERSION=$npm_package_version \
+  VITE_APP_WEBVITALS_ENABLED=false
 
 # RUN npm ci --omit=dev && npm cache clean --force
 
