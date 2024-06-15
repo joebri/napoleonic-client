@@ -6,7 +6,7 @@ function Sandbox() {
     return (
         <ApolloSandbox
             className={styles.container}
-            initialEndpoint={process.env.REACT_APP_GRAPH_URL}
+            initialEndpoint={import.meta.env.VITE_APP_GRAPH_URL}
             includeCookies={false}
         />
     );

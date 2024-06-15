@@ -16,9 +16,13 @@ export const useCollectionDetailEdit = (moduleName: string) => {
 
     const viewPageURI = `/collectionDetailView/${collectionId}`;
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [collection, setCollection] = useState(initialisedCollection);
-    const [showMessage, setShowMessage] = useState(false);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [collection, setCollection] = useState<Collection>(
+        initialisedCollection
+    );
+    const [showMessage, setShowMessage] = useState<boolean>(false);
 
     const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
         variables: { id: collectionId },

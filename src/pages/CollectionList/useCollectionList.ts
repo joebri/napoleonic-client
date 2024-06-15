@@ -15,9 +15,10 @@ export const useCollectionList = (moduleName: string) => {
 
     const setHeaderTitle = useHeaderTitleStateSet();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-
-    const [collections, setCollections] = useState([] as Collection[]);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [collections, setCollections] = useState<Collection[]>([]);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useNavigationTags } from 'hooks/useNavigationTags';
+import { Item } from 'types';
 import { initialisedItem } from 'utilities/helper';
 import { logError } from 'utilities/logError';
 
@@ -14,11 +15,13 @@ export const useItemDetailView = (moduleName: string) => {
     const { itemId } = useParams();
     const navigate = useNavigate();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [item, setItem] = useState(initialisedItem);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [item, setItem] = useState<Item>(initialisedItem);
     const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] =
         useState(false);
-    const [showMessage, setShowMessage] = useState(false);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
 

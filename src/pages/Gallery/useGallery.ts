@@ -50,9 +50,11 @@ export const useGallery = (moduleName: string) => {
     const tags = useTagsStateGet();
     const yearRange = useYearRangeStateGet();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [pageCount, setPageCount] = useState(1);
-    const [requestedPageNumber, setRequestedPageNumber] = useState('');
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [pageCount, setPageCount] = useState<number>(1);
+    const [requestedPageNumber, setRequestedPageNumber] = useState<string>('');
 
     const [searchParams] = useSearchParams();
 

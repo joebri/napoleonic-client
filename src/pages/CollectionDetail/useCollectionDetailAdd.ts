@@ -19,11 +19,11 @@ export const useCollectionDetailAdd = (moduleName: string) => {
         yearFrom: '',
     });
 
-    const [collection, setCollection] = useState({
+    const [collection, setCollection] = useState<Collection>({
         ...initialisedCollection,
         tags: template.tags.split(','),
     });
-    const [showMessage, setShowMessage] = useState(false);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
 
     const [createCollection] = useMutation(createCollectionMutation);
 

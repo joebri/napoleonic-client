@@ -9,6 +9,7 @@ import {
     useNavigationTags,
 } from 'hooks/useNavigationTags';
 import { useHeaderTitleStateSet } from 'state';
+import { Collection } from 'types/Collection.type';
 import { initialisedCollection } from 'utilities/helper';
 import { logError } from 'utilities/logError';
 
@@ -23,11 +24,15 @@ export const useCollectionDetailView = (moduleName: string) => {
 
     const setHeaderTitle = useHeaderTitleStateSet();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [collection, setCollection] = useState(initialisedCollection);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [collection, setCollection] = useState<Collection>(
+        initialisedCollection
+    );
     const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] =
-        useState(false);
-    const [showMessage, setShowMessage] = useState(false);
+        useState<boolean>(false);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
 
     const { setHeaderNavigationTags } = useNavigationTags();
 

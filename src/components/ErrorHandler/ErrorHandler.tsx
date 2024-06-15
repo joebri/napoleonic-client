@@ -12,7 +12,7 @@ const ErrorHandler = ({ error }: ErrorHandlerProps) => {
         <>
             <div className={styles.container}>
                 <Typography variant="h1">Error!</Typography>
-                {process.env.NODE_ENV === 'production' ? (
+                {import.meta.env.NODE_ENV === 'production' ? (
                     <p>An error has occurred.</p>
                 ) : (
                     <>

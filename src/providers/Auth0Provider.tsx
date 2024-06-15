@@ -15,12 +15,12 @@ const Provider = ({ children }: Auth0ProviderProps): ReactElement => {
 
     // N.B. Returns to /loading and then runs onRedirectCallback().
     const auth0ProviderConfig = {
-        domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
-        clientId: process.env.REACT_APP_AUTH0_CLIENT_ID as string,
+        domain: import.meta.env.VITE_APP_AUTH0_DOMAIN as string,
+        clientId: import.meta.env.VITE_APP_AUTH0_CLIENT_ID as string,
         onRedirectCallback: onRedirectCallback,
         authorizationParams: {
-            audience: process.env.REACT_APP_AUTH0_API_AUDIENCE,
-            redirect_uri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
+            audience: import.meta.env.VITE_APP_AUTH0_API_AUDIENCE,
+            redirect_uri: import.meta.env.VITE_APP_AUTH0_CALLBACK_URL,
         },
         redirectUri: window.location.origin,
         useRefreshTokens: true,

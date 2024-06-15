@@ -18,9 +18,11 @@ export const useBattlesList = (moduleName: string) => {
     const setHeaderTitle = useHeaderTitleStateSet();
     const ratings = useRatingsStateGet();
 
-    const [loadStatus, setLoadStatus] = useState(LoadStatus.LOADING);
-    const [battles, setBattles] = useState([] as BattleTag[]);
-    const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+    const [loadStatus, setLoadStatus] = useState<LoadStatus>(
+        LoadStatus.LOADING
+    );
+    const [battles, setBattles] = useState<BattleTag[]>([]);
+    const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 

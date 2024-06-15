@@ -49,7 +49,7 @@ const MenuMain = () => {
 
     const handleLogout = () => {
         logout({
-            logoutParams: { returnTo: process.env.REACT_APP_AUTH0_LOGIN },
+            logoutParams: { returnTo: import.meta.env.VITE_APP_AUTH0_LOGIN },
         });
     };
 

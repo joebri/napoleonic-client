@@ -1,12 +1,9 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
+// import * as matchers from '@testing-library/jest-dom/matchers';
+import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/react';
 import dotenv from 'dotenv';
-import matchers from 'jest-extended/all';
-import { enableFetchMocks } from 'jest-fetch-mock';
 import { MutableSnapshot } from 'recoil';
+import { afterEach, vi } from 'vitest';
 
 import {
     includeUnknownYearAtom,
@@ -17,19 +14,23 @@ import {
 } from 'state';
 import { Tag } from 'types';
 
-enableFetchMocks();
+// import { enableFetchMocks } from 'jest-fetch-mock';
+// enableFetchMocks();
 
-expect.extend(matchers);
+// import createFetchMock from 'vitest-fetch-mock';
+// export const fetchMocker = createFetchMock(vi);
+// fetchMocker.enableMocks();
 
 dotenv.config({ path: '.env' });
 
 afterEach(() => {
-    jest.useRealTimers();
+    cleanup();
+    vi.useRealTimers();
 });
 
-jest.mock('react-helmet-async', () => {
+vi.mock('react-helmet-async', async () => {
     const React = require('react');
-    const plugin = jest.requireActual('react-helmet-async');
+    const plugin = await vi.importActual('react-helmet-async');
     const mockHelmet = ({ children, ...props }: any) =>
         React.createElement(
             'div',
@@ -41,7 +42,7 @@ jest.mock('react-helmet-async', () => {
         );
     return {
         ...plugin,
-        Helmet: jest.fn().mockImplementation(mockHelmet),
+        Helmet: vi.fn().mockImplementation(mockHelmet),
     };
 });
 

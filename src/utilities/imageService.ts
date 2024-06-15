@@ -3,6 +3,6 @@ export const getLocalImage = (path: string) => {
         return '';
     }
     const adjustedPath = path.replace('Napoleonic/', '');
-    const uri = `${process.env.REACT_APP_IMAGE_URL}${adjustedPath}`;
+    const uri = `${import.meta.env.VITE_APP_IMAGE_URL}${adjustedPath}`;
     return uri;
 };

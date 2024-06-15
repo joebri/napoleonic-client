@@ -17,7 +17,7 @@ const Provider = ({ children }: ProviderProps): ReactElement => {
     const { getAccessTokenSilently } = useAuth0();
 
     const httpLink = createHttpLink({
-        uri: process.env.REACT_APP_GRAPH_URL,
+        uri: import.meta.env.VITE_APP_GRAPH_URL,
     });
 
     const authLink = setContext(async (_, { headers }) => {

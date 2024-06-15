@@ -3,8 +3,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import { getLocalImage } from 'helpers/imageService';
 import { Collection } from 'types';
+import { getLocalImage } from 'utilities/imageService';
 
 import styles from './CollectionDetail.module.scss';
 

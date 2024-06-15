@@ -30,7 +30,7 @@ const logError = <LogErrorProps extends LogErrorBaseProps>({
     }
 
     let isSentryEnabled =
-        process.env.REACT_APP_SENTRY_ENABLED?.toLowerCase() === 'true'
+        import.meta.env.VITE_APP_SENTRY_ENABLED?.toLowerCase() === 'true'
             ? true
             : false;
 
