@@ -10,8 +10,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HelmetProvider as CustomHelmetProvider } from 'providers/HelmetProvider';
 import { createMockState } from 'setupTests';
 
-import { BattlesList } from '../BattlesList';
-import { readBattleCountsQuery } from '../queries/readBattleCountsQuery';
+import { ArtistsList } from '../ArtistsList';
+import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
 
 interface MockMemoryRouterProps {
     mockGraphQL: any[];
@@ -26,11 +26,11 @@ const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {
                 element: <>Home page</>,
             },
             {
-                path: `/battles`,
+                path: `/artists`,
                 element: (
                     <MockedProvider mocks={mockGraphQL} addTypename={false}>
                         <RecoilRoot initializeState={mockState}>
-                            <BattlesList />
+                            <ArtistsList />
                         </RecoilRoot>
                     </MockedProvider>
                 ),
@@ -45,7 +45,7 @@ const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {
             },
         ],
         {
-            initialEntries: [`/battles`],
+            initialEntries: [`/artists`],
             initialIndex: 1,
         }
     );
@@ -54,16 +54,19 @@ const setupRouter = ({ mockGraphQL, mockState }: MockMemoryRouterProps) => {
 
 const mockGraphQLTemplate = {
     request: {
-        query: readBattleCountsQuery,
+        query: readArtistCountsQuery,
         variables: {
             ratings: [],
+            tags: [],
+            yearRange: [],
+            includeUnknownYear: false,
         },
     },
     result: {
         data: {
-            readBattleCounts: [
-                { name: 'battle 1', count: 1 },
-                { name: 'battle 2', count: 2 },
+            readArtistCounts: [
+                { name: 'name 1', count: 1 },
+                { name: 'name 2', count: 2 },
             ],
         },
     },
@@ -97,21 +100,20 @@ beforeAll(() => {
 
 beforeEach(() => {});
 
-describe('BattlesList...', () => {
+describe('ArtistsList...', () => {
     it('should render successfully', async () => {
         runRender();
+
         // screen.debug();
 
         expect(await screen.findByText('Loading...')).toBeInTheDocument();
-        expect(await screen.findByText('battle 1 (1)')).toBeInTheDocument();
-        expect(await screen.findByText('battle 2 (2)')).toBeInTheDocument();
-
-        const button = screen.getByRole('button', { name: 'search' });
-        expect(button).toBeDisabled();
+        expect(await screen.findByText('name 1 (1)')).toBeInTheDocument();
+        expect(screen.getByText('name 2 (2)')).toBeInTheDocument();
     });
 
-    it('should enable Search button when a Battle clicked', async () => {
+    it('should enable Search button when an Artist clicked', async () => {
         runRender();
+
         // screen.debug();
 
         const searchButton = await screen.findByRole('button', {
@@ -120,33 +122,34 @@ describe('BattlesList...', () => {
         expect(searchButton).toBeDisabled();
 
         const user = userEvent.setup();
-        const battleChip = await screen.findByText('battle 1 (1)');
-        await user.click(battleChip);
+        const artistChip = await screen.findByText('name 1 (1)');
+        await user.click(artistChip);
 
         expect(searchButton).toBeEnabled();
     });
 
     it('should go to Gallery when Search button clicked', async () => {
         const { router } = runRender();
-        // screen.debug();
 
+        // screen.debug();
         const user = userEvent.setup();
 
         const searchButton = await screen.findByRole('button', {
             name: 'search',
         });
-        const battleChip = await screen.findByText('battle 1 (1)');
-        await user.click(battleChip);
+        const artistChip = await screen.findByText('name 1 (1)');
+        await user.click(artistChip);
         await user.click(searchButton);
 
         await waitFor(() => {
             expect(router.state.location.pathname).toEqual(`/gallery`);
         });
-        expect(router.state.location.search).toEqual(`?battles=battle%201`);
+        expect(router.state.location.search).toEqual(`?artists=name%201`);
     });
 
     it('should handle a network error', async () => {
         runRender({ error: new Error('Network Error') });
+
         // screen.debug();
 
         expect(await screen.findByText('Network Error')).toBeInTheDocument();
@@ -158,6 +161,7 @@ describe('BattlesList...', () => {
                 errors: [new GraphQLError('GraphQL Error')],
             },
         });
+
         // screen.debug();
 
         expect(await screen.findByText('GraphQL Error')).toBeInTheDocument();

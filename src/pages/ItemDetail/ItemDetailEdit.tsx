@@ -1,5 +1,4 @@
 import { Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
@@ -34,9 +33,6 @@ const ItemDetailEdit = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Edit Item</title>
-            </Helmet>
             <div className={styles.container}>
                 <Typography variant="h5">Edit Item</Typography>
                 <Edit

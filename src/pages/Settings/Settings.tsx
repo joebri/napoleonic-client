@@ -2,7 +2,6 @@ import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 
@@ -12,6 +11,7 @@ import { useHeaderTitleStateSet } from 'state';
 import { Template } from 'types';
 
 import styles from './Settings.module.scss';
+import { useSettings } from './useSettings';
 
 const initialisedTemplate: Template = {
     artist: '',
@@ -21,6 +21,8 @@ const initialisedTemplate: Template = {
 };
 
 const Settings = () => {
+    const moduleName = `${Settings.name}.tsx`;
+
     const [templateLS, setTemplateLS] = useLocalStorage<Template>(
         'template',
         initialisedTemplate
@@ -32,6 +34,8 @@ const Settings = () => {
     const [showMessage, setShowMessage] = useState(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
+
+    useSettings(moduleName);
 
     useEffect(() => {
         setHeaderTitle('Settings');
@@ -71,9 +75,9 @@ const Settings = () => {
 
     return (
         <>
-            <Helmet>
+            {/* <Helmet>
                 <title>Uniformology: Settings</title>
-            </Helmet>
+            </Helmet> */}
             <div className={styles.container}>
                 <Typography variant="h5">Item Template</Typography>
                 <TextField

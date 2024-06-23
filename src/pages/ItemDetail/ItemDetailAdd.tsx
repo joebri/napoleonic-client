@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
 
-import { AppSnackBar } from '../../components/AppSnackBar/AppSnackBar';
+import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+
 import { Edit } from './Edit';
 import styles from './ItemDetail.module.scss';
 import { useItemDetailAdd } from './useItemDetailAdd';
@@ -20,9 +20,6 @@ const ItemDetailAdd = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Add Item</title>
-            </Helmet>
             <div className={styles.container}>
                 <Typography variant="h5">Add Item</Typography>
                 <Edit

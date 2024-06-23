@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useHelmet } from 'hooks/useHelmet';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import {
     useHeaderTitleStateSet,
@@ -21,6 +22,7 @@ import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 export const useRegimentList = (moduleName: string) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const helmet = useHelmet();
 
     const { clearHeaderNavigationTags } = useNavigationTags();
     const setHeaderTitle = useHeaderTitleStateSet();
@@ -35,6 +37,10 @@ export const useRegimentList = (moduleName: string) => {
     );
     const [regiments, setRegiments] = useState<RegimentTag[]>([]);
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Regiments');
+    }, [helmet]);
 
     useEffect(() => {
         setHeaderTitle('Regiments');

@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
+import { useHelmet } from 'hooks/useHelmet';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { Collection } from 'types';
 import { initialisedCollection } from 'utilities/helper';
@@ -10,7 +10,7 @@ import { logError } from 'utilities/logError';
 import { createCollectionMutation } from './queries/createCollectionMutation';
 
 export const useCollectionDetailAdd = (moduleName: string) => {
-    const navigate = useNavigate();
+    const helmet = useHelmet();
 
     const [template] = useLocalStorage<any>('template', {
         artist: '',
@@ -19,26 +19,26 @@ export const useCollectionDetailAdd = (moduleName: string) => {
         yearFrom: '',
     });
 
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Add Collection');
+    }, [helmet]);
+
     const [collection, setCollection] = useState<Collection>({
         ...initialisedCollection,
         tags: template.tags.split(','),
     });
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
     const [createCollection] = useMutation(createCollectionMutation);
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setCollection((priorCollection: Collection) => ({
             ...priorCollection,
             [field]: value,
         }));
     };
 
-    const handleEditCancelClick = () => {
-        navigate(`/collections`);
-    };
-
-    const handleEditSaveClick = async () => {
+    const tryCreate = async (): Promise<any> => {
         try {
             const result = await createCollection({
                 variables: {
@@ -49,7 +49,7 @@ export const useCollectionDetailAdd = (moduleName: string) => {
                     title: collection.title.trim(),
                 },
             });
-            navigate(`/collectionDetailView/${result.data.createCollection}`);
+            return result.data.createCollection;
         } catch (exception) {
             logError({
                 moduleName,
@@ -57,20 +57,15 @@ export const useCollectionDetailAdd = (moduleName: string) => {
                 exception,
                 message: 'Create failed.',
             });
-            setShowMessage(true);
+            setIsMessageVisible(true);
         }
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
     };
 
     return {
         collection,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
-        showMessage,
+        isMessageVisible,
+        setIsMessageVisible,
+        tryCreate,
+        updateFieldValue,
     };
 };

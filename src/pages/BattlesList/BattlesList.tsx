@@ -1,5 +1,4 @@
 import { Button, Chip, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
@@ -16,11 +15,19 @@ const BattlesList = () => {
     const {
         battles,
         error,
-        handleChipClick,
-        handleSearchClick,
         isSearchEnabled,
         loadStatus,
+        showSelectedBattles,
+        updateSelectedBattles,
     } = useBattlesList(moduleName);
+
+    const handleChipClick = (index: number) => {
+        updateSelectedBattles(index);
+    };
+
+    const handleSearchClick = () => {
+        showSelectedBattles();
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -31,10 +38,6 @@ const BattlesList = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Battles</title>
-            </Helmet>
-
             {battles.length === 0 ? (
                 <Typography className={styles.noItems} variant="h5">
                     No Battles available.

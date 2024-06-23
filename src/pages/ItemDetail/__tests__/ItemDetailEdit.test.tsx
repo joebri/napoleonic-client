@@ -2,11 +2,13 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
+import { HelmetProvider } from 'react-helmet-async';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { MutableSnapshot, RecoilRoot } from 'recoil';
-import { beforeAll, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { Rating } from 'enums/rating.enum';
+import { HelmetProvider as CustomHelmetProvider } from 'providers/HelmetProvider';
 import { createMockState } from 'setupTests';
 
 import { ItemDetailEdit } from '../ItemDetailEdit';
@@ -105,182 +107,152 @@ const mockGraphQLUpdateTemplate = {
 
 const mockState = createMockState({});
 
+const runRender = (
+    additionalReadMockGraphQLParams?: any,
+    additionalUpdateMockGraphQLParams?: any
+) => {
+    const mockGraphQL = [
+        { ...mockGraphQLReadTemplate, ...additionalReadMockGraphQLParams },
+        { ...mockGraphQLUpdateTemplate, ...additionalUpdateMockGraphQLParams },
+    ];
+    const router = setupRouter({ mockGraphQL, mockState });
+
+    render(
+        <HelmetProvider>
+            <CustomHelmetProvider>
+                <RouterProvider router={router} />
+            </CustomHelmetProvider>
+        </HelmetProvider>
+    );
+
+    return { router };
+};
+
 beforeAll(() => {
     console.error = vi.fn();
 });
 
-it('should render successfully', async () => {
-    const mockGraphQL = [
-        { ...mockGraphQLReadTemplate },
-        { ...mockGraphQLUpdateTemplate },
-    ];
+describe('ItemDetailEdit...', () => {
+    it('should render successfully', async () => {
+        runRender();
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        const user = userEvent.setup();
 
-    render(<RouterProvider router={router} />);
+        const title = await screen.findByLabelText('Title');
+        expect(title).toBeInTheDocument();
 
-    const user = userEvent.setup();
+        const button = screen.getByRole('button', { name: 'save' });
+        expect(button).toBeDisabled();
 
-    const title = await screen.findByLabelText('Title');
-    expect(title).toBeInTheDocument();
+        await user.type(title, 'title');
+        await user.tab();
 
-    const button = screen.getByRole('button', { name: 'save' });
-    expect(button).toBeDisabled();
-
-    await user.type(title, 'title');
-    await user.tab();
-
-    expect(button).toBeEnabled();
-});
-
-it('should go to ItemDetailView when Save clicked', async () => {
-    const mockGraphQL = [
-        { ...mockGraphQLReadTemplate },
-        { ...mockGraphQLUpdateTemplate },
-    ];
-
-    const router = setupRouter({ mockGraphQL, mockState });
-
-    render(<RouterProvider router={router} />);
-
-    const title = await screen.findByLabelText('Title');
-    const saveButton = screen.getByRole('button', { name: 'save' });
-
-    const user = userEvent.setup();
-    await user.type(title, ' more');
-    await user.tab();
-    await user.click(saveButton);
-
-    // screen.debug(undefined, 30000000);
-
-    await waitFor(() => {
-        expect(router.state.location.pathname).toEqual(
-            `/itemDetailView/${mockItemId}`
-        );
+        expect(button).toBeEnabled();
     });
-});
 
-it('should go to ItemDetailView when Cancel clicked', async () => {
-    const mockGraphQL = [
-        { ...mockGraphQLReadTemplate },
-        { ...mockGraphQLUpdateTemplate },
-    ];
+    it('should go to ItemDetailView when Save clicked', async () => {
+        const { router } = runRender();
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        const title = await screen.findByLabelText('Title');
+        const saveButton = screen.getByRole('button', { name: 'save' });
 
-    render(<RouterProvider router={router} />);
+        const user = userEvent.setup();
+        await user.type(title, ' more');
+        await user.tab();
+        await user.click(saveButton);
 
-    // Wait for content to load...
-    await screen.findByLabelText('Title');
+        // screen.debug(undefined, 30000000);
 
-    const cancelButton = screen.getByRole('button', { name: 'cancel' });
-
-    const user = userEvent.setup();
-
-    await user.click(cancelButton);
-
-    // screen.debug(undefined, 30000000);
-
-    await waitFor(() => {
-        expect(router.state.location.pathname).toEqual(
-            `/itemDetailView/${mockItemId}`
-        );
+        await waitFor(() => {
+            expect(router.state.location.pathname).toEqual(
+                `/itemDetailView/${mockItemId}`
+            );
+        });
     });
-});
 
-it('should handle a network error when reading item', async () => {
-    const mockGraphQL = [
-        { ...mockGraphQLReadTemplate, error: new Error('Network Error') },
-        { ...mockGraphQLUpdateTemplate },
-    ];
+    it('should go to ItemDetailView when Cancel clicked', async () => {
+        const { router } = runRender();
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        // Wait for content to load...
+        await screen.findByLabelText('Title');
 
-    render(<RouterProvider router={router} />);
+        const cancelButton = screen.getByRole('button', { name: 'cancel' });
 
-    expect(await screen.findByText(/Network Error/i)).toBeInTheDocument();
-});
+        const user = userEvent.setup();
 
-it('should handle a GraphQL error when reading Item', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLReadTemplate,
+        await user.click(cancelButton);
+
+        // screen.debug(undefined, 30000000);
+
+        await waitFor(() => {
+            expect(router.state.location.pathname).toEqual(
+                `/itemDetailView/${mockItemId}`
+            );
+        });
+    });
+
+    it('should handle a network error when reading item', async () => {
+        runRender({ error: new Error('Network Error') });
+
+        expect(await screen.findByText(/Network Error/i)).toBeInTheDocument();
+    });
+
+    it('should handle a GraphQL error when reading Item', async () => {
+        runRender({
             result: {
                 errors: [new GraphQLError('GraphQL Error')],
             },
-        },
-        {
-            ...mockGraphQLUpdateTemplate,
-        },
-    ];
+        });
+        // screen.debug(undefined, 30000000);
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        expect(await screen.findByText(/GraphQL Error/i)).toBeInTheDocument();
+    });
 
-    render(<RouterProvider router={router} />);
+    it('should handle a network error when updating Item', async () => {
+        runRender(
+            {},
+            {
+                error: () => {
+                    throw new Error('Network Error');
+                },
+            }
+        );
 
-    // screen.debug(undefined, 30000000);
+        const title = await screen.findByLabelText('Title');
+        const saveButton = screen.getByRole('button', { name: 'save' });
 
-    expect(await screen.findByText(/GraphQL Error/i)).toBeInTheDocument();
-});
+        const user = userEvent.setup();
+        await user.type(title, ' more');
+        await user.click(saveButton);
 
-it('should handle a network error when updating Item', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLReadTemplate,
-        },
-        {
-            ...mockGraphQLUpdateTemplate,
-            error: () => {
-                throw new Error('Network Error');
-            },
-        },
-    ];
+        // screen.debug(undefined, 30000000);
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        expect(
+            await screen.findByText(/Unable to update item. Please try again./i)
+        ).toBeInTheDocument();
+    });
 
-    render(<RouterProvider router={router} />);
+    it('should handle a GraphQL error when updating Item', async () => {
+        runRender(
+            {},
+            {
+                result: {
+                    errors: [new GraphQLError('GraphQL Error')],
+                },
+            }
+        );
 
-    const title = await screen.findByLabelText('Title');
-    const saveButton = screen.getByRole('button', { name: 'save' });
+        const title = await screen.findByLabelText('Title');
+        const saveButton = screen.getByRole('button', { name: 'save' });
 
-    const user = userEvent.setup();
-    await user.type(title, ' more');
-    await user.click(saveButton);
+        const user = userEvent.setup();
+        await user.type(title, ' more');
+        await user.click(saveButton);
 
-    // screen.debug(undefined, 30000000);
+        // screen.debug(undefined, 30000000);
 
-    expect(
-        await screen.findByText(/Unable to update item. Please try again./i)
-    ).toBeInTheDocument();
-});
-
-it('should handle a GraphQL error when updating Item', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLReadTemplate,
-        },
-        {
-            ...mockGraphQLUpdateTemplate,
-            result: {
-                errors: [new GraphQLError('GraphQL Error')],
-            },
-        },
-    ];
-
-    const router = setupRouter({ mockGraphQL, mockState });
-
-    render(<RouterProvider router={router} />);
-
-    const title = await screen.findByLabelText('Title');
-    const saveButton = screen.getByRole('button', { name: 'save' });
-
-    const user = userEvent.setup();
-    await user.type(title, ' more');
-    await user.click(saveButton);
-
-    // screen.debug(undefined, 30000000);
-
-    expect(
-        await screen.findByText(/Unable to update item. Please try again./i)
-    ).toBeInTheDocument();
+        expect(
+            await screen.findByText(/Unable to update item. Please try again./i)
+        ).toBeInTheDocument();
+    });
 });

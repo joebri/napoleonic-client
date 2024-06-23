@@ -13,6 +13,7 @@ import { ThemeProvider, theme } from 'theme';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import './fonts/Tangerine/Tangerine-Regular.ttf';
 import './index.scss';
+import { HelmetProvider as CustomHelmetProvider } from './providers/HelmetProvider';
 
 console.info(
     `Starting "${import.meta.env.VITE_APP_NAME}", version: ${
@@ -39,7 +40,7 @@ root.render(
         <BrowserRouter>
             <AuthProvider>
                 <GraphQLProvider>
-                    <HelmetProvider>
+                    <HelmetProvider context={{}}>
                         <Helmet>
                             <title>Uniformology: Napoleonic</title>
                         </Helmet>
@@ -47,9 +48,11 @@ root.render(
                         <ErrorBoundary>
                             <ThemeProvider theme={theme}>
                                 <RecoilRoot>
-                                    <StyledEngineProvider injectFirst>
-                                        <Home />
-                                    </StyledEngineProvider>
+                                    <CustomHelmetProvider>
+                                        <StyledEngineProvider injectFirst>
+                                            <Home />
+                                        </StyledEngineProvider>
+                                    </CustomHelmetProvider>
                                 </RecoilRoot>
                             </ThemeProvider>
                         </ErrorBoundary>

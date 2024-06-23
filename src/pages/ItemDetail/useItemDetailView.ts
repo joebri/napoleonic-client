@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useHelmet } from 'hooks/useHelmet';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { Item } from 'types';
 import { initialisedItem } from 'utilities/helper';
@@ -14,6 +15,7 @@ import { readItemQuery } from './queries/readItemQuery';
 export const useItemDetailView = (moduleName: string) => {
     const { itemId } = useParams();
     const navigate = useNavigate();
+    const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
@@ -38,6 +40,10 @@ export const useItemDetailView = (moduleName: string) => {
             setLoadStatus(LoadStatus.ERROR);
         },
     });
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Item');
+    }, [helmet]);
 
     useEffect(() => {
         enableLastNavigationTag();

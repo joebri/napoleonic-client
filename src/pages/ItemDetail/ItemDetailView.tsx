@@ -1,5 +1,3 @@
-import { Helmet } from 'react-helmet-async';
-
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
@@ -36,9 +34,6 @@ const ItemDetailView = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Item</title>
-            </Helmet>
             <div className={styles.container}>
                 <View
                     item={item}

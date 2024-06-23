@@ -1,5 +1,4 @@
 import { Button, Chip, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
@@ -31,10 +30,6 @@ const RegimentsList = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Regiments</title>
-            </Helmet>
-
             {regiments.length === 0 ? (
                 <Typography className={styles.noItems} variant="h5">
                     No Regiments available.

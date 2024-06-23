@@ -28,23 +28,23 @@ afterEach(() => {
     vi.useRealTimers();
 });
 
-vi.mock('react-helmet-async', async () => {
-    const React = require('react');
-    const plugin = await vi.importActual('react-helmet-async');
-    const mockHelmet = ({ children, ...props }: any) =>
-        React.createElement(
-            'div',
-            {
-                ...props,
-                className: 'mock-helmet',
-            },
-            children
-        );
-    return {
-        ...plugin,
-        Helmet: vi.fn().mockImplementation(mockHelmet),
-    };
-});
+// vi.mock('react-helmet-async', async () => {
+//     const React = require('react');
+//     const plugin = await vi.importActual('react-helmet-async');
+//     const mockHelmet = ({ children, ...props }: any) =>
+//         React.createElement(
+//             'div',
+//             {
+//                 ...props,
+//                 className: 'mock-helmet',
+//             },
+//             children
+//         );
+//     return {
+//         ...plugin,
+//         Helmet: vi.fn().mockImplementation(mockHelmet),
+//     };
+// });
 
 type MockState = {
     includeUnknownYear?: boolean;

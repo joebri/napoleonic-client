@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Rating } from 'enums/rating.enum';
 import { useConfirmExit } from 'hooks/useConfirmExit';
+import { useHelmet } from 'hooks/useHelmet';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { Item } from 'types';
 import { initialisedItem } from 'utilities/helper';
@@ -16,6 +17,7 @@ import { updateItemMutation } from './queries/updateItemMutation';
 export const useItemDetailEdit = (moduleName: string) => {
     const { itemId } = useParams();
     const navigate = useNavigate();
+    const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
@@ -52,6 +54,10 @@ export const useItemDetailEdit = (moduleName: string) => {
             setShowMessage(true);
         },
     });
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Edit Item');
+    }, [helmet]);
 
     useEffect(() => {
         enableLastNavigationTag();

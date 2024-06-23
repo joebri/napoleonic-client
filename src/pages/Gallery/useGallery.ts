@@ -1,7 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
 import {
-    ChangeEvent,
-    KeyboardEvent,
     LegacyRef,
     MutableRefObject,
     useCallback,
@@ -13,6 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { NavigationTagType } from 'enums/navigationTagType.enum';
+import { useHelmet } from 'hooks/useHelmet';
 import {
     HeaderNavigationTagsProps,
     useNavigationTags,
@@ -49,6 +48,7 @@ export const useGallery = (moduleName: string) => {
     const sortField = useSortFieldStateGet();
     const tags = useTagsStateGet();
     const yearRange = useYearRangeStateGet();
+    const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
@@ -256,6 +256,10 @@ export const useGallery = (moduleName: string) => {
     );
 
     useEffect(() => {
+        helmet.setTitle('Uniformology: Gallery');
+    }, [helmet]);
+
+    useEffect(() => {
         setHeaderTitle('Gallery');
     });
 
@@ -291,42 +295,33 @@ export const useGallery = (moduleName: string) => {
         document.getElementById('scrollableView')?.scrollTo({ top: 0 });
     }, [getQueryDetails, pageNumber, readItemsByFilter, sortField, tags]);
 
-    const handlePaginationChange = (
-        _: ChangeEvent<unknown>,
-        newPageNumber: number
-    ) => {
-        setPageNumber(newPageNumber);
-    };
-
-    const handlePageNumberChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setRequestedPageNumber(event.target.value);
-    };
-
-    const handlePageNumberKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-        if (event.code === 'Enter') {
-            let pageNumber = parseInt(requestedPageNumber);
-            if (pageNumber > pageCount) {
-                pageNumber = pageCount;
-            }
-            if (pageNumber < 1) {
-                pageNumber = 1;
-            }
-            setRequestedPageNumber('');
-            setPageNumber(pageNumber);
-            wrapperRef.current?.focus();
+    const changePageNumber = (keyCode: string) => {
+        if (keyCode !== 'Enter') {
+            return;
         }
+
+        let pageNumber = parseInt(requestedPageNumber);
+        if (pageNumber > pageCount) {
+            pageNumber = pageCount;
+        }
+        if (pageNumber < 1) {
+            pageNumber = 1;
+        }
+        setRequestedPageNumber('');
+        setPageNumber(pageNumber);
+        wrapperRef.current?.focus();
     };
 
     return {
+        changePageNumber,
         error,
-        handlePageNumberChange,
-        handlePageNumberKeyDown,
-        handlePaginationChange,
         itemsRef,
         loadStatus,
         pageCount,
         pageNumber,
         requestedPageNumber,
+        setPageNumber,
+        setRequestedPageNumber,
         wrapperRef,
     };
 };

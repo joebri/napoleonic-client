@@ -1,5 +1,4 @@
 import { Button, Chip, Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
@@ -16,11 +15,19 @@ const ArtistsList = () => {
     const {
         artists,
         error,
-        handleChipClick,
-        handleSearchClick,
         isSearchEnabled,
         loadStatus,
+        showSelectedArtists,
+        updateSelectedArtists,
     } = useArtistsList(moduleName);
+
+    const handleChipClick = (index: number) => {
+        updateSelectedArtists(index);
+    };
+
+    const handleSearchClick = () => {
+        showSelectedArtists();
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -31,9 +38,6 @@ const ArtistsList = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Artists</title>
-            </Helmet>
             {artists.length === 0 ? (
                 <Typography className={styles.noItems} variant="h5">
                     No Artists available.

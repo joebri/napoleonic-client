@@ -1,8 +1,9 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useHelmet } from 'hooks/useHelmet';
 import { Collection } from 'types';
 import { initialisedCollection } from 'utilities/helper';
 import { logError } from 'utilities/logError';
@@ -11,10 +12,8 @@ import { readCollectionQuery } from './queries/readCollectionQuery';
 import { updateCollectionMutation } from './queries/updateCollectionMutation';
 
 export const useCollectionDetailEdit = (moduleName: string) => {
-    let { collectionId } = useParams();
-    const navigate = useNavigate();
-
-    const viewPageURI = `/collectionDetailView/${collectionId}`;
+    const { collectionId } = useParams();
+    const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
@@ -22,7 +21,7 @@ export const useCollectionDetailEdit = (moduleName: string) => {
     const [collection, setCollection] = useState<Collection>(
         initialisedCollection
     );
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
     const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
         variables: { id: collectionId },
@@ -51,22 +50,21 @@ export const useCollectionDetailEdit = (moduleName: string) => {
     }, [readCollection]);
 
     useEffect(() => {
+        helmet.setTitle('Uniformology: Edit Collection');
+    }, [helmet]);
+
+    useEffect(() => {
         loadForm();
     }, [collectionId, loadForm]);
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setCollection((priorCollection: Collection) => ({
             ...priorCollection,
             [field]: value,
         }));
     };
 
-    const handleEditCancelClick = () => {
-        loadForm();
-        navigate(viewPageURI);
-    };
-
-    const handleEditSaveClick = async () => {
+    const tryUpdate = async () => {
         try {
             await updateCollection({
                 variables: {
@@ -78,7 +76,6 @@ export const useCollectionDetailEdit = (moduleName: string) => {
                     title: collection.title.trim(),
                 },
             });
-            navigate(viewPageURI);
         } catch (exception) {
             logError({
                 moduleName,
@@ -87,22 +84,19 @@ export const useCollectionDetailEdit = (moduleName: string) => {
                 message: 'Update failed.',
                 collectionId: collection.id,
             });
-            setShowMessage(true);
+            setIsMessageVisible(true);
         }
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
     };
 
     return {
         collection,
+        collectionId,
         error,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
+        loadForm,
         loadStatus,
-        showMessage,
+        setIsMessageVisible,
+        tryUpdate,
+        updateFieldValue,
     };
 };

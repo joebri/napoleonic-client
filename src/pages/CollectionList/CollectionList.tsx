@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
@@ -12,9 +12,13 @@ import { useCollectionList } from './useCollectionList';
 
 const CollectionList = () => {
     const moduleName = `${CollectionList.name}.tsx`;
+    const navigate = useNavigate();
 
-    const { collections, error, handleSearchClick, loadStatus } =
-        useCollectionList(moduleName);
+    const { collections, error, loadStatus } = useCollectionList(moduleName);
+
+    const handleSearchClick = (collection: Collection) => {
+        navigate(`/collectionDetailView/${collection.id}`);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -25,9 +29,6 @@ const CollectionList = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Collections</title>
-            </Helmet>
             <div className={styles.container}>
                 {collections.map((collection: Collection, index: number) => (
                     <Button

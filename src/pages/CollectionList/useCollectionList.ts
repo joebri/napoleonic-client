@@ -1,8 +1,8 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useHelmet } from 'hooks/useHelmet';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { useHeaderTitleStateSet } from 'state';
 import { Collection } from 'types';
@@ -11,8 +11,7 @@ import { logError } from 'utilities/logError';
 import { readCollectionsQuery } from './queries/readCollectionsQuery';
 
 export const useCollectionList = (moduleName: string) => {
-    const navigate = useNavigate();
-
+    const helmet = useHelmet();
     const setHeaderTitle = useHeaderTitleStateSet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
@@ -34,6 +33,10 @@ export const useCollectionList = (moduleName: string) => {
     });
 
     useEffect(() => {
+        helmet.setTitle('Uniformology: Collections');
+    }, [helmet]);
+
+    useEffect(() => {
         setHeaderTitle('Collections');
         clearHeaderNavigationTags();
     }, [clearHeaderNavigationTags, setHeaderTitle]);
@@ -42,14 +45,9 @@ export const useCollectionList = (moduleName: string) => {
         readCollections();
     }, [readCollections]);
 
-    const handleSearchClick = (collection: Collection) => {
-        navigate(`/collectionDetailView/${collection.id}`);
-    };
-
     return {
         collections,
         error,
-        handleSearchClick,
         loadStatus,
     };
 };

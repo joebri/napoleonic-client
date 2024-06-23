@@ -2,11 +2,13 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
+import { HelmetProvider } from 'react-helmet-async';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { MutableSnapshot, RecoilRoot } from 'recoil';
-import { beforeAll, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { Rating } from 'enums/rating.enum';
+import { HelmetProvider as CustomHelmetProvider } from 'providers/HelmetProvider';
 import { createMockState } from 'setupTests';
 
 import { ItemDetailView } from '../ItemDetailView';
@@ -77,118 +79,98 @@ const mockGraphQLTemplate = {
 
 const mockState = createMockState({});
 
+const runRender = (additionalMockGraphQLParams?: any) => {
+    const mockGraphQL = [
+        {
+            ...mockGraphQLTemplate,
+            ...additionalMockGraphQLParams,
+        },
+    ];
+    const router = setupRouter({ mockGraphQL, mockState });
+
+    render(
+        <HelmetProvider>
+            <CustomHelmetProvider>
+                <RouterProvider router={router} />
+            </CustomHelmetProvider>
+        </HelmetProvider>
+    );
+
+    return { router };
+};
+
 beforeAll(() => {
     console.error = vi.fn();
 });
 
-it('should render successfully', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLTemplate,
-        },
-    ];
+describe('ItemDetailView...', () => {
+    it('should render successfully', async () => {
+        runRender();
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        const title = await screen.findByText('title #1');
+        expect(title).toBeInTheDocument();
 
-    render(<RouterProvider router={router} />);
+        const year = screen.getByText('Year:');
+        expect(year).toBeInTheDocument();
+        const yearFrom = screen.getByText('1800');
+        expect(yearFrom).toBeInTheDocument();
+        const yearTo = screen.getByText('- 1850');
+        expect(yearTo).toBeInTheDocument();
 
-    const title = await screen.findByText('title #1');
-    expect(title).toBeInTheDocument();
+        const editButton = screen.getByRole('button', { name: 'edit' });
+        expect(editButton).toBeInTheDocument();
 
-    const year = screen.getByText('Year:');
-    expect(year).toBeInTheDocument();
-    const yearFrom = screen.getByText('1800');
-    expect(yearFrom).toBeInTheDocument();
-    const yearTo = screen.getByText('- 1850');
-    expect(yearTo).toBeInTheDocument();
-
-    const editButton = screen.getByRole('button', { name: 'edit' });
-    expect(editButton).toBeInTheDocument();
-
-    const deleteButton = screen.getByRole('button', { name: 'delete' });
-    expect(deleteButton).toBeInTheDocument();
-});
-
-it('should go to ItemDetailEdit when Edit clicked', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLTemplate,
-        },
-    ];
-
-    const router = setupRouter({ mockGraphQL, mockState });
-
-    render(<RouterProvider router={router} />);
-
-    const user = userEvent.setup();
-    const button = await screen.findByRole('button', { name: 'edit' });
-
-    await user.click(button);
-
-    // screen.debug(undefined, 30000000);
-
-    await waitFor(() => {
-        expect(router.state.location.pathname).toEqual(
-            `/itemDetailEdit/${mockItemId}`
-        );
+        const deleteButton = screen.getByRole('button', { name: 'delete' });
+        expect(deleteButton).toBeInTheDocument();
     });
-});
 
-it('should show confirmation when Delete clicked', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLTemplate,
-        },
-    ];
+    it('should go to ItemDetailEdit when Edit clicked', async () => {
+        const { router } = runRender();
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        const user = userEvent.setup();
+        const button = await screen.findByRole('button', { name: 'edit' });
 
-    render(<RouterProvider router={router} />);
+        await user.click(button);
 
-    const user = userEvent.setup();
+        // screen.debug(undefined, 30000000);
 
-    const button = await screen.findByRole('button', { name: 'delete' });
+        await waitFor(() => {
+            expect(router.state.location.pathname).toEqual(
+                `/itemDetailEdit/${mockItemId}`
+            );
+        });
+    });
 
-    await user.click(button);
+    it('should show confirmation when Delete clicked', async () => {
+        runRender();
 
-    // screen.debug(undefined, 30000000);
+        const user = userEvent.setup();
 
-    expect(await screen.findByText(/Are you sure?/i)).toBeInTheDocument();
-});
+        const button = await screen.findByRole('button', { name: 'delete' });
 
-it('should handle a network error when reading Item', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLTemplate,
+        await user.click(button);
 
-            error: new Error('Network Error'),
-        },
-    ];
+        // screen.debug(undefined, 30000000);
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        expect(await screen.findByText(/Are you sure?/i)).toBeInTheDocument();
+    });
 
-    render(<RouterProvider router={router} />);
+    it('should handle a network error when reading Item', async () => {
+        runRender({ error: new Error('Network Error') });
+        // screen.debug(undefined, 30000000);
 
-    // screen.debug(undefined, 30000000);
+        expect(await screen.findByText(/Network Error/i)).toBeInTheDocument();
+    });
 
-    expect(await screen.findByText(/Network Error/i)).toBeInTheDocument();
-});
-
-it('should handle a GraphQL error when reading Item', async () => {
-    const mockGraphQL = [
-        {
-            ...mockGraphQLTemplate,
+    it('should handle a GraphQL error when reading Item', async () => {
+        runRender({
             result: {
                 errors: [new GraphQLError('GraphQL Error')],
             },
-        },
-    ];
+        });
 
-    const router = setupRouter({ mockGraphQL, mockState });
+        expect(await screen.findByText(/GraphQL error/i)).toBeInTheDocument();
 
-    render(<RouterProvider router={router} />);
-
-    expect(await screen.findByText(/GraphQL error/i)).toBeInTheDocument();
-
-    // screen.debug(undefined, 30000000);
+        // screen.debug(undefined, 30000000);
+    });
 });

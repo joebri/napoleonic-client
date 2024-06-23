@@ -3,6 +3,7 @@ import { useDebugValue, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
+import { useHelmet } from 'hooks/useHelmet';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import {
     useHeaderTitleStateSet,
@@ -18,8 +19,9 @@ import { logError } from 'utilities/logError';
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 export const useArtistsList = (moduleName: string) => {
-    const navigate = useNavigate();
     const location = useLocation();
+    const navigate = useNavigate();
+    const helmet = useHelmet();
 
     const includeUnknownYear = useIncludeUnknownYearStateGet();
     const ratings = useRatingsStateGet();
@@ -35,6 +37,7 @@ export const useArtistsList = (moduleName: string) => {
         LoadStatus.LOADING
     );
     const [artists, setArtists] = useState<ArtistTag[]>([]);
+
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
@@ -49,6 +52,10 @@ export const useArtistsList = (moduleName: string) => {
             setLoadStatus(LoadStatus.ERROR);
         },
     });
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Artists');
+    }, [helmet]);
 
     useEffect(() => {
         setHeaderTitle('Artists');
@@ -82,36 +89,41 @@ export const useArtistsList = (moduleName: string) => {
         includeUnknownYear,
     ]);
 
-    const handleChipClick = (index: number) => {
-        let newArtists: ArtistTag[] = artists.map((artist) => {
-            return { ...artist };
-        });
-        newArtists[index].isSelected = !newArtists[index].isSelected;
-
-        const isAnySelected = newArtists.some((artist: ArtistTag) => {
-            return artist.isSelected;
-        });
-        setIsSearchEnabled(isAnySelected);
-
-        setArtists(newArtists);
-    };
-
-    const handleSearchClick = () => {
+    const getSelected = () => {
         const selected = encodeURIComponent(
             artists
                 .filter((tag: ArtistTag) => tag.isSelected)
                 .map((tag: ArtistTag) => tag.name)
                 .join('||')
         );
+        return selected;
+    };
+
+    const updateSelectedArtists = (index: number) => {
+        let newArtists: ArtistTag[] = artists.map((artist) => {
+            return { ...artist };
+        });
+        newArtists[index].isSelected = !newArtists[index].isSelected;
+        setArtists(newArtists);
+
+        const isAnySelected = newArtists.some((artist: ArtistTag) => {
+            return artist.isSelected;
+        });
+        setIsSearchEnabled(isAnySelected);
+    };
+
+    const showSelectedArtists = () => {
+        const selected = getSelected();
         navigate(`/gallery?artists=${selected}`);
     };
 
     return {
         artists,
         error,
-        handleChipClick,
-        handleSearchClick,
+        getSelected,
         isSearchEnabled,
         loadStatus,
+        showSelectedArtists,
+        updateSelectedArtists,
     };
 };

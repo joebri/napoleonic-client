@@ -15,6 +15,12 @@
         "moduleResolution": "node",
         "noEmit": true,
         "noFallthroughCasesInSwitch": true,
+        "paths": {
+            "@enums/*": ["enums/*"],
+            "@hooks/*": ["hooks/*"],
+            "@types/*": ["types/*"],
+            "@public/*": ["../public/*"]
+        },
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true

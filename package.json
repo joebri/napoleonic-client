@@ -43,6 +43,7 @@
         "@testing-library/jest-dom": "^6.4.6",
         "@testing-library/react": "^15.0.7",
         "@testing-library/user-event": "^14.5.2",
+        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/lodash": "^4.17.4",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
@@ -71,7 +72,6 @@
         "@mui/system": "^5.15.15",
         "@sentry/browser": "^8.7.0",
         "@sentry/react": "^8.7.0",
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@vitejs/plugin-react": "^4.3.0",
         "cra-template-typescript": "1.2.0",
         "dotenv": "^16.4.5",
@@ -88,5 +88,6 @@
         "tslib": "^2.6.2",
         "typescript": "^5.4.5"
     },
-    "overrides": {}
+    "overrides": {},
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

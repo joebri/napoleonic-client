@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useHelmet } from 'hooks/useHelmet';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import { useNavigationTags } from 'hooks/useNavigationTags';
 import { Item } from 'types';
@@ -12,6 +13,7 @@ import { createItemMutation } from './queries/createItemMutation';
 
 export const useItemDetailAdd = (moduleName: string) => {
     const navigate = useNavigate();
+    const helmet = useHelmet();
 
     const [template] = useLocalStorage<any>('template', {
         artist: '',
@@ -30,6 +32,10 @@ export const useItemDetailAdd = (moduleName: string) => {
     const [showMessage, setShowMessage] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Add Item');
+    }, [helmet]);
 
     useEffect(() => {
         enableLastNavigationTag();

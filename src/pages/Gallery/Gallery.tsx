@@ -1,5 +1,5 @@
 import { Pagination, Stack, TextField } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
+import { ChangeEvent, KeyboardEvent } from 'react';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { ItemCardList } from 'components/ItemCardList/ItemCardList';
@@ -14,17 +14,32 @@ const Gallery = () => {
     const moduleName = `${Gallery.name}.tsx`;
 
     const {
+        changePageNumber,
         error,
-        handlePageNumberChange,
-        handlePageNumberKeyDown,
-        handlePaginationChange,
         itemsRef,
         loadStatus,
         pageCount,
         pageNumber,
         requestedPageNumber,
+        setPageNumber,
+        setRequestedPageNumber,
         wrapperRef,
     } = useGallery(moduleName);
+
+    const handlePageNumberChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setRequestedPageNumber(event.target.value);
+    };
+
+    const handlePageNumberKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+        changePageNumber(event.code);
+    };
+
+    const handlePaginationChange = (
+        _: ChangeEvent<unknown>,
+        newPageNumber: number
+    ) => {
+        setPageNumber(newPageNumber);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -35,9 +50,6 @@ const Gallery = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Gallery</title>
-            </Helmet>
             <div className={styles.wrapper} ref={wrapperRef} tabIndex={0}>
                 <div id="scrollableView" className={styles.listwrapper}>
                     <ItemCardList items={itemsRef.current}></ItemCardList>

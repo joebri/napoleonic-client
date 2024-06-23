@@ -1,8 +1,9 @@
 import { Suspense, lazy } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import { AuthenticationGuard } from 'components/AuthenticationGuard/AuthenticationGuard';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
+import { ActionEnum, FilterDrawer } from 'components/FilterDrawer/FilterDrawer';
 import { Loading } from 'components/Loading/Loading';
 import { MenuBar } from 'components/MenuBar/MenuBar';
 
@@ -17,7 +18,6 @@ import { NotFound } from 'pages/NotFound/NotFound';
 import { Sandbox } from 'pages/Sandbox/Sandbox';
 import { Settings } from 'pages/Settings/Settings';
 
-import { FilterDrawer } from '../../components/FilterDrawer/FilterDrawer';
 import styles from './Home.module.scss';
 import { useHome } from './useHome';
 
@@ -56,8 +56,38 @@ const RegimentsList = lazy(() =>
 
 const Home = () => {
     const moduleName = `${Home.name}.tsx`;
+    const navigate = useNavigate();
 
-    const { error, handleFilterDrawAction, loadStatus } = useHome(moduleName);
+    const { error, loadStatus, resetSearchParams, setPageNumber } =
+        useHome(moduleName);
+
+    const handleFilterDrawAction = (action: ActionEnum) => {
+        setPageNumber(1);
+
+        if (action === ActionEnum.ShowArtists) {
+            navigate(`/artists`);
+            return;
+        }
+
+        if (action === ActionEnum.ShowBattles) {
+            navigate(`/battles`);
+            return;
+        }
+
+        if (action === ActionEnum.ShowCollections) {
+            navigate(`/collections`);
+            return;
+        }
+
+        if (action === ActionEnum.ShowRegiments) {
+            navigate(`/regiments`);
+            return;
+        }
+
+        resetSearchParams();
+
+        navigate(`/gallery`);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;

@@ -8,6 +8,19 @@ import { RatingsType } from './RatingsType.type';
 import { Tag } from './Tag.type';
 import { Template } from './Template.type';
 
+type helmetContextType = {
+    title: string;
+    setTitle: (title: string) => void;
+    meta: any;
+    setMeta: (meta: any) => void;
+    link: any;
+    setLink: (link: any) => void;
+    script: any;
+    setScript: (script: any) => void;
+    style: string | [];
+    setStyle: (style: string | []) => void;
+};
+
 export type {
     ArtistTag,
     BattleTag,
@@ -18,4 +31,5 @@ export type {
     RatingsType,
     Tag,
     Template,
+    helmetContextType,
 };
