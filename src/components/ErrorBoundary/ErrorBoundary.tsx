@@ -4,17 +4,17 @@ import { LogErrorBaseProps, logError } from 'utilities/logError';
 
 import styles from './ErrorBoundary.module.scss';
 
-interface Props {
+type Props = {
     children?: ReactNode;
-}
+};
 
-interface State {
+type State = {
     hasError: boolean;
-}
+};
 
-interface LogErrorProps extends LogErrorBaseProps {
+type LogErrorProps = LogErrorBaseProps & {
     errorInfo: ErrorInfo;
-}
+};
 
 class ErrorBoundary extends Component<Props, State> {
     public props: Props;

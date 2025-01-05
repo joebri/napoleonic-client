@@ -22,9 +22,9 @@ import { ImageMetaData } from './ImageMetaData';
 import styles from './ItemCard.module.scss';
 import { ItemCardImage } from './ItemCardImage';
 
-interface ItemCardProps {
+type ItemCardProps = {
     item: Item;
-}
+};
 
 const ItemCard = ({ item }: ItemCardProps) => {
     const navigate = useNavigate();

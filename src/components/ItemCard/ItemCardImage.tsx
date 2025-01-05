@@ -13,10 +13,10 @@ const parseDescriptionForImage = (descriptionLong: string): string => {
     return url;
 };
 
-interface ItemCardImageProps {
+type ItemCardImageProps = {
     item: Item;
     onMetaDataChange: (itemMetaData: ItemMetaData) => void;
-}
+};
 
 const ItemCardImage = ({ item, onMetaDataChange }: ItemCardImageProps) => {
     const [alternateImageUrl, setAlternateImageUrl] = useState('');

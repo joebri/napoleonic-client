@@ -3,9 +3,9 @@ import { Typography } from '@mui/material';
 
 import styles from './ErrorHandler.module.scss';
 
-interface ErrorHandlerProps {
+type ErrorHandlerProps = {
     error: ApolloError | undefined;
-}
+};
 
 const ErrorHandler = ({ error }: ErrorHandlerProps) => {
     return (

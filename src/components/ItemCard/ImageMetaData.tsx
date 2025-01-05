@@ -7,10 +7,10 @@ import { ItemMetaData } from 'types';
 
 import styles from './ItemCard.module.scss';
 
-interface ImageMetaDataProps {
+type ImageMetaDataProps = {
     metaData: ItemMetaData;
     onClose: Function;
-}
+};
 
 const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
     const handleMetaDataClose = () => {
