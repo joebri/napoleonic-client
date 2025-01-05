@@ -30,10 +30,10 @@ enum ActionEnum {
     ShowRegiments,
 }
 
-interface TagProps {
+type TagProps = {
     onClick: Function;
     tag: Tag;
-}
+};
 
 const TagButton = ({ onClick, tag }: TagProps) => {
     return (
@@ -48,9 +48,9 @@ const TagButton = ({ onClick, tag }: TagProps) => {
     );
 };
 
-interface FilterDrawerProps {
+type FilterDrawerProps = {
     onActionSelect: Function;
-}
+};
 
 const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     const [includeUnknownYear, setIncludeUnknownYear] =
@@ -67,6 +67,8 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
         medium: false,
         low: false,
     });
+
+    const [localIsAllYears, setLocalIsAllYears] = useState(true);
 
     const [localYearRange, setLocalYearRange] = useState<number[]>([
         1790, 1815,
@@ -118,7 +120,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
 
         setTags(updatedTags);
         setRatings(localRatings);
-        setYearRange(localYearRange);
+        setYearRange(localIsAllYears ? [1700, 1900] : localYearRange);
         setIncludeUnknownYear(localIncludeUnknownYear);
         setIsFilterOpen(false);
 
@@ -134,6 +136,13 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
 
     const handleYearChange = (_: Event, newValue: number | number[]) => {
         setLocalYearRange(newValue as number[]);
+    };
+
+    const handleAllYearsChange = () => {
+        if (localIsAllYears) {
+            setLocalYearRange([1790, 1815]);
+        }
+        setLocalIsAllYears(!localIsAllYears);
     };
 
     const handleIncludeUnknownYearChange = (
@@ -236,30 +245,53 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                     <div className={styles.section}>
                         <Stack direction={'row'}>
                             <Typography variant="h5">Years </Typography>
-                            <Typography
-                                variant="h5"
-                                className={styles.years}
-                                data-testid="year-range"
-                            >
-                                {localYearRange[0]} - {localYearRange[1]}
-                            </Typography>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={localIncludeUnknownYear}
-                                        onChange={
-                                            handleIncludeUnknownYearChange
-                                        }
+                                        checked={localIsAllYears}
+                                        onChange={handleAllYearsChange}
                                     />
                                 }
                                 className={styles.yearsCheckbox}
-                                label="Include unknown?"
+                                label="All?"
                             />
+                            {!localIsAllYears && (
+                                <>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={
+                                                    localIncludeUnknownYear
+                                                }
+                                                onChange={
+                                                    handleIncludeUnknownYearChange
+                                                }
+                                            />
+                                        }
+                                        className={styles.yearsCheckbox}
+                                        label="Include unknown?"
+                                    />
+                                    <Typography
+                                        variant="h5"
+                                        className={styles.years}
+                                        data-testid="year-range"
+                                    >
+                                        {localYearRange[0]} -{' '}
+                                        {localYearRange[1]}
+                                    </Typography>
+                                </>
+                            )}
                         </Stack>
+
                         <Box className={styles.sliderContainer}>
                             <Slider
+                                className={
+                                    localIsAllYears
+                                        ? styles.sliderHidden
+                                        : undefined
+                                }
                                 getAriaLabel={() => 'Temperature range'}
-                                min={1780}
+                                min={1750}
                                 max={1820}
                                 onChange={handleYearChange}
                                 value={localYearRange}

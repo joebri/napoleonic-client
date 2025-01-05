@@ -72,14 +72,13 @@ export const useCollectionDetailEdit = (moduleName: string) => {
                     descriptionShort: collection.descriptionShort.trim(),
                     id: collection.id,
                     tagName: collection.tagName.trim(),
-                    tags: collection.tags,
                     title: collection.title.trim(),
                 },
             });
         } catch (exception) {
             logError({
                 moduleName,
-                name: 'handleEditSaveClick',
+                name: 'tryUpdate',
                 exception,
                 message: 'Update failed.',
                 collectionId: collection.id,

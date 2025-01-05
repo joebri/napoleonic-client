@@ -1,22 +1,43 @@
 import { Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 
 import { Edit } from './Edit';
 import styles from './ItemDetail.module.scss';
-import { useItemDetailAdd } from './useItemDetailAdd';
+import { type ItemDetailAddProps, useItemDetailAdd } from './useItemDetailAdd';
 
 const ItemDetailAdd = () => {
     const moduleName = `${ItemDetailAdd.name}.tsx`;
+    const navigate = useNavigate();
+
+    const onCompletedAdd = (itemId: string) => {
+        navigate(`/itemDetailView/${itemId}`);
+    };
 
     const {
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
         item,
-        showMessage,
-    } = useItemDetailAdd(moduleName);
+        setIsMessageVisible,
+        tryCreate,
+        updateFieldValue,
+    } = useItemDetailAdd({ moduleName, onCompletedAdd } as ItemDetailAddProps);
+
+    const handleEditChange = (field: string, value: string | number) => {
+        updateFieldValue(field, value);
+    };
+
+    const handleEditCancelClick = () => {
+        navigate(`/gallery`);
+    };
+
+    const handleEditSaveClick = () => {
+        tryCreate();
+    };
+
+    const handleMessageClose = () => {
+        setIsMessageVisible(false);
+    };
 
     return (
         <>
@@ -33,7 +54,7 @@ const ItemDetailAdd = () => {
             <AppSnackBar
                 message="Unable to create item. Please try again."
                 onClose={handleMessageClose}
-                open={showMessage}
+                open={isMessageVisible}
             />
         </>
     );

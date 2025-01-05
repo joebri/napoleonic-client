@@ -3,6 +3,7 @@ type Template = {
     tags: string;
     urlRoot: string;
     yearFrom: string;
+    yearTo: string;
 };
 
 export type { Template };

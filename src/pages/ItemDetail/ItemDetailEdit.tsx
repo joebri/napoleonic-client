@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
@@ -8,21 +9,50 @@ import { LoadStatus } from 'enums/loadStatus.enum';
 
 import { Edit } from './Edit';
 import styles from './ItemDetail.module.scss';
-import { useItemDetailEdit } from './useItemDetailEdit';
+import {
+    type ItemDetailEditProps,
+    useItemDetailEdit,
+} from './useItemDetailEdit';
 
 const ItemDetailEdit = () => {
     const moduleName = `${ItemDetailEdit.name}.tsx`;
+    const navigate = useNavigate();
+
+    const onCompletedEdit = (itemId: string) => {
+        navigate(`/itemDetailView/${itemId}`);
+    };
 
     const {
         error,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
         item,
+        itemId,
+        loadForm,
         loadStatus,
-        showMessage,
-    } = useItemDetailEdit(moduleName);
+        setIsMessageVisible,
+        tryUpdate,
+        updateFieldValue,
+    } = useItemDetailEdit({
+        moduleName,
+        onCompletedEdit,
+    } as ItemDetailEditProps);
+
+    const handleEditChange = (field: string, value: string | number) => {
+        updateFieldValue(field, value);
+    };
+
+    const handleEditCancelClick = () => {
+        loadForm();
+        navigate(`/itemDetailView/${itemId}`);
+    };
+
+    const handleEditSaveClick = () => {
+        tryUpdate();
+    };
+
+    const handleMessageClose = () => {
+        setIsMessageVisible(false);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -46,7 +76,7 @@ const ItemDetailEdit = () => {
             <AppSnackBar
                 message="Unable to update item. Please try again."
                 onClose={handleMessageClose}
-                open={showMessage}
+                open={isMessageVisible}
             ></AppSnackBar>
         </>
     );

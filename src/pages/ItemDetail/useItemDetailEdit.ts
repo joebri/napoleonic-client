@@ -1,6 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { Rating } from 'enums/rating.enum';
@@ -14,16 +14,20 @@ import { logError } from 'utilities/logError';
 import { readItemQuery } from './queries/readItemQuery';
 import { updateItemMutation } from './queries/updateItemMutation';
 
-export const useItemDetailEdit = (moduleName: string) => {
+export type ItemDetailEditProps = {
+    moduleName: string;
+    onCompletedEdit: (itemId: string) => {};
+};
+
+export const useItemDetailEdit = (props: ItemDetailEditProps) => {
     const { itemId } = useParams();
-    const navigate = useNavigate();
     const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
     const [item, setItem] = useState<Item>(initialisedItem);
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
     const [isDirty, setIsDirty] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
@@ -40,18 +44,28 @@ export const useItemDetailEdit = (moduleName: string) => {
             setLoadStatus(LoadStatus.LOADED);
         },
         onError: (exception) => {
-            logError({ moduleName, name: 'readItem', exception, itemId });
+            logError({
+                moduleName: props.moduleName,
+                name: 'readItem',
+                exception,
+                itemId,
+            });
             setLoadStatus(LoadStatus.ERROR);
         },
     });
 
     const [updateItem] = useMutation(updateItemMutation, {
         onCompleted: () => {
-            navigate(`/itemDetailView/${item.id}`);
+            props.onCompletedEdit(item.id);
         },
         onError: (exception) => {
-            logError({ moduleName, name: 'updateItem', exception, itemId });
-            setShowMessage(true);
+            logError({
+                moduleName: props.moduleName,
+                name: 'updateItem',
+                exception,
+                itemId,
+            });
+            setIsMessageVisible(true);
         },
     });
 
@@ -72,7 +86,7 @@ export const useItemDetailEdit = (moduleName: string) => {
         loadForm();
     }, [itemId, loadForm]);
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setItem((priorItem: Item) => ({
             ...priorItem,
             [field]: value,
@@ -80,12 +94,7 @@ export const useItemDetailEdit = (moduleName: string) => {
         setIsDirty(true);
     };
 
-    const handleEditCancelClick = () => {
-        loadForm();
-        navigate(`/itemDetailView/${itemId}`);
-    };
-
-    const handleEditSaveClick = () => {
+    const tryUpdate = () => {
         updateItem({
             variables: {
                 artist: item.artist?.trim(),
@@ -103,18 +112,15 @@ export const useItemDetailEdit = (moduleName: string) => {
         });
     };
 
-    const handleMessageClose = () => {
-        setShowMessage(false);
-    };
-
     return {
         error,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
         item,
+        itemId,
+        loadForm,
         loadStatus,
-        showMessage,
+        setIsMessageVisible,
+        tryUpdate,
+        updateFieldValue,
     };
 };

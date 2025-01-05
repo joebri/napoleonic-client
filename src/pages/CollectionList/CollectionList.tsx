@@ -36,10 +36,10 @@ const CollectionList = () => {
                         onClick={() => {
                             handleSearchClick(collection);
                         }}
-                        title={collection.title}
+                        title={collection.tagName}
                         variant="contained"
                     >
-                        {`${collection.tagName}`}
+                        {`${collection.title}`}
                     </Button>
                 ))}
             </div>

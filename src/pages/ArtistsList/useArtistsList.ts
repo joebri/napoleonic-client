@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useDebugValue, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useHelmet } from 'hooks/useHelmet';
@@ -20,7 +20,6 @@ import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 export const useArtistsList = (moduleName: string) => {
     const location = useLocation();
-    const navigate = useNavigate();
     const helmet = useHelmet();
 
     const includeUnknownYear = useIncludeUnknownYearStateGet();
@@ -89,7 +88,7 @@ export const useArtistsList = (moduleName: string) => {
         includeUnknownYear,
     ]);
 
-    const getSelected = () => {
+    const getSelectedArtists = () => {
         const selected = encodeURIComponent(
             artists
                 .filter((tag: ArtistTag) => tag.isSelected)
@@ -112,18 +111,12 @@ export const useArtistsList = (moduleName: string) => {
         setIsSearchEnabled(isAnySelected);
     };
 
-    const showSelectedArtists = () => {
-        const selected = getSelected();
-        navigate(`/gallery?artists=${selected}`);
-    };
-
     return {
         artists,
         error,
-        getSelected,
+        getSelectedArtists,
         isSearchEnabled,
         loadStatus,
-        showSelectedArtists,
         updateSelectedArtists,
     };
 };

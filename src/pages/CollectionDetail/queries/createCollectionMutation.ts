@@ -5,15 +5,13 @@ const createCollectionMutation = gql`
         $descriptionLong: String!
         $descriptionShort: String!
         $tagName: String!
-        $tags: [String!]!
         $title: String!
     ) {
-        createCollection(
+        createCollectionV2(
             input: {
                 descriptionLong: $descriptionLong
                 descriptionShort: $descriptionShort
                 tagName: $tagName
-                tags: $tags
                 title: $title
             }
         )

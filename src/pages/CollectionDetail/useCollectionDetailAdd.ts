@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 
 import { useHelmet } from 'hooks/useHelmet';
-import { useLocalStorage } from 'hooks/useLocalStorage';
 import { Collection } from 'types';
 import { initialisedCollection } from 'utilities/helper';
 import { logError } from 'utilities/logError';
@@ -12,20 +11,12 @@ import { createCollectionMutation } from './queries/createCollectionMutation';
 export const useCollectionDetailAdd = (moduleName: string) => {
     const helmet = useHelmet();
 
-    const [template] = useLocalStorage<any>('template', {
-        artist: '',
-        tags: '',
-        urlRoot: '',
-        yearFrom: '',
-    });
-
     useEffect(() => {
         helmet.setTitle('Uniformology: Add Collection');
     }, [helmet]);
 
     const [collection, setCollection] = useState<Collection>({
         ...initialisedCollection,
-        tags: template.tags.split(','),
     });
     const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
@@ -45,7 +36,6 @@ export const useCollectionDetailAdd = (moduleName: string) => {
                     descriptionLong: collection.descriptionLong.trim(),
                     descriptionShort: collection.descriptionShort.trim(),
                     tagName: collection.tagName.trim(),
-                    tags: collection.tags,
                     title: collection.title.trim(),
                 },
             });
@@ -53,7 +43,7 @@ export const useCollectionDetailAdd = (moduleName: string) => {
         } catch (exception) {
             logError({
                 moduleName,
-                name: 'handleEditSaveClick',
+                name: 'tryCreate',
                 exception,
                 message: 'Create failed.',
             });

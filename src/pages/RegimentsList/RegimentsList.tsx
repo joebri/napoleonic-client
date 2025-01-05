@@ -1,4 +1,5 @@
 import { Button, Chip, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
@@ -11,15 +12,25 @@ import { useRegimentList } from './useRegimentList';
 
 const RegimentsList = () => {
     const moduleName = `${RegimentsList.name}.tsx`;
+    const navigate = useNavigate();
 
     const {
         error,
-        handleChipClick,
-        handleSearchClick,
+        getSelectedRegiments,
         isSearchEnabled,
         loadStatus,
         regiments,
+        updateSelectedRegiments,
     } = useRegimentList(moduleName);
+
+    const handleChipClick = (index: number) => {
+        updateSelectedRegiments(index);
+    };
+
+    const handleSearchClick = () => {
+        const selected = getSelectedRegiments();
+        navigate(`/gallery?regiments=${selected.join('||')}`);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;

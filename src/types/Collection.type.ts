@@ -3,7 +3,6 @@ type Collection = {
     descriptionShort: string;
     id: string;
     tagName: string;
-    tags: string[];
     title: string;
 };
 

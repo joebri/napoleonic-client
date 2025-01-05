@@ -22,7 +22,7 @@ const Provider = ({ children }: Auth0ProviderProps): ReactElement => {
             audience: import.meta.env.VITE_APP_AUTH0_API_AUDIENCE,
             redirect_uri: import.meta.env.VITE_APP_AUTH0_CALLBACK_URL,
         },
-        redirectUri: window.location.origin,
+        redirect_uri: window.location.origin,
         useRefreshTokens: true,
         cacheLocation: 'memory' as CacheLocation,
         grant_type: 'client_credentials',

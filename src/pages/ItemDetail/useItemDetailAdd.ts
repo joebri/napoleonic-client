@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useHelmet } from 'hooks/useHelmet';
 import { useLocalStorage } from 'hooks/useLocalStorage';
@@ -11,8 +10,12 @@ import { logError } from 'utilities/logError';
 
 import { createItemMutation } from './queries/createItemMutation';
 
-export const useItemDetailAdd = (moduleName: string) => {
-    const navigate = useNavigate();
+export type ItemDetailAddProps = {
+    moduleName: string;
+    onCompletedAdd: (itemId: string) => {};
+};
+
+export const useItemDetailAdd = (props: ItemDetailAddProps) => {
     const helmet = useHelmet();
 
     const [template] = useLocalStorage<any>('template', {
@@ -20,6 +23,7 @@ export const useItemDetailAdd = (moduleName: string) => {
         tags: '',
         urlRoot: '',
         yearFrom: '',
+        yearTo: '',
     });
 
     const [item, setItem] = useState<Item>({
@@ -28,8 +32,9 @@ export const useItemDetailAdd = (moduleName: string) => {
         publicId: template.urlRoot,
         tags: template.tags.split(','),
         yearFrom: template.yearFrom,
+        yearTo: template.yearTo,
     });
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
 
@@ -43,31 +48,27 @@ export const useItemDetailAdd = (moduleName: string) => {
 
     const [createItem] = useMutation(createItemMutation, {
         onCompleted: (data) => {
-            navigate(`/itemDetailView/${data.createItem}`);
+            props.onCompletedAdd(data.createItem);
         },
         onError: (exception) => {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'createItem',
                 exception,
                 message: 'Create failed.',
             });
-            setShowMessage(true);
+            setIsMessageVisible(true);
         },
     });
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setItem((priorItem: Item) => ({
             ...priorItem,
             [field]: value,
         }));
     };
 
-    const handleEditCancelClick = () => {
-        navigate(`/gallery`);
-    };
-
-    const handleEditSaveClick = () => {
+    const tryCreate = () => {
         createItem({
             variables: {
                 artist: item.artist?.trim(),
@@ -84,16 +85,11 @@ export const useItemDetailAdd = (moduleName: string) => {
         });
     };
 
-    const handleMessageClose = () => {
-        setShowMessage(false);
-    };
-
     return {
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
         item,
-        showMessage,
+        setIsMessageVisible,
+        tryCreate,
+        updateFieldValue,
     };
 };

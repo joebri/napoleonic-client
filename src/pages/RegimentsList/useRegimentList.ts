@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useHelmet } from 'hooks/useHelmet';
@@ -20,7 +20,6 @@ import { logError } from 'utilities/logError';
 import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 
 export const useRegimentList = (moduleName: string) => {
-    const navigate = useNavigate();
     const location = useLocation();
     const helmet = useHelmet();
 
@@ -94,7 +93,7 @@ export const useRegimentList = (moduleName: string) => {
         readRegimentCounts,
     ]);
 
-    const handleChipClick = (index: number) => {
+    const updateSelectedRegiments = (index: number) => {
         let newRegiments: RegimentTag[] = [...regiments];
         newRegiments[index].isSelected = !newRegiments[index].isSelected;
 
@@ -106,20 +105,19 @@ export const useRegimentList = (moduleName: string) => {
         setRegiments(newRegiments);
     };
 
-    const handleSearchClick = () => {
+    const getSelectedRegiments = () => {
         const selected = regiments
             .filter((regiment: RegimentTag) => regiment.isSelected)
             .map((regiment: RegimentTag) => encodeURIComponent(regiment.name));
-
-        navigate(`/gallery?regiments=${selected.join('||')}`);
+        return selected;
     };
 
     return {
-        handleChipClick,
-        handleSearchClick,
+        error,
+        getSelectedRegiments,
         isSearchEnabled,
         loadStatus,
-        error,
         regiments,
+        updateSelectedRegiments,
     };
 };

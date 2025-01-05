@@ -1,83 +1,46 @@
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, Stack, TextField, Typography } from '@mui/material';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent } from 'react';
 
 import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-
-import { useLocalStorage } from 'hooks/useLocalStorage';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet } from 'state';
-import { Template } from 'types';
 
 import styles from './Settings.module.scss';
 import { useSettings } from './useSettings';
 
-const initialisedTemplate: Template = {
-    artist: '',
-    tags: '',
-    urlRoot: '',
-    yearFrom: '',
-};
-
 const Settings = () => {
     const moduleName = `${Settings.name}.tsx`;
 
-    const [templateLS, setTemplateLS] = useLocalStorage<Template>(
-        'template',
-        initialisedTemplate
-    );
-
-    const setHeaderTitle = useHeaderTitleStateSet();
-
-    const [template, setTemplate] = useState(templateLS);
-    const [showMessage, setShowMessage] = useState(false);
-
-    const { clearHeaderNavigationTags } = useNavigationTags();
-
-    useSettings(moduleName);
-
-    useEffect(() => {
-        setHeaderTitle('Settings');
-        clearHeaderNavigationTags();
-    }, [clearHeaderNavigationTags, setHeaderTitle]);
+    const {
+        hideMessage,
+        isMessageVisible,
+        resetTemplate,
+        template,
+        tryTemplateSave,
+        updateTemplateValue,
+    } = useSettings(moduleName);
 
     const handleChange = (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         field: string
     ) => {
-        setTemplate((priorTemplate: Template) => ({
-            ...priorTemplate,
-            [field]: event.target.value,
-        }));
+        updateTemplateValue(field, event.target.value);
     };
 
     const handleCancelClick = () => {
-        setTemplate(templateLS);
+        resetTemplate();
     };
 
     const handleSaveClick = () => {
-        const updatedTemplate: Template = {
-            artist: template.artist.trim(),
-            tags: template.tags.trim(),
-            urlRoot: template.urlRoot.trim(),
-            yearFrom: template.yearFrom.trim(),
-        };
-        setTemplate(updatedTemplate);
-        setTemplateLS(updatedTemplate);
-
-        setShowMessage(true);
+        tryTemplateSave();
     };
 
     const handleMessageClose = () => {
-        setShowMessage(false);
+        hideMessage();
     };
 
     return (
         <>
-            {/* <Helmet>
-                <title>Uniformology: Settings</title>
-            </Helmet> */}
             <div className={styles.container}>
                 <Typography variant="h5">Item Template</Typography>
                 <TextField
@@ -85,7 +48,7 @@ const Settings = () => {
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    label="Image url"
+                    label="Image Url"
                     margin="normal"
                     onChange={(event) => handleChange(event, 'urlRoot')}
                     value={template.urlRoot}
@@ -126,6 +89,18 @@ const Settings = () => {
                     variant="standard"
                 />
 
+                <TextField
+                    fullWidth
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    label="Year To"
+                    margin="normal"
+                    onChange={(event) => handleChange(event, 'yearTo')}
+                    value={template.yearTo}
+                    variant="standard"
+                />
+
                 <div className={styles.actionBar}>
                     <Stack direction="row" gap={1}>
                         <Button
@@ -150,7 +125,7 @@ const Settings = () => {
             <AppSnackBar
                 message="Settings saved!"
                 onClose={handleMessageClose}
-                open={showMessage}
+                open={isMessageVisible}
                 severity="success"
             ></AppSnackBar>
         </>

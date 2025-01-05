@@ -21,7 +21,6 @@ export const initialisedCollection: Collection = {
     descriptionShort: '',
     id: '0',
     tagName: '',
-    tags: [],
     title: '',
 };
 

@@ -6,16 +6,14 @@ const updateCollectionMutation = gql`
         $descriptionShort: String!
         $id: ID!
         $tagName: String!
-        $tags: [String!]!
         $title: String!
     ) {
-        updateCollection(
+        updateCollectionV2(
             input: {
                 descriptionLong: $descriptionLong
                 descriptionShort: $descriptionShort
                 id: $id
                 tagName: $tagName
-                tags: $tags
                 title: $title
             }
         )

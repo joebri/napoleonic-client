@@ -43,7 +43,7 @@ const CollectionDetailView = () => {
 
     const handleDeleteConfirmed = async () => {
         await tryDelete();
-        navigate(`/gallery`);
+        navigate(`/collections`);
     };
 
     const handleMessageClose = () => {
@@ -59,9 +59,6 @@ const CollectionDetailView = () => {
 
     return (
         <>
-            {/* <Helmet>
-                <title>Uniformology: Collection</title>
-            </Helmet> */}
             <div className={styles.container}>
                 <View
                     collection={collection}

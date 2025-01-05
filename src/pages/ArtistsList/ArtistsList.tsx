@@ -1,4 +1,5 @@
 import { Button, Chip, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/Loading/Loading';
@@ -11,13 +12,14 @@ import { useArtistsList } from './useArtistsList';
 
 const ArtistsList = () => {
     const moduleName = `${ArtistsList.name}.tsx`;
+    const navigate = useNavigate();
 
     const {
         artists,
         error,
+        getSelectedArtists,
         isSearchEnabled,
         loadStatus,
-        showSelectedArtists,
         updateSelectedArtists,
     } = useArtistsList(moduleName);
 
@@ -26,7 +28,8 @@ const ArtistsList = () => {
     };
 
     const handleSearchClick = () => {
-        showSelectedArtists();
+        const selected = getSelectedArtists();
+        navigate(`/gallery?artists=${selected}`);
     };
 
     if (loadStatus === LoadStatus.LOADING) {

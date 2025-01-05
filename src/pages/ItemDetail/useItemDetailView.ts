@@ -1,6 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { LoadStatus } from 'enums/loadStatus.enum';
 import { useHelmet } from 'hooks/useHelmet';
@@ -12,18 +12,22 @@ import { logError } from 'utilities/logError';
 import { deleteItemMutation } from './queries/deleteItemMutation';
 import { readItemQuery } from './queries/readItemQuery';
 
-export const useItemDetailView = (moduleName: string) => {
+export type ItemDetailDeleteProps = {
+    moduleName: string;
+    onCompletedDelete: () => {};
+};
+
+export const useItemDetailView = (props: ItemDetailDeleteProps) => {
     const { itemId } = useParams();
-    const navigate = useNavigate();
     const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
     const [item, setItem] = useState<Item>(initialisedItem);
-    const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] =
+    const [isConfirmDeleteDialogVisible, setIsConfirmDeleteDialogVisible] =
         useState(false);
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
 
@@ -36,7 +40,12 @@ export const useItemDetailView = (moduleName: string) => {
             setLoadStatus(LoadStatus.LOADED);
         },
         onError: (exception) => {
-            logError({ moduleName, name: 'readItem', exception, itemId });
+            logError({
+                moduleName: props.moduleName,
+                name: 'readItem',
+                exception,
+                itemId,
+            });
             setLoadStatus(LoadStatus.ERROR);
         },
     });
@@ -58,53 +67,35 @@ export const useItemDetailView = (moduleName: string) => {
         loadForm();
     }, [itemId, readItem]);
 
-    const handleEditClick = () => {
-        navigate(`/itemDetailEdit/${itemId}`);
-    };
-
-    const handleDeleteClick = () => {
-        setShowConfirmDeleteDialog(true);
-    };
-
-    const handleDeleteCancelled = () => {
-        setShowConfirmDeleteDialog(false);
-    };
-
-    const handleDeleteConfirmed = async () => {
+    const tryDelete = async () => {
         try {
             await deleteItem({
                 variables: {
                     id: itemId,
                 },
             });
-            navigate(`/gallery`);
+            props.onCompletedDelete();
         } catch (exception) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'handleDeleteConfirmed',
                 exception,
                 message: 'Delete failed.',
                 itemId,
             });
-            setShowConfirmDeleteDialog(false);
-            setShowMessage(true);
+            setIsConfirmDeleteDialogVisible(false);
+            setIsMessageVisible(true);
         }
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
     };
 
     return {
         error,
-        handleDeleteCancelled,
-        handleDeleteClick,
-        handleDeleteConfirmed,
-        handleEditClick,
-        handleMessageClose,
+        isConfirmDeleteDialogVisible,
+        isMessageVisible,
         item,
         loadStatus,
-        showConfirmDeleteDialog,
-        showMessage,
+        setIsConfirmDeleteDialogVisible,
+        setIsMessageVisible,
+        tryDelete,
     };
 };
