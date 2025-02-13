@@ -28,22 +28,20 @@ const CollectionList = () => {
     }
 
     return (
-        <>
-            <div className={styles.container}>
-                {collections.map((collection: Collection, index: number) => (
-                    <Button
-                        key={index}
-                        onClick={() => {
-                            handleSearchClick(collection);
-                        }}
-                        title={collection.tagName}
-                        variant="contained"
-                    >
-                        {`${collection.title}`}
-                    </Button>
-                ))}
-            </div>
-        </>
+        <div className={styles.container}>
+            {collections.map((collection: Collection, index: number) => (
+                <Button
+                    key={index}
+                    onClick={() => {
+                        handleSearchClick(collection);
+                    }}
+                    title={collection.tagName}
+                    variant="contained"
+                >
+                    {`${collection.title}`}
+                </Button>
+            ))}
+        </div>
     );
 };
 

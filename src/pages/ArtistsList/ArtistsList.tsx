@@ -38,38 +38,36 @@ const ArtistsList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
-
+    if (artists.length === 0) {
+        return (
+            <Typography className={styles.noItems} variant="h5">
+                No Artists available.
+            </Typography>
+        );
+    }
     return (
-        <>
-            {artists.length === 0 ? (
-                <Typography className={styles.noItems} variant="h5">
-                    No Artists available.
-                </Typography>
-            ) : (
-                <div className={styles.container}>
-                    {artists.map((tag: ArtistTag, index: number) => (
-                        <Chip
-                            color="primary"
-                            label={`${tag.name || 'Unknown'} (${tag.count})`}
-                            key={index}
-                            onClick={() => {
-                                handleChipClick(index);
-                            }}
-                            variant={tag.isSelected ? undefined : 'outlined'}
-                        />
-                    ))}
-                    <Button
-                        aria-label="search"
-                        className={styles.button}
-                        disabled={!isSearchEnabled}
-                        onClick={handleSearchClick}
-                        variant="contained"
-                    >
-                        Search
-                    </Button>
-                </div>
-            )}
-        </>
+        <div className={styles.container}>
+            {artists.map((tag: ArtistTag, index: number) => (
+                <Chip
+                    color="primary"
+                    label={`${tag.name || 'Unknown'} (${tag.count})`}
+                    key={index}
+                    onClick={() => {
+                        handleChipClick(index);
+                    }}
+                    variant={tag.isSelected ? undefined : 'outlined'}
+                />
+            ))}
+            <Button
+                aria-label="search"
+                className={styles.button}
+                disabled={!isSearchEnabled}
+                onClick={handleSearchClick}
+                variant="contained"
+            >
+                Search
+            </Button>
+        </div>
     );
 };
 

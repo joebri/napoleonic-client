@@ -35,40 +35,37 @@ const BattlesList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
+    if (battles.length === 0) {
+        return (
+            <Typography className={styles.noItems} variant="h5">
+                No Battles available.
+            </Typography>
+        );
+    }
 
     return (
-        <>
-            {battles.length === 0 ? (
-                <Typography className={styles.noItems} variant="h5">
-                    No Battles available.
-                </Typography>
-            ) : (
-                <div className={styles.container}>
-                    {battles.map((battle: BattleTag, index: number) => (
-                        <Chip
-                            color="primary"
-                            label={`${battle.name || 'Unknown'} (${
-                                battle.count
-                            })`}
-                            key={index}
-                            onClick={() => {
-                                handleChipClick(index);
-                            }}
-                            variant={battle.isSelected ? undefined : 'outlined'}
-                        />
-                    ))}
-                    <Button
-                        aria-label="search"
-                        className={styles.button}
-                        disabled={!isSearchEnabled}
-                        onClick={handleSearchClick}
-                        variant="contained"
-                    >
-                        Search
-                    </Button>
-                </div>
-            )}
-        </>
+        <div className={styles.container}>
+            {battles.map((battle: BattleTag, index: number) => (
+                <Chip
+                    color="primary"
+                    label={`${battle.name || 'Unknown'} (${battle.count})`}
+                    key={index}
+                    onClick={() => {
+                        handleChipClick(index);
+                    }}
+                    variant={battle.isSelected ? undefined : 'outlined'}
+                />
+            ))}
+            <Button
+                aria-label="search"
+                className={styles.button}
+                disabled={!isSearchEnabled}
+                onClick={handleSearchClick}
+                variant="contained"
+            >
+                Search
+            </Button>
+        </div>
     );
 };
 

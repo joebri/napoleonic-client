@@ -38,41 +38,36 @@ const RegimentsList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
+    if (regiments.length === 0) {
+        return (
+            <Typography className={styles.noItems} variant="h5">
+                No Regiments available.
+            </Typography>
+        );
+    }
 
     return (
-        <>
-            {regiments.length === 0 ? (
-                <Typography className={styles.noItems} variant="h5">
-                    No Regiments available.
-                </Typography>
-            ) : (
-                <div className={styles.container}>
-                    {regiments.map((regiment: RegimentTag, index: number) => (
-                        <Chip
-                            color="primary"
-                            label={`${regiment.name || 'Unknown'} (${
-                                regiment.count
-                            })`}
-                            key={index}
-                            onClick={() => {
-                                handleChipClick(index);
-                            }}
-                            variant={
-                                regiment.isSelected ? undefined : 'outlined'
-                            }
-                        />
-                    ))}
-                    <Button
-                        className={styles.button}
-                        disabled={!isSearchEnabled}
-                        onClick={handleSearchClick}
-                        variant="contained"
-                    >
-                        Search
-                    </Button>
-                </div>
-            )}
-        </>
+        <div className={styles.container}>
+            {regiments.map((regiment: RegimentTag, index: number) => (
+                <Chip
+                    color="primary"
+                    label={`${regiment.name || 'Unknown'} (${regiment.count})`}
+                    key={index}
+                    onClick={() => {
+                        handleChipClick(index);
+                    }}
+                    variant={regiment.isSelected ? undefined : 'outlined'}
+                />
+            ))}
+            <Button
+                className={styles.button}
+                disabled={!isSearchEnabled}
+                onClick={handleSearchClick}
+                variant="contained"
+            >
+                Search
+            </Button>
+        </div>
     );
 };
 
