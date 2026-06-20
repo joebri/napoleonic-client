@@ -1,12 +1,14 @@
 import SortIcon from '@mui/icons-material/Sort';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MouseEvent, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useSortFieldState } from 'state';
 
 import styles from './MenuSort.module.scss';
 
-const MenuSort = () => {
+export const MenuSort = () => {
+    const location = useLocation();
     const [sortField, setSortField] = useSortFieldState();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -22,7 +24,22 @@ const MenuSort = () => {
     };
 
     const handleItemSelected = (selectedSortField: string) => {
-        setSortField(selectedSortField);
+        setSortField((currentState) => {
+            return {
+                ...currentState,
+                sort: selectedSortField,
+            };
+        });
+        setAnchorEl(null);
+    };
+
+    const handleAllTagsItemSelected = (selectedSortField: string) => {
+        setSortField((currentState) => {
+            return {
+                ...currentState,
+                allTagsSort: selectedSortField,
+            };
+        });
         setAnchorEl(null);
     };
 
@@ -40,30 +57,53 @@ const MenuSort = () => {
                 Sort
             </IconButton>
 
-            <Menu
-                anchorEl={anchorEl}
-                id="basic-menu"
-                onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                }}
-                open={open}
-            >
-                <MenuItem
-                    onClick={() => handleItemSelected('title')}
-                    selected={sortField === 'title'}
+            {location.pathname === '/allTags' ? (
+                <Menu
+                    anchorEl={anchorEl}
+                    id="basic-menu"
+                    onClose={handleClose}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                    open={open}
                 >
-                    Title
-                </MenuItem>
-                <MenuItem
-                    onClick={() => handleItemSelected('image')}
-                    selected={sortField === 'image'}
+                    <MenuItem
+                        onClick={() => handleAllTagsItemSelected('tagName')}
+                        selected={sortField.sort === 'tagName'}
+                    >
+                        Tag Name
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleAllTagsItemSelected('tagCount')}
+                        selected={sortField.sort === 'tagCount'}
+                    >
+                        Tag Count
+                    </MenuItem>
+                </Menu>
+            ) : (
+                <Menu
+                    anchorEl={anchorEl}
+                    id="basic-menu"
+                    onClose={handleClose}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                    open={open}
                 >
-                    Image
-                </MenuItem>
-            </Menu>
+                    <MenuItem
+                        onClick={() => handleItemSelected('title')}
+                        selected={sortField.sort === 'title'}
+                    >
+                        Title
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleItemSelected('image')}
+                        selected={sortField.sort === 'image'}
+                    >
+                        Image
+                    </MenuItem>
+                </Menu>
+            )}
         </>
     );
 };
-
-export { MenuSort };

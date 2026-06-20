@@ -18,24 +18,27 @@ import {
     useHeaderTitleStateGet,
     useIsFilterOpenStateSet,
     useNavigationTagsStateGet,
+    usePageNumberStateSet,
 } from 'state';
 import { NavigationTag } from 'types';
 
 import styles from './MenuBar.module.scss';
 
-const MenuBar = () => {
+export const MenuBar = () => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth0();
 
     const headerTitle = useHeaderTitleStateGet();
     const navigationTags = useNavigationTagsStateGet();
     const setIsFilterOpen = useIsFilterOpenStateSet();
+    const setPageNumber = usePageNumberStateSet();
 
     const handleFilterClick = () => {
         setIsFilterOpen(true);
     };
 
     const handleNavigationTagClick = (navigationTag: NavigationTag) => {
+        setPageNumber(1);
         navigate(navigationTag.url);
     };
 
@@ -96,5 +99,3 @@ const MenuBar = () => {
         </AppBar>
     );
 };
-
-export { MenuBar };

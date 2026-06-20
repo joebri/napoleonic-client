@@ -246,7 +246,7 @@ export const useGallery = (moduleName: string) => {
                     name: 'readItemsByFilter',
                     exception,
                     ratings,
-                    sortField,
+                    sortField: sortField.sort,
                     tags,
                     pageNumber,
                 });
@@ -282,7 +282,7 @@ export const useGallery = (moduleName: string) => {
                     pageSize: PAGE_SIZE,
                     ratings: queryDetails.ratings,
                     regiments: queryDetails.regiments,
-                    sort: sortField,
+                    sort: sortField.sort,
                     sortSequence: 'asc',
                     tags: queryDetails.tagNames,
                     yearRange: queryDetails.yearRange,

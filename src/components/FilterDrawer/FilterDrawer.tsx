@@ -22,7 +22,7 @@ import { Tag } from 'types/Tag.type';
 
 import styles from './FilterDraw.module.scss';
 
-enum ActionEnum {
+export enum ActionEnum {
     Search,
     ShowArtists,
     ShowBattles,
@@ -53,7 +53,7 @@ type FilterDrawerProps = {
     onActionSelect: Function;
 };
 
-const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
+export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     const [includeUnknownYear, setIncludeUnknownYear] =
         useIncludeUnknownYearState();
     const [isFilterOpen, setIsFilterOpen] = useIsFilterOpenState();
@@ -357,5 +357,3 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
         </Drawer>
     );
 };
-
-export { ActionEnum, FilterDrawer };

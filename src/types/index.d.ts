@@ -3,9 +3,11 @@ import { BattleTag } from './BattleTag.type';
 import { Collection } from './Collection.type';
 import { Item } from './Item.type';
 import { ItemMetaData } from './ItemMetaData.type';
+import { ItemTag } from './ItemTag.type';
 import { NavigationTag } from './NavigationTag.type';
 import { RatingsType } from './RatingsType.type';
 import { Tag } from './Tag.type';
+import { TagCount } from './TagCount.type';
 import { Template } from './Template.type';
 
 type helmetContextType = {
@@ -25,11 +27,13 @@ export type {
     ArtistTag,
     BattleTag,
     Collection,
+    helmetContextType,
     Item,
     ItemMetaData,
+    ItemTag,
     NavigationTag,
     RatingsType,
     Tag,
+    TagCount,
     Template,
-    helmetContextType,
 };
