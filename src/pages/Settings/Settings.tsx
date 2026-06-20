@@ -1,9 +1,8 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import { ChangeEvent } from 'react';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 
 import styles from './Settings.module.scss';
 import { useSettings } from './useSettings';

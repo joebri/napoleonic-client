@@ -28,6 +28,7 @@ enum ActionEnum {
     ShowBattles,
     ShowCollections,
     ShowRegiments,
+    ShowAllTags,
 }
 
 type TagProps = {
@@ -341,6 +342,15 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                         }
                     >
                         Show Battles
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        onClick={() =>
+                            handleButtonClick(ActionEnum.ShowAllTags)
+                        }
+                    >
+                        Show All Tags
                     </Button>
                 </div>
             </div>

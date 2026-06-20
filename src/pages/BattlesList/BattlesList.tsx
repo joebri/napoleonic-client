@@ -48,8 +48,8 @@ const BattlesList = () => {
             {battles.map((battle: BattleTag, index: number) => (
                 <Chip
                     color="primary"
-                    label={`${battle.name || 'Unknown'} (${battle.count})`}
                     key={index}
+                    label={`${battle.name || 'Unknown'} (${battle.count})`}
                     onClick={() => {
                         handleChipClick(index);
                     }}

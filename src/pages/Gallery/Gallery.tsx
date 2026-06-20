@@ -10,7 +10,7 @@ import { LoadStatus } from 'enums/loadStatus.enum';
 import styles from './Gallery.module.scss';
 import { useGallery } from './useGallery';
 
-const Gallery = () => {
+export const Gallery = () => {
     const moduleName = `${Gallery.name}.tsx`;
 
     const {
@@ -79,5 +79,3 @@ const Gallery = () => {
         </>
     );
 };
-
-export { Gallery };

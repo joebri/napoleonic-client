@@ -8,7 +8,7 @@ import { LoadStatus } from 'enums/loadStatus.enum';
 import { ArtistTag } from 'types';
 
 import styles from './ArtistsList.module.scss';
-import { useArtistsList } from './useArtistsList';
+import { useArtistsListViewModel } from './useArtistsListViewModel';
 
 const ArtistsList = () => {
     const moduleName = `${ArtistsList.name}.tsx`;
@@ -21,7 +21,7 @@ const ArtistsList = () => {
         isSearchEnabled,
         loadStatus,
         updateSelectedArtists,
-    } = useArtistsList(moduleName);
+    } = useArtistsListViewModel(moduleName);
 
     const handleChipClick = (index: number) => {
         updateSelectedArtists(index);
@@ -50,8 +50,8 @@ const ArtistsList = () => {
             {artists.map((tag: ArtistTag, index: number) => (
                 <Chip
                     color="primary"
-                    label={`${tag.name || 'Unknown'} (${tag.count})`}
                     key={index}
+                    label={`${tag.name || 'Unknown'} (${tag.count})`}
                     onClick={() => {
                         handleChipClick(index);
                     }}

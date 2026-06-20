@@ -10,7 +10,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HelmetProvider as CustomHelmetProvider } from 'providers/HelmetProvider';
 import { createMockState } from 'setupTests';
 
-import { ArtistsList } from '../ArtistsList';
+import { ArtistsList } from '../ArtistsListView';
 import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
 
 interface MockMemoryRouterProps {

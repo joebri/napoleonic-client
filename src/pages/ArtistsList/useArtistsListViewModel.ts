@@ -18,7 +18,7 @@ import { logError } from 'utilities/logError';
 
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
-export const useArtistsList = (moduleName: string) => {
+export const useArtistsListViewModel = (moduleName: string) => {
     const location = useLocation();
     const helmet = useHelmet();
 

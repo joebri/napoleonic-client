@@ -1,9 +1,9 @@
 import { useLazyQuery } from '@apollo/client';
 import { useAuth0 } from '@auth0/auth0-react';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { LoadStatus } from 'enums/loadStatus.enum';
 import { usePageNumberStateSet, useTagsState } from 'state';
 import { logError } from 'utilities/logError';
 
