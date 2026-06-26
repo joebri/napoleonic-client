@@ -1,20 +1,19 @@
+import { Collection } from '@models/Collection.model';
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, TextField } from '@mui/material';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
-import { Collection } from 'types';
-
 import styles from './CollectionDetail.module.scss';
 
-interface EditProps {
+type EditProps = {
     collection: Collection;
     onCancel: Function;
     onChange: Function;
     onSave: Function;
-}
+};
 
-const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
+export const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
     const [isDirty, setIsDirty] = useState(false);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -66,50 +65,50 @@ const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
             </div>
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Tag Name"
                 margin="normal"
                 name="tagName"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: { shrink: true },
+                }}
                 value={collection.tagName}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Title"
                 margin="normal"
                 name="title"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: { shrink: true },
+                }}
                 value={collection.title}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Short description"
                 margin="normal"
                 name="descriptionShort"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: { shrink: true },
+                }}
                 value={collection.descriptionShort}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Long description"
                 margin="normal"
                 multiline
                 name="descriptionLong"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: { shrink: true },
+                }}
                 value={collection.descriptionLong}
                 variant="standard"
             />
@@ -123,5 +122,3 @@ const Edit = ({ collection, onCancel, onChange, onSave }: EditProps) => {
         </div>
     );
 };
-
-export { Edit };

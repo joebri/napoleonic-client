@@ -1,72 +1,102 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { Rating } from '@enums/rating.enum';
+import { useConfirmExit } from '@hooks/useConfirmExit';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { Item } from '@models/Item.model';
+import { initialisedItem } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { Rating } from 'enums/rating.enum';
-import { useConfirmExit } from 'hooks/useConfirmExit';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { Item } from 'types';
-import { initialisedItem } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+import { useParams } from 'react-router-dom';
 
 import { readItemQuery } from './queries/readItemQuery';
 import { updateItemMutation } from './queries/updateItemMutation';
 
-export const useItemDetailEdit = (moduleName: string) => {
-    const { itemId } = useParams();
-    const navigate = useNavigate();
+export type ItemDetailEditProps = {
+    moduleName: string;
+    onCompletedEdit: (itemId: string) => {};
+};
+
+export const useItemDetailEdit = (props: ItemDetailEditProps) => {
+    const { itemId = '' } = useParams();
+    const helmet = useHelmet();
+    const { enableLastNavigationTag } = useNavigationTags();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
     const [item, setItem] = useState<Item>(initialisedItem);
-    const [showMessage, setShowMessage] = useState<boolean>(false);
-    const [isDirty, setIsDirty] = useState<boolean>(false);
-
-    const { enableLastNavigationTag } = useNavigationTags();
+    const [isMessageVisible, setIsMessageVisible] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
 
     useConfirmExit(isDirty);
 
-    const [readItem, { error }] = useLazyQuery(readItemQuery, {
-        variables: { id: itemId },
-        onCompleted: (data) => {
+    const [readItem, { data, error }] = useLazyQuery(readItemQuery);
+
+    useEffect(() => {
+        if (data?.readItem) {
             setItem({
                 ...data.readItem,
                 rating: data.readItem.rating || Rating.MEDIUM,
             });
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
-            logError({ moduleName, name: 'readItem', exception, itemId });
-            setLoadStatus(LoadStatus.ERROR);
-        },
-    });
-
-    const [updateItem] = useMutation(updateItemMutation, {
-        onCompleted: () => {
-            navigate(`/itemDetailView/${item.id}`);
-        },
-        onError: (exception) => {
-            logError({ moduleName, name: 'updateItem', exception, itemId });
-            setShowMessage(true);
-        },
-    });
+        }
+    }, [data]);
 
     useEffect(() => {
-        enableLastNavigationTag();
-    }, [enableLastNavigationTag]);
+        if (error) {
+            logError({
+                moduleName: props.moduleName,
+                name: 'readItem',
+                exception: error,
+                itemId,
+            });
+            setLoadStatus(LoadStatus.ERROR);
+        }
+    }, [error, itemId, props.moduleName]);
 
     const loadForm = useCallback(() => {
         setLoadStatus(LoadStatus.LOADING);
-        readItem();
-    }, [readItem]);
+        readItem({ variables: { id: itemId } });
+    }, [itemId, readItem]);
 
     useEffect(() => {
         loadForm();
     }, [itemId, loadForm]);
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const [updateItem] = useMutation(updateItemMutation);
+
+    const tryUpdate = () => {
+        try {
+            updateItem({
+                variables: {
+                    artist: item.artist?.trim(),
+                    descriptionLong: item.descriptionLong?.trim(),
+                    descriptionShort: item.descriptionShort?.trim(),
+                    id: item.id,
+                    publicId: item.publicId?.trim(),
+                    rating: parseInt(item.rating.toString()),
+                    regiments: item.regiments?.trim() || '',
+                    tags: item.tags,
+                    title: item.title?.trim(),
+                    yearFrom: item.yearFrom?.trim(),
+                    yearTo: item.yearTo?.trim(),
+                },
+            });
+            props.onCompletedEdit(item.id);
+        } catch (error) {
+            logError({
+                moduleName: props.moduleName,
+                name: 'updateItem',
+                exception: error,
+                itemId,
+            });
+            setIsMessageVisible(true);
+        }
+    };
+
+    const updateFieldValue = (field: string, value: string | number) => {
         setItem((priorItem: Item) => ({
             ...priorItem,
             [field]: value,
@@ -74,41 +104,23 @@ export const useItemDetailEdit = (moduleName: string) => {
         setIsDirty(true);
     };
 
-    const handleEditCancelClick = () => {
-        loadForm();
-        navigate(`/itemDetailView/${itemId}`);
-    };
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Edit Item');
+    }, [helmet]);
 
-    const handleEditSaveClick = () => {
-        updateItem({
-            variables: {
-                artist: item.artist?.trim(),
-                descriptionLong: item.descriptionLong?.trim(),
-                descriptionShort: item.descriptionShort?.trim(),
-                id: item.id,
-                publicId: item.publicId?.trim(),
-                rating: parseInt(item.rating.toString()),
-                regiments: item.regiments?.trim() || '',
-                tags: item.tags,
-                title: item.title?.trim(),
-                yearFrom: item.yearFrom?.trim(),
-                yearTo: item.yearTo?.trim(),
-            },
-        });
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
-    };
+    useEffect(() => {
+        enableLastNavigationTag();
+    }, [enableLastNavigationTag]);
 
     return {
         error,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
         item,
+        itemId,
+        loadForm,
         loadStatus,
-        showMessage,
+        setIsMessageVisible,
+        tryUpdate,
+        updateFieldValue,
     };
 };

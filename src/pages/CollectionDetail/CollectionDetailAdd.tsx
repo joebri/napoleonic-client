@@ -1,29 +1,42 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
 import { Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './CollectionDetail.module.scss';
 import { Edit } from './Edit';
 import { useCollectionDetailAdd } from './useCollectionDetailAdd';
 
-const CollectionDetailAdd = () => {
+export const CollectionDetailAdd = () => {
     const moduleName = `${CollectionDetailAdd.name}.tsx`;
+    const navigate = useNavigate();
 
     const {
         collection,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
-        showMessage,
-    } = useCollectionDetailAdd(moduleName);
+        isMessageVisible,
+        setIsMessageVisible,
+        tryCreate,
+        updateFieldValue,
+    } = useCollectionDetailAdd({ moduleName });
+
+    const handleEditCancelClick = () => {
+        navigate(`/collections`);
+    };
+
+    const handleEditChange = (field: string, value: string | number) => {
+        updateFieldValue(field, value);
+    };
+
+    const handleEditSaveClick = async () => {
+        const name = await tryCreate();
+        navigate(`/collectionDetailView/${name}`);
+    };
+
+    const handleMessageClose = () => {
+        setIsMessageVisible(false);
+    };
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Add Collection</title>
-            </Helmet>
             <div className={styles.container}>
                 <Typography variant="h5">Add Collection</Typography>
                 <Edit
@@ -37,10 +50,8 @@ const CollectionDetailAdd = () => {
             <AppSnackBar
                 message="Unable to create Collection. Please try again."
                 onClose={handleMessageClose}
-                open={showMessage}
+                open={isMessageVisible}
             ></AppSnackBar>
         </>
     );
 };
-
-export { CollectionDetailAdd };

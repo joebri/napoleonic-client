@@ -1,7 +1,5 @@
-type BattleTag = {
+export type ArtistCount = {
     name: string;
     count: number;
     isSelected: boolean;
 };
-
-export type { BattleTag };

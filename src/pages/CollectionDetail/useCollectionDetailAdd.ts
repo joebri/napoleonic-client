@@ -1,76 +1,68 @@
-import { useMutation } from '@apollo/client';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client/react';
+import { useHelmet } from '@hooks/useHelmet';
+import { Collection } from '@models/Collection.model';
+import { initialisedCollection } from '@utilities/helper';
+import { logError } from '@utilities/logError';
+import { useEffect, useState } from 'react';
 
-import { useLocalStorage } from 'hooks/useLocalStorage';
-import { Collection } from 'types';
-import { initialisedCollection } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+import {
+    CreateCollectionResponse,
+    CreateCollectionVariables,
+    createCollectionMutation,
+} from './queries/createCollectionMutation';
 
-import { createCollectionMutation } from './queries/createCollectionMutation';
+export type CollectionDetailAddProps = {
+    moduleName: string;
+};
 
-export const useCollectionDetailAdd = (moduleName: string) => {
-    const navigate = useNavigate();
+export const useCollectionDetailAdd = (props: CollectionDetailAddProps) => {
+    const helmet = useHelmet();
 
-    const [template] = useLocalStorage<any>('template', {
-        artist: '',
-        tags: '',
-        urlRoot: '',
-        yearFrom: '',
-    });
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Add Collection');
+    }, [helmet]);
 
     const [collection, setCollection] = useState<Collection>({
         ...initialisedCollection,
-        tags: template.tags.split(','),
     });
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
-    const [createCollection] = useMutation(createCollectionMutation);
-
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setCollection((priorCollection: Collection) => ({
             ...priorCollection,
             [field]: value,
         }));
     };
 
-    const handleEditCancelClick = () => {
-        navigate(`/collections`);
-    };
+    const [createCollection] = useMutation(createCollectionMutation);
 
-    const handleEditSaveClick = async () => {
+    const tryCreate = async (): Promise<any> => {
         try {
-            const result = await createCollection({
+            const response = await createCollection({
                 variables: {
                     descriptionLong: collection.descriptionLong.trim(),
                     descriptionShort: collection.descriptionShort.trim(),
                     tagName: collection.tagName.trim(),
-                    tags: collection.tags,
                     title: collection.title.trim(),
                 },
             });
-            navigate(`/collectionDetailView/${result.data.createCollection}`);
-        } catch (exception) {
+            return response.data?.createCollectionV2;
+        } catch (error) {
             logError({
-                moduleName,
-                name: 'handleEditSaveClick',
-                exception,
+                moduleName: props.moduleName,
+                name: 'tryCreate',
+                exception: error,
                 message: 'Create failed.',
             });
-            setShowMessage(true);
+            setIsMessageVisible(true);
         }
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
     };
 
     return {
         collection,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
-        showMessage,
+        isMessageVisible,
+        setIsMessageVisible,
+        tryCreate,
+        updateFieldValue,
     };
 };

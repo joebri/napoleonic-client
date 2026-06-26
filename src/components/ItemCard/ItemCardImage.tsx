@@ -1,9 +1,9 @@
+import { Item } from '@models/Item.model';
+import { ItemMetaData } from '@models/ItemMetaData.model';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
+import { getLocalImage } from '@utilities/imageService';
 import { LegacyRef, createRef, useEffect, useState } from 'react';
-
-import { Item, ItemMetaData } from 'types';
-import { getLocalImage } from 'utilities/imageService';
 
 import styles from './ItemCard.module.scss';
 
@@ -13,12 +13,15 @@ const parseDescriptionForImage = (descriptionLong: string): string => {
     return url;
 };
 
-interface ItemCardImageProps {
+type ItemCardImageProps = {
     item: Item;
     onMetaDataChange: (itemMetaData: ItemMetaData) => void;
-}
+};
 
-const ItemCardImage = ({ item, onMetaDataChange }: ItemCardImageProps) => {
+export const ItemCardImage = ({
+    item,
+    onMetaDataChange,
+}: ItemCardImageProps) => {
     const [alternateImageUrl, setAlternateImageUrl] = useState('');
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
 
@@ -121,5 +124,3 @@ const ItemCardImage = ({ item, onMetaDataChange }: ItemCardImageProps) => {
         </>
     );
 };
-
-export { ItemCardImage };

@@ -11,6 +11,7 @@ test-report.html
 
 # production
 /build
+/dist
 
 # misc
 .dccache

@@ -1,20 +1,18 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { Collection } from '@models/Collection.model';
+import { initialisedCollection } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { Collection } from 'types';
-import { initialisedCollection } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+import { useParams } from 'react-router-dom';
 
 import { readCollectionQuery } from './queries/readCollectionQuery';
 import { updateCollectionMutation } from './queries/updateCollectionMutation';
 
 export const useCollectionDetailEdit = (moduleName: string) => {
-    let { collectionId } = useParams();
-    const navigate = useNavigate();
-
-    const viewPageURI = `/collectionDetailView/${collectionId}`;
+    const { collectionId } = useParams();
+    const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
@@ -22,51 +20,52 @@ export const useCollectionDetailEdit = (moduleName: string) => {
     const [collection, setCollection] = useState<Collection>(
         initialisedCollection
     );
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
-    const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
-        variables: { id: collectionId },
-        onCompleted: (data) => {
+    const [readCollection, { data, error }] = useLazyQuery(readCollectionQuery);
+
+    useEffect(() => {
+        if (data?.readCollection) {
             setCollection({
                 ...data.readCollection,
             });
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
-            logError({
-                moduleName,
-                name: 'readCollection',
-                exception,
-                collectionId,
-            });
-            setLoadStatus(LoadStatus.ERROR);
-        },
-    });
+        }
+    }, [data]);
 
-    const [updateCollection] = useMutation(updateCollectionMutation);
+    useEffect(() => {
+        logError({
+            moduleName,
+            name: 'readCollection',
+            exception: error,
+            collectionId,
+        });
+        setLoadStatus(LoadStatus.ERROR);
+    }, [collectionId, error, moduleName]);
 
     const loadForm = useCallback(() => {
         setLoadStatus(LoadStatus.LOADING);
-        readCollection();
-    }, [readCollection]);
+        readCollection({ variables: { id: collectionId ?? '' } });
+    }, [collectionId, readCollection]);
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Edit Collection');
+    }, [helmet]);
 
     useEffect(() => {
         loadForm();
     }, [collectionId, loadForm]);
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setCollection((priorCollection: Collection) => ({
             ...priorCollection,
             [field]: value,
         }));
     };
 
-    const handleEditCancelClick = () => {
-        loadForm();
-        navigate(viewPageURI);
-    };
+    const [updateCollection] = useMutation(updateCollectionMutation);
 
-    const handleEditSaveClick = async () => {
+    const tryUpdate = async () => {
         try {
             await updateCollection({
                 variables: {
@@ -74,35 +73,30 @@ export const useCollectionDetailEdit = (moduleName: string) => {
                     descriptionShort: collection.descriptionShort.trim(),
                     id: collection.id,
                     tagName: collection.tagName.trim(),
-                    tags: collection.tags,
                     title: collection.title.trim(),
                 },
             });
-            navigate(viewPageURI);
-        } catch (exception) {
+        } catch (error) {
             logError({
                 moduleName,
-                name: 'handleEditSaveClick',
-                exception,
+                name: 'tryUpdate',
+                exception: error,
                 message: 'Update failed.',
                 collectionId: collection.id,
             });
-            setShowMessage(true);
+            setIsMessageVisible(true);
         }
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
     };
 
     return {
         collection,
+        collectionId,
         error,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
+        loadForm,
         loadStatus,
-        showMessage,
+        setIsMessageVisible,
+        tryUpdate,
+        updateFieldValue,
     };
 };

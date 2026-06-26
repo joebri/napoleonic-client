@@ -10,13 +10,13 @@ import { SyntheticEvent } from 'react';
 
 import styles from './ConfirmDeleteDialog.module.scss';
 
-interface ConfirmDeleteDialogProps {
+type ConfirmDeleteDialogProps = {
     isOpen: boolean;
     onClose: Function;
     onDeleteConfirmed: Function;
-}
+};
 
-const ConfirmDeleteDialog = ({
+export const ConfirmDeleteDialog = ({
     isOpen,
     onClose,
     onDeleteConfirmed,
@@ -60,5 +60,3 @@ const ConfirmDeleteDialog = ({
         </Dialog>
     );
 };
-
-export { ConfirmDeleteDialog };

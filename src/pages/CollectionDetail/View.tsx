@@ -1,10 +1,9 @@
+import { Collection } from '@models/Collection.model';
 import DeleteForeverIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Typography } from '@mui/material';
+import { getLocalImage } from '@utilities/imageService';
 import { Link } from 'react-router-dom';
-
-import { Collection } from 'types';
-import { getLocalImage } from 'utilities/imageService';
 
 import styles from './CollectionDetail.module.scss';
 

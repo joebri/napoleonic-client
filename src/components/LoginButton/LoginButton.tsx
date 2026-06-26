@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from '@mui/material';
 
-const LoginButton = () => {
+export const LoginButton = () => {
     const { loginWithRedirect } = useAuth0();
 
     const handleButtonClick = async () => {
@@ -14,5 +14,3 @@ const LoginButton = () => {
         </Button>
     );
 };
-
-export { LoginButton };

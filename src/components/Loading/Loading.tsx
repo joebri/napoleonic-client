@@ -2,7 +2,7 @@ import { Box, CircularProgress } from '@mui/material';
 
 import styles from './Loading.module.scss';
 
-const Loading = () => {
+export const Loading = () => {
     return (
         <Box className={styles.container}>
             <CircularProgress />
@@ -10,5 +10,3 @@ const Loading = () => {
         </Box>
     );
 };
-
-export { Loading };

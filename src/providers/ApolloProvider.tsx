@@ -1,11 +1,7 @@
-import {
-    ApolloClient,
-    ApolloProvider,
-    InMemoryCache,
-    createHttpLink,
-    from,
-} from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import { ApolloClient, InMemoryCache, from } from '@apollo/client';
+import { SetContextLink, setContext } from '@apollo/client/link/context';
+import { HttpLink } from '@apollo/client/link/http';
+import { ApolloProvider } from '@apollo/client/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ReactElement, ReactNode } from 'react';
 
@@ -13,16 +9,15 @@ type ProviderProps = {
     children: ReactNode;
 };
 
-const Provider = ({ children }: ProviderProps): ReactElement => {
+export const Provider = ({ children }: ProviderProps): ReactElement => {
     const { getAccessTokenSilently } = useAuth0();
 
-    const httpLink = createHttpLink({
+    const httpLink = new HttpLink({
         uri: import.meta.env.VITE_APP_GRAPH_URL,
     });
 
-    const authLink = setContext(async (_, { headers }) => {
+    const authLink = setContext(async (operation, { headers }) => {
         const accessToken = await getAccessTokenSilently();
-        // console.log('accessToken', accessToken);
 
         return {
             headers: {
@@ -44,5 +39,3 @@ const Provider = ({ children }: ProviderProps): ReactElement => {
 
     return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
-
-export { Provider };

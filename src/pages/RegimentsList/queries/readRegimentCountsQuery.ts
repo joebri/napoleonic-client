@@ -1,6 +1,22 @@
+import { TypedDocumentNode } from '@apollo/client';
+import { RegimentCount } from '@models/RegimentCount.model';
 import gql from 'graphql-tag';
 
-const readRegimentCountsQuery = gql`
+export type ReadRegimentCountsResponse = {
+    readRegimentCounts: RegimentCount[];
+};
+
+export type ReadRegimentCountsVariables = {
+    ratings: number[];
+    tags: string[];
+    yearRange: number[];
+    includeUnknownYear: boolean;
+};
+
+export const readRegimentCountsQuery: TypedDocumentNode<
+    ReadRegimentCountsResponse,
+    ReadRegimentCountsVariables
+> = gql`
     query readRegimentCounts(
         $ratings: [Int!]!
         $tags: [String!]!
@@ -20,5 +36,3 @@ const readRegimentCountsQuery = gql`
         }
     }
 `;
-
-export { readRegimentCountsQuery };

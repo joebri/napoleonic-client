@@ -1,26 +1,28 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { NavigationTagType } from 'enums/navigationTagType.enum';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
+import { useHelmet } from '@hooks/useHelmet';
 import {
     HeaderNavigationTagsProps,
     useNavigationTags,
-} from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet } from 'state';
-import { Collection } from 'types/Collection.type';
-import { initialisedCollection } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+} from '@hooks/useNavigationTags';
+import { Collection } from '@models/Collection.model';
+import { useHeaderTitleStateSet } from '@state';
+import { initialisedCollection } from '@utilities/helper';
+import { logError } from '@utilities/logError';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { deleteCollectionMutation } from './queries/deleteCollectionMutation';
 import { readCollectionQuery } from './queries/readCollectionQuery';
 
-export const useCollectionDetailView = (moduleName: string) => {
-    let { collectionId } = useParams();
-    const navigate = useNavigate();
+type CollectionDetailProps = {
+    moduleName: string;
+};
 
-    const EDIT_PAGE_URI = `/collectionDetailEdit/${collectionId}`;
+export const useCollectionDetailView = (props: CollectionDetailProps) => {
+    let { collectionId = '' } = useParams();
+    const helmet = useHelmet();
 
     const setHeaderTitle = useHeaderTitleStateSet();
 
@@ -30,15 +32,16 @@ export const useCollectionDetailView = (moduleName: string) => {
     const [collection, setCollection] = useState<Collection>(
         initialisedCollection
     );
-    const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] =
+    const [isConfirmDeleteDialogVisible, setIsConfirmDeleteDialogVisible] =
         useState<boolean>(false);
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
     const { setHeaderNavigationTags } = useNavigationTags();
 
-    const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
-        variables: { id: collectionId },
-        onCompleted: (data) => {
+    const [readCollection, { data, error }] = useLazyQuery(readCollectionQuery);
+
+    useEffect(() => {
+        if (data?.readCollection) {
             setCollection(data.readCollection);
 
             setHeaderNavigationTags({
@@ -49,19 +52,24 @@ export const useCollectionDetailView = (moduleName: string) => {
             } as HeaderNavigationTagsProps);
 
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
+        }
+    }, [data, setHeaderNavigationTags]);
+
+    useEffect(() => {
+        if (error) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'readCollection',
-                exception,
+                exception: error,
                 collectionId,
             });
             setLoadStatus(LoadStatus.ERROR);
-        },
-    });
+        }
+    }, [collectionId, error, props.moduleName]);
 
-    const [deleteCollection] = useMutation(deleteCollectionMutation);
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Collection');
+    }, [helmet]);
 
     useEffect(() => {
         setHeaderTitle('Collection');
@@ -70,59 +78,42 @@ export const useCollectionDetailView = (moduleName: string) => {
     useEffect(() => {
         const loadForm = () => {
             setLoadStatus(LoadStatus.LOADING);
-            readCollection();
+            readCollection({ variables: { id: collectionId } });
         };
-
         loadForm();
     }, [collectionId, readCollection]);
 
-    const handleEditClick = () => {
-        navigate(EDIT_PAGE_URI);
-    };
+    const [deleteCollection] = useMutation(deleteCollectionMutation);
 
-    const handleDeleteClick = () => {
-        setShowConfirmDeleteDialog(true);
-    };
-
-    const handleDeleteCancelled = () => {
-        setShowConfirmDeleteDialog(false);
-    };
-
-    const handleDeleteConfirmed = async () => {
+    const tryDelete = async () => {
         try {
             await deleteCollection({
                 variables: {
                     id: collectionId,
                 },
             });
-            navigate(`/gallery`);
-        } catch (exception) {
+        } catch (error) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'handleDeleteConfirmed',
-                exception,
+                exception: error,
                 message: 'Delete failed.',
                 collectionId,
             });
-            setShowConfirmDeleteDialog(false);
-            setShowMessage(true);
+            setIsConfirmDeleteDialogVisible(false);
+            setIsMessageVisible(true);
         }
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
     };
 
     return {
         collection,
+        collectionId,
         error,
-        handleDeleteCancelled,
-        handleDeleteClick,
-        handleDeleteConfirmed,
-        handleEditClick,
-        handleMessageClose,
+        isConfirmDeleteDialogVisible,
+        isMessageVisible,
         loadStatus,
-        showConfirmDeleteDialog,
-        showMessage,
+        setIsConfirmDeleteDialogVisible,
+        setIsMessageVisible,
+        tryDelete,
     };
 };

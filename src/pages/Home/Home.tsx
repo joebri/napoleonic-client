@@ -1,63 +1,100 @@
+import { AuthenticationGuard } from '@components/AuthenticationGuard/AuthenticationGuard';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import {
+    ActionEnum,
+    FilterDrawer,
+} from '@components/FilterDrawer/FilterDrawer';
+import { Loading } from '@components/Loading/Loading';
+import { MenuBar } from '@components/MenuBar/MenuBar';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { CollectionList } from '@pages/CollectionList/CollectionList';
+import { Gallery } from '@pages/Gallery/Gallery';
+import { ItemDetailAdd } from '@pages/ItemDetail/ItemDetailAdd';
+import { ItemDetailEdit } from '@pages/ItemDetail/ItemDetailEdit';
+import { ItemDetailView } from '@pages/ItemDetail/ItemDetailView';
+import { Login } from '@pages/Login/Login';
+import { NotFound } from '@pages/NotFound/NotFound';
+import { Sandbox } from '@pages/Sandbox/Sandbox';
+import { Settings } from '@pages/Settings/Settings';
+import { TagsListView } from '@pages/TagsList/TagsListView';
 import { Suspense, lazy } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { AuthenticationGuard } from 'components/AuthenticationGuard/AuthenticationGuard';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-import { MenuBar } from 'components/MenuBar/MenuBar';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { CollectionList } from 'pages/CollectionList/CollectionList';
-import { Gallery } from 'pages/Gallery/Gallery';
-import { ItemDetailAdd } from 'pages/ItemDetail/ItemDetailAdd';
-import { ItemDetailEdit } from 'pages/ItemDetail/ItemDetailEdit';
-import { ItemDetailView } from 'pages/ItemDetail/ItemDetailView';
-import { Login } from 'pages/Login/Login';
-import { NotFound } from 'pages/NotFound/NotFound';
-import { Sandbox } from 'pages/Sandbox/Sandbox';
-import { Settings } from 'pages/Settings/Settings';
-
-import { FilterDrawer } from '../../components/FilterDrawer/FilterDrawer';
 import styles from './Home.module.scss';
 import { useHome } from './useHome';
 
 const ArtistsList = lazy(() =>
-    import('pages/ArtistsList/ArtistsList').then((module) => ({
+    import('@pages/ArtistsList/ArtistsListView').then((module) => ({
         default: module.ArtistsList,
     }))
 );
 const BattlesList = lazy(() =>
-    import('pages/BattlesList/BattlesList').then((module) => ({
+    import('@pages/BattlesList/BattlesList').then((module) => ({
         default: module.BattlesList,
     }))
 );
 const CollectionDetailAdd = lazy(() =>
-    import('pages/CollectionDetail/CollectionDetailAdd').then((module) => ({
+    import('@pages/CollectionDetail/CollectionDetailAdd').then((module) => ({
         default: module.CollectionDetailAdd,
     }))
 );
-const CollectionDetailEdit = lazy(() =>
-    import('pages/CollectionDetail/CollectionDetailEdit').then((module) => ({
-        default: module.CollectionDetailEdit,
-    }))
-);
+// const CollectionDetailEdit = lazy(() =>
+//     import('@pages/CollectionDetail/CollectionDetailEdit').then((module) => ({
+//         default: module.CollectionDetailEdit,
+//     }))
+// );
 const CollectionDetailView = lazy(() =>
-    import('pages/CollectionDetail/CollectionDetailView').then((module) => ({
+    import('@pages/CollectionDetail/CollectionDetailView').then((module) => ({
         default: module.CollectionDetailView,
     }))
 );
 const RegimentsList = lazy(() =>
-    import('pages/RegimentsList/RegimentsList').then((module) => {
+    import('@pages/RegimentsList/RegimentsList').then((module) => {
         return {
             default: module.RegimentsList,
         };
     })
 );
 
-const Home = () => {
+export const Home = () => {
     const moduleName = `${Home.name}.tsx`;
+    const navigate = useNavigate();
 
-    const { error, handleFilterDrawAction, loadStatus } = useHome(moduleName);
+    const { error, loadStatus, resetSearchParams, setPageNumber } =
+        useHome(moduleName);
+
+    const handleFilterDrawAction = (action: ActionEnum) => {
+        setPageNumber(1);
+
+        if (action === ActionEnum.ShowArtists) {
+            navigate(`/artists`);
+            return;
+        }
+
+        // if (action === ActionEnum.ShowBattles) {
+        //     navigate(`/battles`);
+        //     return;
+        // }
+
+        if (action === ActionEnum.ShowCollections) {
+            navigate(`/collections`);
+            return;
+        }
+
+        if (action === ActionEnum.ShowRegiments) {
+            navigate(`/regiments`);
+            return;
+        }
+
+        if (action === ActionEnum.ShowAllTags) {
+            navigate(`/allTags`);
+            return;
+        }
+
+        resetSearchParams();
+
+        navigate(`/gallery`);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -90,14 +127,14 @@ const Home = () => {
                             </Suspense>
                         }
                     />
-                    <Route
+                    {/* <Route
                         path="battles"
                         element={
                             <Suspense fallback={<Loading />}>
                                 <AuthenticationGuard component={BattlesList} />
                             </Suspense>
                         }
-                    />
+                    /> */}
                     <Route
                         path="regiments"
                         element={
@@ -136,7 +173,7 @@ const Home = () => {
                             </Suspense>
                         }
                     />
-                    <Route
+                    {/* <Route
                         path="collectionDetailEdit/:collectionId"
                         element={
                             <Suspense fallback={<Loading />}>
@@ -145,7 +182,7 @@ const Home = () => {
                                 />
                             </Suspense>
                         }
-                    />
+                    /> */}
                     <Route
                         path="collectionDetailAdd/"
                         element={
@@ -186,6 +223,14 @@ const Home = () => {
                             </Suspense>
                         }
                     />
+                    <Route
+                        path="allTags/"
+                        element={
+                            <Suspense fallback={<Loading />}>
+                                <AuthenticationGuard component={TagsListView} />
+                            </Suspense>
+                        }
+                    />
 
                     <Route path="loading" element={<Loading />} />
                     <Route path="sandbox" element={<Sandbox />} />
@@ -195,5 +240,3 @@ const Home = () => {
         </div>
     );
 };
-
-export { Home };

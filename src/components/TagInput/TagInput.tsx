@@ -1,8 +1,8 @@
-import { Autocomplete, Chip, Stack, TextField } from '@mui/material';
+import { Tag } from '@models/Tag.model';
+import { Autocomplete, Chip, TextField } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import { useTagsStateGet } from '@state';
 import { SyntheticEvent } from 'react';
-
-import { useTagsStateGet } from 'state';
-import { Tag } from 'types';
 
 type TagInputProps = {
     tagNames: string[];
@@ -27,7 +27,7 @@ export const TagInput = ({
 
     if (!isEdit) {
         return (
-            <Stack direction="row" gap={1}>
+            <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
                 {tagNames.map((tagName: string, index: number) => (
                     <Chip label={tagName} variant="outlined" key={index} />
                 ))}
@@ -42,14 +42,18 @@ export const TagInput = ({
             options={availableTagNames}
             value={tagNames}
             freeSolo
-            renderTags={(value: readonly string[], getTagProps) =>
-                value.map((option: string, index: number) => (
-                    <Chip
-                        variant="outlined"
-                        label={option}
-                        {...getTagProps({ index })}
-                    />
-                ))
+            renderValue={(value: readonly string[], getTagProps: any) =>
+                value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                        <Chip
+                            key={key}
+                            label={option}
+                            variant="outlined"
+                            {...tagProps}
+                        />
+                    );
+                })
             }
             renderInput={(params) => (
                 <TextField {...params} placeholder="Tags" />

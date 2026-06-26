@@ -1,30 +1,43 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { ItemCardList } from '@components/ItemCardList/ItemCardList';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { Pagination, Stack, TextField } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { ItemCardList } from 'components/ItemCardList/ItemCardList';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
+import { ChangeEvent, KeyboardEvent } from 'react';
 
 import styles from './Gallery.module.scss';
 import { useGallery } from './useGallery';
 
-const Gallery = () => {
+export const Gallery = () => {
     const moduleName = `${Gallery.name}.tsx`;
 
     const {
+        changePageNumber,
         error,
-        handlePageNumberChange,
-        handlePageNumberKeyDown,
-        handlePaginationChange,
         itemsRef,
         loadStatus,
         pageCount,
         pageNumber,
         requestedPageNumber,
+        setPageNumber,
+        setRequestedPageNumber,
         wrapperRef,
     } = useGallery(moduleName);
+
+    const handlePageNumberChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setRequestedPageNumber(event.target.value);
+    };
+
+    const handlePageNumberKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+        changePageNumber(event.code);
+    };
+
+    const handlePaginationChange = (
+        _: ChangeEvent<unknown>,
+        newPageNumber: number
+    ) => {
+        setPageNumber(newPageNumber);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -35,15 +48,19 @@ const Gallery = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Gallery</title>
-            </Helmet>
             <div className={styles.wrapper} ref={wrapperRef} tabIndex={0}>
                 <div id="scrollableView" className={styles.listwrapper}>
                     <ItemCardList items={itemsRef.current}></ItemCardList>
                 </div>
                 {pageCount > 0 && (
-                    <Stack direction={'row'} justifyContent="center" gap={4}>
+                    <Stack
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 4,
+                            justifyContent: 'center', //TODO JSB fix this
+                        }}
+                    >
                         <Pagination
                             className={styles.pager}
                             count={pageCount}
@@ -67,5 +84,3 @@ const Gallery = () => {
         </>
     );
 };
-
-export { Gallery };

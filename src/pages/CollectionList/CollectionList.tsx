@@ -1,20 +1,24 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { Collection } from '@models/Collection.model';
 import { Button } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { Collection } from 'types';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './CollectionList.module.scss';
 import { useCollectionList } from './useCollectionList';
 
 const CollectionList = () => {
     const moduleName = `${CollectionList.name}.tsx`;
+    const navigate = useNavigate();
 
-    const { collections, error, handleSearchClick, loadStatus } =
-        useCollectionList(moduleName);
+    const { collections, error, loadStatus } = useCollectionList({
+        moduleName,
+    });
+
+    const handleSearchClick = (collection: Collection) => {
+        navigate(`/collectionDetailView/${collection.id}`);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -24,25 +28,20 @@ const CollectionList = () => {
     }
 
     return (
-        <>
-            <Helmet>
-                <title>Uniformology: Collections</title>
-            </Helmet>
-            <div className={styles.container}>
-                {collections.map((collection: Collection, index: number) => (
-                    <Button
-                        key={index}
-                        onClick={() => {
-                            handleSearchClick(collection);
-                        }}
-                        title={collection.title}
-                        variant="contained"
-                    >
-                        {`${collection.tagName}`}
-                    </Button>
-                ))}
-            </div>
-        </>
+        <div className={styles.container}>
+            {collections.map((collection: Collection, index: number) => (
+                <Button
+                    key={index}
+                    onClick={() => {
+                        handleSearchClick(collection);
+                    }}
+                    title={collection.tagName}
+                    variant="contained"
+                >
+                    {`${collection.title}`}
+                </Button>
+            ))}
+        </div>
     );
 };
 

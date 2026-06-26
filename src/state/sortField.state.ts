@@ -7,7 +7,10 @@ import {
 
 const sortFieldAtom = atom({
     key: 'sortField',
-    default: 'title',
+    default: {
+        sort: 'title',
+        allTagsSort: 'tagName',
+    },
 });
 
 const useSortFieldState = () => {

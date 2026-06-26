@@ -1,23 +1,28 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+import { useHelmet } from '@hooks/useHelmet';
+import { useLocalStorage } from '@hooks/useLocalStorage';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { Item } from '@models/Item.model';
+import { initialisedItem } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { useLocalStorage } from 'hooks/useLocalStorage';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { Item } from 'types';
-import { initialisedItem } from 'utilities/helper';
-import { logError } from 'utilities/logError';
 
 import { createItemMutation } from './queries/createItemMutation';
 
-export const useItemDetailAdd = (moduleName: string) => {
-    const navigate = useNavigate();
+export type ItemDetailAddProps = {
+    moduleName: string;
+    onCompletedAdd: (itemId: string) => {};
+};
+
+export const useItemDetailAdd = (props: ItemDetailAddProps) => {
+    const helmet = useHelmet();
 
     const [template] = useLocalStorage<any>('template', {
         artist: '',
         tags: '',
         urlRoot: '',
         yearFrom: '',
+        yearTo: '',
     });
 
     const [item, setItem] = useState<Item>({
@@ -26,68 +31,66 @@ export const useItemDetailAdd = (moduleName: string) => {
         publicId: template.urlRoot,
         tags: template.tags.split(','),
         yearFrom: template.yearFrom,
+        yearTo: template.yearTo,
     });
-    const [showMessage, setShowMessage] = useState<boolean>(false);
+    const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
     const { enableLastNavigationTag } = useNavigationTags();
+
+    useEffect(() => {
+        helmet.setTitle('Uniformology: Add Item');
+    }, [helmet]);
 
     useEffect(() => {
         enableLastNavigationTag();
     }, [enableLastNavigationTag]);
 
-    const [createItem] = useMutation(createItemMutation, {
-        onCompleted: (data) => {
-            navigate(`/itemDetailView/${data.createItem}`);
-        },
-        onError: (exception) => {
+    const [createItem] = useMutation(createItemMutation);
+
+    const tryCreateItem = async () => {
+        try {
+            const response = await createItem({
+                variables: {
+                    artist: item.artist?.trim(),
+                    descriptionLong: item.descriptionLong?.trim(),
+                    descriptionShort: item.descriptionShort?.trim(),
+                    publicId: item.publicId?.trim(),
+                    rating: parseInt(item.rating.toString()),
+                    regiments: item.regiments?.trim(),
+                    tags: item.tags,
+                    title: item.title?.trim(),
+                    yearFrom: item.yearFrom?.trim(),
+                    yearTo: item.yearTo?.trim(),
+                },
+            });
+
+            if (response.data?.createItem) {
+                console.log('response.data', response.data);
+                props.onCompletedAdd(response.data.createItem);
+            }
+        } catch (error) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'createItem',
-                exception,
+                exception: error,
                 message: 'Create failed.',
             });
-            setShowMessage(true);
-        },
-    });
+            setIsMessageVisible(true);
+        }
+    };
 
-    const handleEditChange = (field: string, value: string | number) => {
+    const updateFieldValue = (field: string, value: string | number) => {
         setItem((priorItem: Item) => ({
             ...priorItem,
             [field]: value,
         }));
     };
 
-    const handleEditCancelClick = () => {
-        navigate(`/gallery`);
-    };
-
-    const handleEditSaveClick = () => {
-        createItem({
-            variables: {
-                artist: item.artist?.trim(),
-                descriptionLong: item.descriptionLong?.trim(),
-                descriptionShort: item.descriptionShort?.trim(),
-                publicId: item.publicId?.trim(),
-                rating: parseInt(item.rating.toString()),
-                regiments: item.regiments?.trim(),
-                tags: item.tags,
-                title: item.title?.trim(),
-                yearFrom: item.yearFrom?.trim(),
-                yearTo: item.yearTo?.trim(),
-            },
-        });
-    };
-
-    const handleMessageClose = () => {
-        setShowMessage(false);
-    };
-
     return {
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
         item,
-        showMessage,
+        setIsMessageVisible,
+        tryCreateItem,
+        updateFieldValue,
     };
 };

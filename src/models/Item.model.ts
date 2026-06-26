@@ -1,4 +1,4 @@
-type Item = {
+export type Item = {
     artist: string;
     descriptionLong: string;
     descriptionShort: string;
@@ -11,5 +11,3 @@ type Item = {
     yearFrom: string;
     yearTo: string;
 };
-
-export type { Item };

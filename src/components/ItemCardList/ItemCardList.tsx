@@ -1,10 +1,9 @@
+import { ItemCard } from '@components/ItemCard/ItemCard';
 import { Typography } from '@mui/material';
+import { useTagsStateGet } from '@state';
 
-import { ItemCard } from 'components/ItemCard/ItemCard';
-
-import { useTagsStateGet } from 'state';
-
-import { Item, Tag } from '../../types';
+import { Item } from '../../models/Item.model';
+import { Tag } from '../../models/Tag.model';
 import styles from './ItemCardList.module.scss';
 
 export type ItemCardListProps = {

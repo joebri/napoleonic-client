@@ -8,7 +8,7 @@ interface TagTooltipProps {
     tagNames: string[];
 }
 
-const TagTooltip = ({ tagNames }: TagTooltipProps) => {
+export const TagTooltip = ({ tagNames }: TagTooltipProps) => {
     const [tagString, setTagString] = useState('');
 
     useEffect(() => {
@@ -24,5 +24,3 @@ const TagTooltip = ({ tagNames }: TagTooltipProps) => {
         </Tooltip>
     );
 };
-
-export { TagTooltip };

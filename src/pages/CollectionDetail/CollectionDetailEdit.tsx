@@ -1,29 +1,49 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { Typography } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './CollectionDetail.module.scss';
 import { Edit } from './Edit';
 import { useCollectionDetailEdit } from './useCollectionDetailEdit';
 
-const CollectionDetailEdit = () => {
+export const CollectionDetailEdit = () => {
     const moduleName = `${CollectionDetailEdit.name}.tsx`;
+    const navigate = useNavigate();
 
     const {
         collection,
+        collectionId,
         error,
-        handleEditCancelClick,
-        handleEditChange,
-        handleEditSaveClick,
-        handleMessageClose,
+        isMessageVisible,
+        loadForm,
         loadStatus,
-        showMessage,
+        setIsMessageVisible,
+        tryUpdate,
+        updateFieldValue,
     } = useCollectionDetailEdit(moduleName);
+
+    const VIEW_PAGE_URI = `/collectionDetailView/${collectionId}`;
+
+    const handleEditChange = (field: string, value: string | number) => {
+        updateFieldValue(field, value);
+    };
+
+    const handleEditCancelClick = () => {
+        loadForm();
+        navigate(VIEW_PAGE_URI);
+    };
+
+    const handleEditSaveClick = async () => {
+        await tryUpdate();
+        navigate(VIEW_PAGE_URI);
+    };
+
+    const handleMessageClose = () => {
+        setIsMessageVisible(false);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -34,9 +54,6 @@ const CollectionDetailEdit = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Edit Collection</title>
-            </Helmet>
             <div className={styles.container}>
                 <Typography variant="h5">Edit Collection</Typography>
                 <Edit
@@ -50,10 +67,8 @@ const CollectionDetailEdit = () => {
             <AppSnackBar
                 message="Unable to update Collection. Please try again."
                 onClose={handleMessageClose}
-                open={showMessage}
+                open={isMessageVisible}
             ></AppSnackBar>
         </>
     );
 };
-
-export { CollectionDetailEdit };

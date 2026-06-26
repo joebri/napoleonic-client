@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 import styles from './MenuMain.module.scss';
 
-const MenuMain = () => {
+export const MenuMain = () => {
     const navigate = useNavigate();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -71,8 +71,10 @@ const MenuMain = () => {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
+                slotProps={{
+                    list: {
+                        'aria-labelledby': 'basic-button',
+                    },
                 }}
             >
                 <MenuItem onClick={handleGalleryClick}>
@@ -99,5 +101,3 @@ const MenuMain = () => {
         </>
     );
 };
-
-export { MenuMain };

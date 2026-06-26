@@ -1,31 +1,52 @@
-import { Helmet } from 'react-helmet-async';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { ConfirmDeleteDialog } from '@components/ConfirmDeleteDialog/ConfirmDeleteDialog';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './CollectionDetail.module.scss';
 import { View } from './View';
 import { useCollectionDetailView } from './useCollectionDetailView';
 
-const CollectionDetailView = () => {
+export const CollectionDetailView = () => {
     const moduleName = `${CollectionDetailView.name}.tsx`;
+    const navigate = useNavigate();
 
     const {
         collection,
+        collectionId,
         error,
-        handleDeleteCancelled,
-        handleDeleteClick,
-        handleDeleteConfirmed,
-        handleEditClick,
-        handleMessageClose,
+        isConfirmDeleteDialogVisible,
+        isMessageVisible,
         loadStatus,
-        showConfirmDeleteDialog,
-        showMessage,
-    } = useCollectionDetailView(moduleName);
+        setIsConfirmDeleteDialogVisible,
+        setIsMessageVisible,
+        tryDelete,
+    } = useCollectionDetailView({ moduleName });
+
+    const EDIT_PAGE_URI = `/collectionDetailEdit/${collectionId}`;
+
+    const handleEditClick = () => {
+        navigate(EDIT_PAGE_URI);
+    };
+
+    const handleDeleteClick = () => {
+        setIsConfirmDeleteDialogVisible(true);
+    };
+
+    const handleDeleteCancelled = () => {
+        setIsConfirmDeleteDialogVisible(false);
+    };
+
+    const handleDeleteConfirmed = async () => {
+        await tryDelete();
+        navigate(`/collections`);
+    };
+
+    const handleMessageClose = () => {
+        setIsMessageVisible(false);
+    };
 
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
@@ -36,9 +57,6 @@ const CollectionDetailView = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Uniformology: Collection</title>
-            </Helmet>
             <div className={styles.container}>
                 <View
                     collection={collection}
@@ -48,7 +66,7 @@ const CollectionDetailView = () => {
             </div>
 
             <ConfirmDeleteDialog
-                isOpen={showConfirmDeleteDialog}
+                isOpen={isConfirmDeleteDialogVisible}
                 onClose={handleDeleteCancelled}
                 onDeleteConfirmed={handleDeleteConfirmed}
             />
@@ -56,10 +74,8 @@ const CollectionDetailView = () => {
             <AppSnackBar
                 message="Unable to delete collection. Please try again."
                 onClose={handleMessageClose}
-                open={showMessage}
+                open={isMessageVisible}
             ></AppSnackBar>
         </>
     );
 };
-
-export { CollectionDetailView };

@@ -1,18 +1,18 @@
+import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from '@mui/material/styles';
+import { Home } from '@pages/Home/Home';
+import { HelmetProvider as CustomHelmetProvider } from '@providers/HelmetProvider';
+import { AuthProvider, GraphQLProvider } from '@providers/index';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
-import { Home } from 'pages/Home/Home';
-import { AuthProvider, GraphQLProvider } from 'providers';
-import { ThemeProvider, theme } from 'theme';
-
-import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import './fonts/Tangerine/Tangerine-Regular.ttf';
 import './index.scss';
+import { ThemeProvider, theme } from './theme';
 
 console.info(
     `Starting "${import.meta.env.VITE_APP_NAME}", version: ${
@@ -39,7 +39,7 @@ root.render(
         <BrowserRouter>
             <AuthProvider>
                 <GraphQLProvider>
-                    <HelmetProvider>
+                    <HelmetProvider context={{}}>
                         <Helmet>
                             <title>Uniformology: Napoleonic</title>
                         </Helmet>
@@ -47,9 +47,11 @@ root.render(
                         <ErrorBoundary>
                             <ThemeProvider theme={theme}>
                                 <RecoilRoot>
-                                    <StyledEngineProvider injectFirst>
-                                        <Home />
-                                    </StyledEngineProvider>
+                                    <CustomHelmetProvider>
+                                        <StyledEngineProvider injectFirst>
+                                            <Home />
+                                        </StyledEngineProvider>
+                                    </CustomHelmetProvider>
                                 </RecoilRoot>
                             </ThemeProvider>
                         </ErrorBoundary>

@@ -1,3 +1,4 @@
+import { Tag } from '@models/Tag.model';
 import {
     Box,
     Button,
@@ -9,31 +10,30 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { ChangeEvent, useEffect, useState } from 'react';
-
 import {
     useIncludeUnknownYearState,
     useIsFilterOpenState,
     useRatingsState,
     useTagsState,
     useYearRangeState,
-} from 'state';
-import { Tag } from 'types/Tag.type';
+} from '@state';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import styles from './FilterDraw.module.scss';
 
-enum ActionEnum {
+export enum ActionEnum {
     Search,
     ShowArtists,
     ShowBattles,
     ShowCollections,
     ShowRegiments,
+    ShowAllTags,
 }
 
-interface TagProps {
+type TagProps = {
     onClick: Function;
     tag: Tag;
-}
+};
 
 const TagButton = ({ onClick, tag }: TagProps) => {
     return (
@@ -48,11 +48,11 @@ const TagButton = ({ onClick, tag }: TagProps) => {
     );
 };
 
-interface FilterDrawerProps {
+type FilterDrawerProps = {
     onActionSelect: Function;
-}
+};
 
-const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
+export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     const [includeUnknownYear, setIncludeUnknownYear] =
         useIncludeUnknownYearState();
     const [isFilterOpen, setIsFilterOpen] = useIsFilterOpenState();
@@ -67,6 +67,8 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
         medium: false,
         low: false,
     });
+
+    const [localIsAllYears, setLocalIsAllYears] = useState(true);
 
     const [localYearRange, setLocalYearRange] = useState<number[]>([
         1790, 1815,
@@ -118,7 +120,7 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
 
         setTags(updatedTags);
         setRatings(localRatings);
-        setYearRange(localYearRange);
+        setYearRange(localIsAllYears ? [1700, 1900] : localYearRange);
         setIncludeUnknownYear(localIncludeUnknownYear);
         setIsFilterOpen(false);
 
@@ -134,6 +136,13 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
 
     const handleYearChange = (_: Event, newValue: number | number[]) => {
         setLocalYearRange(newValue as number[]);
+    };
+
+    const handleAllYearsChange = () => {
+        if (localIsAllYears) {
+            setLocalYearRange([1790, 1815]);
+        }
+        setLocalIsAllYears(!localIsAllYears);
     };
 
     const handleIncludeUnknownYearChange = (
@@ -236,30 +245,53 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                     <div className={styles.section}>
                         <Stack direction={'row'}>
                             <Typography variant="h5">Years </Typography>
-                            <Typography
-                                variant="h5"
-                                className={styles.years}
-                                data-testid="year-range"
-                            >
-                                {localYearRange[0]} - {localYearRange[1]}
-                            </Typography>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={localIncludeUnknownYear}
-                                        onChange={
-                                            handleIncludeUnknownYearChange
-                                        }
+                                        checked={localIsAllYears}
+                                        onChange={handleAllYearsChange}
                                     />
                                 }
                                 className={styles.yearsCheckbox}
-                                label="Include unknown?"
+                                label="All?"
                             />
+                            {!localIsAllYears && (
+                                <>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={
+                                                    localIncludeUnknownYear
+                                                }
+                                                onChange={
+                                                    handleIncludeUnknownYearChange
+                                                }
+                                            />
+                                        }
+                                        className={styles.yearsCheckbox}
+                                        label="Include unknown?"
+                                    />
+                                    <Typography
+                                        variant="h5"
+                                        className={styles.years}
+                                        data-testid="year-range"
+                                    >
+                                        {localYearRange[0]} -{' '}
+                                        {localYearRange[1]}
+                                    </Typography>
+                                </>
+                            )}
                         </Stack>
+
                         <Box className={styles.sliderContainer}>
                             <Slider
+                                className={
+                                    localIsAllYears
+                                        ? styles.sliderHidden
+                                        : undefined
+                                }
                                 getAriaLabel={() => 'Temperature range'}
-                                min={1780}
+                                min={1750}
                                 max={1820}
                                 onChange={handleYearChange}
                                 value={localYearRange}
@@ -267,7 +299,9 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                             />
                         </Box>
                     </div>
-                    <Stack gap={1} direction="row">
+                    <Stack
+                        sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}
+                    >
                         <Button
                             variant="contained"
                             onClick={() => handleButtonClick(ActionEnum.Search)}
@@ -310,10 +344,17 @@ const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                     >
                         Show Battles
                     </Button>
+
+                    <Button
+                        variant="contained"
+                        onClick={() =>
+                            handleButtonClick(ActionEnum.ShowAllTags)
+                        }
+                    >
+                        Show All Tags
+                    </Button>
                 </div>
             </div>
         </Drawer>
     );
 };
-
-export { ActionEnum, FilterDrawer };

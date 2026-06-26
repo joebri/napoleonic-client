@@ -1,6 +1,17 @@
+import { TypedDocumentNode } from '@apollo/client';
+import { Collection } from '@models/Collection.model';
 import gql from 'graphql-tag';
 
-const readCollectionsQuery = gql`
+export type ReadCollectionsResponse = {
+    readCollections: Collection[];
+};
+
+export type ReadCollectionsVariables = {};
+
+export const readCollectionsQuery: TypedDocumentNode<
+    ReadCollectionsResponse,
+    ReadCollectionsVariables
+> = gql`
     query readCollections {
         readCollections {
             descriptionLong
@@ -11,5 +22,3 @@ const readCollectionsQuery = gql`
         }
     }
 `;
-
-export { readCollectionsQuery };

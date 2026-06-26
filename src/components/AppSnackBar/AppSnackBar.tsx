@@ -3,14 +3,14 @@ import { SyntheticEvent } from 'react';
 
 import styles from './AppSnackBar.module.scss';
 
-interface AppSnackBarProps {
+type AppSnackBarProps = {
     message: string;
     onClose: (event: SyntheticEvent<any> | Event) => void;
     open: boolean;
     severity?: AlertColor;
-}
+};
 
-const AppSnackBar = ({
+export const AppSnackBar = ({
     message,
     onClose,
     open,
@@ -43,5 +43,3 @@ const AppSnackBar = ({
         </>
     );
 };
-
-export { AppSnackBar };
