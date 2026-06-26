@@ -44,64 +44,66 @@ const Settings = () => {
                 <Typography variant="h5">Item Template</Typography>
                 <TextField
                     fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Image Url"
                     margin="normal"
                     onChange={(event) => handleChange(event, 'urlRoot')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     value={template.urlRoot}
                     variant="standard"
                 />
                 <TextField
                     fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Tags"
                     margin="normal"
                     onChange={(event) => handleChange(event, 'tags')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     value={template.tags}
                     variant="standard"
                 />
                 <TextField
                     fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Artist"
                     margin="normal"
                     onChange={(event) => handleChange(event, 'artist')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     value={template.artist}
                     variant="standard"
                 />
 
                 <TextField
                     fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Year From"
                     margin="normal"
                     onChange={(event) => handleChange(event, 'yearFrom')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     value={template.yearFrom}
                     variant="standard"
                 />
 
                 <TextField
                     fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Year To"
                     margin="normal"
                     onChange={(event) => handleChange(event, 'yearTo')}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                    }}
                     value={template.yearTo}
                     variant="standard"
                 />
 
                 <div className={styles.actionBar}>
-                    <Stack direction="row" gap={1}>
+                    <Stack
+                        sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}
+                    >
                         <Button
                             onClick={handleCancelClick}
                             size="small"

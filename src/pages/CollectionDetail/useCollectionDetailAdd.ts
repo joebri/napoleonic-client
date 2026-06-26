@@ -1,14 +1,21 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+import { useHelmet } from '@hooks/useHelmet';
+import { Collection } from '@models/Collection.model';
+import { initialisedCollection } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
 
-import { useHelmet } from 'hooks/useHelmet';
-import { Collection } from 'types';
-import { initialisedCollection } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+import {
+    CreateCollectionResponse,
+    CreateCollectionVariables,
+    createCollectionMutation,
+} from './queries/createCollectionMutation';
 
-import { createCollectionMutation } from './queries/createCollectionMutation';
+export type CollectionDetailAddProps = {
+    moduleName: string;
+};
 
-export const useCollectionDetailAdd = (moduleName: string) => {
+export const useCollectionDetailAdd = (props: CollectionDetailAddProps) => {
     const helmet = useHelmet();
 
     useEffect(() => {
@@ -20,8 +27,6 @@ export const useCollectionDetailAdd = (moduleName: string) => {
     });
     const [isMessageVisible, setIsMessageVisible] = useState<boolean>(false);
 
-    const [createCollection] = useMutation(createCollectionMutation);
-
     const updateFieldValue = (field: string, value: string | number) => {
         setCollection((priorCollection: Collection) => ({
             ...priorCollection,
@@ -29,9 +34,11 @@ export const useCollectionDetailAdd = (moduleName: string) => {
         }));
     };
 
+    const [createCollection] = useMutation(createCollectionMutation);
+
     const tryCreate = async (): Promise<any> => {
         try {
-            const result = await createCollection({
+            const response = await createCollection({
                 variables: {
                     descriptionLong: collection.descriptionLong.trim(),
                     descriptionShort: collection.descriptionShort.trim(),
@@ -39,12 +46,12 @@ export const useCollectionDetailAdd = (moduleName: string) => {
                     title: collection.title.trim(),
                 },
             });
-            return result.data.createCollection;
-        } catch (exception) {
+            return response.data?.createCollectionV2;
+        } catch (error) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'tryCreate',
-                exception,
+                exception: error,
                 message: 'Create failed.',
             });
             setIsMessageVisible(true);

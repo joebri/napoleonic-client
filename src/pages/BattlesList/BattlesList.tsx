@@ -1,15 +1,13 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { BattleTag } from '@models/BattleTag.model';
 import { Button, Chip, Typography } from '@mui/material';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { BattleTag } from 'types';
 
 import styles from './BattlesList.module.scss';
 import { useBattlesList } from './useBattlesList';
 
-const BattlesList = () => {
+export const BattlesList = () => {
     const moduleName = `${BattlesList.name}.tsx`;
 
     const {
@@ -68,5 +66,3 @@ const BattlesList = () => {
         </div>
     );
 };
-
-export { BattlesList };

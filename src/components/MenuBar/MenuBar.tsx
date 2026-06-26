@@ -1,4 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { MenuMain } from '@components/MenuMain/MenuMain';
+import { MenuSort } from '@components/MenuSort/MenuSort';
+import { Profile } from '@components/Profile/Profile';
+import { NavigationTag } from '@models/NavigationTag.model';
 import SearchIcon from '@mui/icons-material/Search';
 import {
     AppBar,
@@ -8,19 +12,13 @@ import {
     Toolbar,
     Typography,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-
-import { MenuMain } from 'components/MenuMain/MenuMain';
-import { MenuSort } from 'components/MenuSort/MenuSort';
-import { Profile } from 'components/Profile/Profile';
-
 import {
     useHeaderTitleStateGet,
     useIsFilterOpenStateSet,
     useNavigationTagsStateGet,
     usePageNumberStateSet,
-} from 'state';
-import { NavigationTag } from 'types';
+} from '@state';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './MenuBar.module.scss';
 
@@ -73,7 +71,7 @@ export const MenuBar = () => {
                     )}
                 </Stack>
 
-                <Stack direction="row" gap={3}>
+                <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
                     {isAuthenticated && (
                         <>
                             <MenuMain />

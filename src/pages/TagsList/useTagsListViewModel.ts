@@ -1,14 +1,13 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { ItemTag } from '@models/ItemTag.model';
+import { TagCount } from '@models/TagCount.model';
+import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
 
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet, useSortFieldStateGet } from 'state';
-import { TagCount } from 'types';
-import { ItemTag } from 'types';
-import { logError } from 'utilities/logError';
-
+import { useHeaderTitleStateSet, useSortFieldStateGet } from '../../state';
 import { readItemTagCountsQuery } from './queries/readItemTagCountsQuery';
 
 export const useTagsListViewModel = (moduleName: string) => {
@@ -32,22 +31,34 @@ export const useTagsListViewModel = (moduleName: string) => {
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 
-    const [readItemTagCounts, { error }] = useLazyQuery(
-        readItemTagCountsQuery,
-        {
-            onCompleted: (data) => {
-                const sortedItemTags = data.readItemTagCounts.toSorted(
-                    (a: TagCount, b: TagCount) => a.name.localeCompare(b.name)
-                );
-                setItemTags(sortedItemTags);
-                setLoadStatus(LoadStatus.LOADED);
-            },
-            onError: (exception) => {
-                logError({ moduleName, name: 'readItemTagCounts', exception });
-                setLoadStatus(LoadStatus.ERROR);
-            },
-        }
+    const [readItemTagCounts, { data, error }] = useLazyQuery(
+        readItemTagCountsQuery
     );
+
+    useEffect(() => {
+        readItemTagCounts();
+    }, [readItemTagCounts]);
+
+    useEffect(() => {
+        if (data?.readItemTagCounts) {
+            const sortedItemTags = data.readItemTagCounts.toSorted(
+                (a: TagCount, b: TagCount) => a.name.localeCompare(b.name)
+            );
+            setItemTags(sortedItemTags);
+            setLoadStatus(LoadStatus.LOADED);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            logError({
+                moduleName,
+                name: 'readItemTagCounts',
+                exception: error,
+            });
+            setLoadStatus(LoadStatus.ERROR);
+        }
+    }, [error, moduleName]);
 
     useEffect(() => {
         const sortedItemTags =
@@ -65,10 +76,6 @@ export const useTagsListViewModel = (moduleName: string) => {
         setHeaderTitle('Tags');
         clearHeaderNavigationTags();
     }, [clearHeaderNavigationTags, setHeaderTitle]);
-
-    useEffect(() => {
-        readItemTagCounts();
-    }, [readItemTagCounts]);
 
     const getSelectedItemTags = () => {
         const selected = encodeURIComponent(

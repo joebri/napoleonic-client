@@ -1,10 +1,9 @@
+import { useHelmet } from '@hooks/useHelmet';
+import { useLocalStorage } from '@hooks/useLocalStorage';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { Template } from '@models/Template.model';
+import { useHeaderTitleStateSet } from '@state';
 import { useEffect, useState } from 'react';
-
-import { useHelmet } from 'hooks/useHelmet';
-import { useLocalStorage } from 'hooks/useLocalStorage';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet } from 'state';
-import { Template } from 'types';
 
 const initialisedTemplate: Template = {
     artist: '',

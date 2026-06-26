@@ -1,21 +1,20 @@
-import { useLazyQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import { useNavigationTags } from 'hooks/useNavigationTags';
+import { useLazyQuery } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { RegimentCount } from '@models/RegimentCount.model';
+import { Tag } from '@models/Tag.model';
 import {
     useHeaderTitleStateSet,
     useIncludeUnknownYearStateGet,
     useRatingsStateGet,
     useTagsStateGet,
     useYearRangeStateGet,
-} from 'state';
-import { Tag } from 'types';
-import { RegimentTag } from 'types/RegimentTag.type';
-import { ratingsToArray } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+} from '@state';
+import { ratingsToArray } from '@utilities/helper';
+import { logError } from '@utilities/logError';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 
@@ -34,7 +33,7 @@ export const useRegimentList = (moduleName: string) => {
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [regiments, setRegiments] = useState<RegimentTag[]>([]);
+    const [regiments, setRegiments] = useState<RegimentCount[]>([]);
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     useEffect(() => {
@@ -46,24 +45,32 @@ export const useRegimentList = (moduleName: string) => {
         clearHeaderNavigationTags();
     }, [clearHeaderNavigationTags, setHeaderTitle]);
 
-    const [readRegimentCounts, { error }] = useLazyQuery(
-        readRegimentCountsQuery,
-        {
-            onCompleted: (data) => {
-                const regiments: RegimentTag[] = data.readRegimentCounts.map(
-                    (regiment: RegimentTag) => {
-                        return { ...regiment, isSelected: false };
-                    }
-                );
-                setRegiments(regiments);
-                setLoadStatus(LoadStatus.LOADED);
-            },
-            onError: (exception) => {
-                logError({ moduleName, name: 'readRegimentCounts', exception });
-                setLoadStatus(LoadStatus.ERROR);
-            },
-        }
+    const [readRegimentCounts, { data, error }] = useLazyQuery(
+        readRegimentCountsQuery
     );
+
+    useEffect(() => {
+        if (data?.readRegimentCounts) {
+            const regiments: RegimentCount[] = data.readRegimentCounts.map(
+                (regiment: RegimentCount) => {
+                    return { ...regiment, isSelected: false };
+                }
+            );
+            setRegiments(regiments);
+            setLoadStatus(LoadStatus.LOADED);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            logError({
+                moduleName,
+                name: 'readRegimentCounts',
+                exception: error,
+            });
+            setLoadStatus(LoadStatus.ERROR);
+        }
+    }, [error, moduleName]);
 
     useEffect(() => {
         const selectedRatings = ratingsToArray(ratings);
@@ -94,10 +101,10 @@ export const useRegimentList = (moduleName: string) => {
     ]);
 
     const updateSelectedRegiments = (index: number) => {
-        let newRegiments: RegimentTag[] = [...regiments];
+        let newRegiments: RegimentCount[] = [...regiments];
         newRegiments[index].isSelected = !newRegiments[index].isSelected;
 
-        const isAnySelected = newRegiments.some((regiment: RegimentTag) => {
+        const isAnySelected = newRegiments.some((regiment: RegimentCount) => {
             return regiment.isSelected;
         });
 
@@ -107,8 +114,10 @@ export const useRegimentList = (moduleName: string) => {
 
     const getSelectedRegiments = () => {
         const selected = regiments
-            .filter((regiment: RegimentTag) => regiment.isSelected)
-            .map((regiment: RegimentTag) => encodeURIComponent(regiment.name));
+            .filter((regiment: RegimentCount) => regiment.isSelected)
+            .map((regiment: RegimentCount) =>
+                encodeURIComponent(regiment.name)
+            );
         return selected;
     };
 

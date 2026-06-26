@@ -1,12 +1,10 @@
+import { TagInput } from '@components/TagInput/TagInput';
+import { Item } from '@models/Item.model';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Rating, Typography } from '@mui/material';
+import { getLocalImage } from '@utilities/imageService';
 import { useEffect, useState } from 'react';
-
-import { TagInput } from 'components/TagInput/TagInput';
-
-import { Item } from 'types';
-import { getLocalImage } from 'utilities/imageService';
 
 import styles from './ItemDetail.module.scss';
 import { ratingLabels, toUiRating } from './ItemDetailHelper';

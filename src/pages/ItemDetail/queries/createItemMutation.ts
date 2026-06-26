@@ -1,6 +1,27 @@
+import { TypedDocumentNode } from '@apollo/client';
 import gql from 'graphql-tag';
 
-const createItemMutation = gql`
+export type CreateItemResponse = {
+    createItem: string;
+};
+
+export type CreateItemVariables = {
+    artist: string;
+    descriptionLong: string;
+    descriptionShort: string;
+    publicId: string;
+    rating: number;
+    regiments: string;
+    tags: string[];
+    title: string;
+    yearFrom: string;
+    yearTo: string;
+};
+
+export const createItemMutation: TypedDocumentNode<
+    CreateItemResponse,
+    CreateItemVariables
+> = gql`
     mutation createItem(
         $artist: String!
         $descriptionLong: String!
@@ -29,5 +50,3 @@ const createItemMutation = gql`
         )
     }
 `;
-
-export { createItemMutation };

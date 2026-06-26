@@ -1,11 +1,9 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { ItemCardList } from '@components/ItemCardList/ItemCardList';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { Pagination, Stack, TextField } from '@mui/material';
 import { ChangeEvent, KeyboardEvent } from 'react';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { ItemCardList } from 'components/ItemCardList/ItemCardList';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
 
 import styles from './Gallery.module.scss';
 import { useGallery } from './useGallery';
@@ -55,7 +53,14 @@ export const Gallery = () => {
                     <ItemCardList items={itemsRef.current}></ItemCardList>
                 </div>
                 {pageCount > 0 && (
-                    <Stack direction={'row'} justifyContent="center" gap={4}>
+                    <Stack
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 4,
+                            justifyContent: 'center', //TODO JSB fix this
+                        }}
+                    >
                         <Pagination
                             className={styles.pager}
                             count={pageCount}

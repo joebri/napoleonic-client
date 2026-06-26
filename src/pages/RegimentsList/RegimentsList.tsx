@@ -1,11 +1,9 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { RegimentTag } from '@models/RegimentTag.model';
 import { Button, Chip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { RegimentTag } from 'types/RegimentTag.type';
 
 import styles from './RegimentsList.module.scss';
 import { useRegimentList } from './useRegimentList';

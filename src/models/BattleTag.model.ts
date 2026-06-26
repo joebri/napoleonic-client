@@ -1,7 +1,5 @@
-type RegimentTag = {
+export type BattleTag = {
     name: string;
     count: number;
     isSelected: boolean;
 };
-
-export type { RegimentTag };

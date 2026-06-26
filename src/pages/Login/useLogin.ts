@@ -1,6 +1,5 @@
+import { useHelmet } from '@hooks/useHelmet';
 import { useEffect } from 'react';
-
-import { useHelmet } from 'hooks/useHelmet';
 
 export const useLogin = (moduleName: string) => {
     const helmet = useHelmet();

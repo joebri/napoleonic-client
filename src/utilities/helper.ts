@@ -1,6 +1,7 @@
 import { Rating } from '../enums/rating.enum';
-import { Collection, Item } from '../types';
-import { RatingsType } from '../types';
+import { Collection } from '../models/Collection.model';
+import { Item } from '../models/Item.model';
+import { RatingsType } from '../models/RatingsType.model';
 
 export const initialisedItem: Item = {
     artist: '',

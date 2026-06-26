@@ -1,17 +1,15 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
 
 import styles from './CollectionDetail.module.scss';
 import { Edit } from './Edit';
 import { useCollectionDetailEdit } from './useCollectionDetailEdit';
 
-const CollectionDetailEdit = () => {
+export const CollectionDetailEdit = () => {
     const moduleName = `${CollectionDetailEdit.name}.tsx`;
     const navigate = useNavigate();
 
@@ -74,5 +72,3 @@ const CollectionDetailEdit = () => {
         </>
     );
 };
-
-export { CollectionDetailEdit };

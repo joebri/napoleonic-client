@@ -10,7 +10,7 @@ type AppSnackBarProps = {
     severity?: AlertColor;
 };
 
-const AppSnackBar = ({
+export const AppSnackBar = ({
     message,
     onClose,
     open,
@@ -43,5 +43,3 @@ const AppSnackBar = ({
         </>
     );
 };
-
-export { AppSnackBar };

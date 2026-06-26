@@ -1,14 +1,13 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { BattleTag } from '@models/BattleTag.model';
+import { useHeaderTitleStateSet, useRatingsStateGet } from '@state';
+import { ratingsToArray } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet, useRatingsStateGet } from 'state';
-import { BattleTag } from 'types';
-import { ratingsToArray } from 'utilities/helper';
-import { logError } from 'utilities/logError';
 
 import { readBattleCountsQuery } from './queries/readBattleCountsQuery';
 

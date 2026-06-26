@@ -1,11 +1,10 @@
+import { Tag } from '@models/Tag.model';
 import {
     atom,
     useRecoilState,
     useRecoilValue,
     useSetRecoilState,
 } from 'recoil';
-
-import { Tag } from 'types';
 
 const tagsAtom = atom({
     key: 'tags',

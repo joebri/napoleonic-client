@@ -1,7 +1,6 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 
 import { Edit } from './Edit';
 import styles from './ItemDetail.module.scss';
@@ -19,7 +18,7 @@ const ItemDetailAdd = () => {
         isMessageVisible,
         item,
         setIsMessageVisible,
-        tryCreate,
+        tryCreateItem,
         updateFieldValue,
     } = useItemDetailAdd({ moduleName, onCompletedAdd } as ItemDetailAddProps);
 
@@ -32,7 +31,7 @@ const ItemDetailAdd = () => {
     };
 
     const handleEditSaveClick = () => {
-        tryCreate();
+        tryCreateItem();
     };
 
     const handleMessageClose = () => {

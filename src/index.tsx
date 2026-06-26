@@ -1,6 +1,9 @@
 import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from '@mui/material/styles';
+import { Home } from '@pages/Home/Home';
+import { HelmetProvider as CustomHelmetProvider } from '@providers/HelmetProvider';
+import { AuthProvider, GraphQLProvider } from '@providers/index';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -9,9 +12,6 @@ import { RecoilRoot } from 'recoil';
 
 import './fonts/Tangerine/Tangerine-Regular.ttf';
 import './index.scss';
-import { Home } from './pages/Home/Home';
-import { AuthProvider, GraphQLProvider } from './providers';
-import { HelmetProvider as CustomHelmetProvider } from './providers/HelmetProvider';
 import { ThemeProvider, theme } from './theme';
 
 console.info(

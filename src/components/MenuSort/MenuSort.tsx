@@ -1,9 +1,8 @@
 import SortIcon from '@mui/icons-material/Sort';
 import { IconButton, Menu, MenuItem } from '@mui/material';
+import { useSortFieldState } from '@state';
 import { MouseEvent, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
-import { useSortFieldState } from 'state';
 
 import styles from './MenuSort.module.scss';
 
@@ -62,10 +61,12 @@ export const MenuSort = () => {
                     anchorEl={anchorEl}
                     id="basic-menu"
                     onClose={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
                     open={open}
+                    slotProps={{
+                        list: {
+                            'aria-labelledby': 'basic-button',
+                        },
+                    }}
                 >
                     <MenuItem
                         onClick={() => handleAllTagsItemSelected('tagName')}
@@ -85,10 +86,12 @@ export const MenuSort = () => {
                     anchorEl={anchorEl}
                     id="basic-menu"
                     onClose={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
                     open={open}
+                    slotProps={{
+                        list: {
+                            'aria-labelledby': 'basic-button',
+                        },
+                    }}
                 >
                     <MenuItem
                         onClick={() => handleItemSelected('title')}

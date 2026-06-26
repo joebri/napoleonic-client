@@ -1,12 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { Loading } from '@components/Loading/Loading';
+import { LoginButton } from '@components/LoginButton/LoginButton';
 import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 
-import { Loading } from 'components/Loading/Loading';
-import { LoginButton } from 'components/LoginButton/LoginButton';
-
-import { useHeaderTitleStateSet } from 'state';
-
+import { useHeaderTitleStateSet } from '../../state';
 import styles from './Login.module.scss';
 import { useLogin } from './useLogin';
 

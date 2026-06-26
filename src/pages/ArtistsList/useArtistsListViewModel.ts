@@ -1,20 +1,20 @@
-import { useLazyQuery } from '@apollo/client';
-import { useDebugValue, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import { useNavigationTags } from 'hooks/useNavigationTags';
+import { useLazyQuery } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { ArtistCount } from '@models/ArtistCount.model';
+import { Tag as FilterTag } from '@models/Tag.model';
 import {
     useHeaderTitleStateSet,
     useIncludeUnknownYearStateGet,
     useRatingsStateGet,
     useTagsStateGet,
     useYearRangeStateGet,
-} from 'state';
-import { ArtistTag, Tag } from 'types';
-import { ratingsToArray } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+} from '@state';
+import { ratingsToArray } from '@utilities/helper';
+import { logError } from '@utilities/logError';
+import { useDebugValue, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
@@ -25,7 +25,7 @@ export const useArtistsListViewModel = (moduleName: string) => {
     const includeUnknownYear = useIncludeUnknownYearStateGet();
     const ratings = useRatingsStateGet();
     const setHeaderTitle = useHeaderTitleStateSet();
-    const tags = useTagsStateGet();
+    const filterTags = useTagsStateGet();
     const yearRange = useYearRangeStateGet();
 
     useDebugValue(yearRange, (yearRange) => {
@@ -35,22 +35,33 @@ export const useArtistsListViewModel = (moduleName: string) => {
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [artists, setArtists] = useState<ArtistTag[]>([]);
+    const [artists, setArtists] = useState<ArtistCount[]>([]);
 
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 
-    const [readArtistCounts, { error }] = useLazyQuery(readArtistCountsQuery, {
-        onCompleted: (data) => {
+    const [readArtistCounts, { data, error }] = useLazyQuery(
+        readArtistCountsQuery
+    );
+
+    useEffect(() => {
+        if (data?.readArtistCounts) {
             setArtists(data.readArtistCounts);
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
-            logError({ moduleName, name: 'readArtistCounts', exception });
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            logError({
+                moduleName,
+                name: 'readArtistCounts',
+                exception: error,
+            });
             setLoadStatus(LoadStatus.ERROR);
-        },
-    });
+        }
+    }, [error, moduleName]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Artists');
@@ -64,17 +75,17 @@ export const useArtistsListViewModel = (moduleName: string) => {
     useEffect(() => {
         const selectedRatings = ratingsToArray(ratings);
 
-        const tagNames = tags
-            .filter((tag: Tag) => {
+        const filterTagNames = filterTags
+            .filter((tag: FilterTag) => {
                 return tag.isSelected;
             })
-            .map((tag: Tag) => {
+            .map((tag: FilterTag) => {
                 return tag.name;
             });
         readArtistCounts({
             variables: {
                 ratings: selectedRatings,
-                tags: tagNames,
+                tags: filterTagNames,
                 yearRange,
                 includeUnknownYear,
             },
@@ -82,7 +93,7 @@ export const useArtistsListViewModel = (moduleName: string) => {
     }, [
         location.key,
         ratings,
-        tags,
+        filterTags,
         readArtistCounts,
         yearRange,
         includeUnknownYear,
@@ -91,21 +102,21 @@ export const useArtistsListViewModel = (moduleName: string) => {
     const getSelectedArtists = () => {
         const selected = encodeURIComponent(
             artists
-                .filter((tag: ArtistTag) => tag.isSelected)
-                .map((tag: ArtistTag) => tag.name)
+                .filter((artist: ArtistCount) => artist.isSelected)
+                .map((artist: ArtistCount) => artist.name)
                 .join('||')
         );
         return selected;
     };
 
     const updateSelectedArtists = (index: number) => {
-        let newArtists: ArtistTag[] = artists.map((artist) => {
+        let updatedArtists: ArtistCount[] = artists.map((artist) => {
             return { ...artist };
         });
-        newArtists[index].isSelected = !newArtists[index].isSelected;
-        setArtists(newArtists);
+        updatedArtists[index].isSelected = !updatedArtists[index].isSelected;
+        setArtists(updatedArtists);
 
-        const isAnySelected = newArtists.some((artist: ArtistTag) => {
+        const isAnySelected = updatedArtists.some((artist: ArtistCount) => {
             return artist.isSelected;
         });
         setIsSearchEnabled(isAnySelected);

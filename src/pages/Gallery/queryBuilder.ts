@@ -1,4 +1,4 @@
-import { Tag } from 'types';
+import { Tag } from '@models/Tag.model';
 
 type QueryParams = {
     artists: string[];
@@ -33,7 +33,7 @@ interface buildTagsQueryParamsProps {
     yearRange: number[];
 }
 
-const buildArtistsQueryParams = ({
+export const buildArtistsQueryParams = ({
     includeUnknownYear,
     queryArtists,
     selectedRatings,
@@ -57,7 +57,7 @@ const buildArtistsQueryParams = ({
     };
 };
 
-const buildBattlesQueryParams = (
+export const buildBattlesQueryParams = (
     queryBattles: string,
     selectedRatings: number[]
 ): QueryParams => {
@@ -73,7 +73,7 @@ const buildBattlesQueryParams = (
     };
 };
 
-const buildCollectionsQueryParams = (
+export const buildCollectionsQueryParams = (
     queryCollection: string,
     queryTags: string | null,
     selectedRatings: number[]
@@ -92,7 +92,7 @@ const buildCollectionsQueryParams = (
     };
 };
 
-const buildRegimentsQueryParams = ({
+export const buildRegimentsQueryParams = ({
     includeUnknownYear,
     queryRegiments,
     selectedRatings,
@@ -115,7 +115,7 @@ const buildRegimentsQueryParams = ({
     };
 };
 
-const buildTagsQueryParams = ({
+export const buildTagsQueryParams = ({
     queryTags,
     tags,
     selectedRatings,
@@ -141,12 +141,4 @@ const buildTagsQueryParams = ({
         yearRange,
         includeUnknownYear,
     };
-};
-
-export {
-    buildArtistsQueryParams,
-    buildBattlesQueryParams,
-    buildCollectionsQueryParams,
-    buildRegimentsQueryParams,
-    buildTagsQueryParams,
 };

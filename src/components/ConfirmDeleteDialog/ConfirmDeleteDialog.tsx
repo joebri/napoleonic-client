@@ -16,7 +16,7 @@ type ConfirmDeleteDialogProps = {
     onDeleteConfirmed: Function;
 };
 
-const ConfirmDeleteDialog = ({
+export const ConfirmDeleteDialog = ({
     isOpen,
     onClose,
     onDeleteConfirmed,
@@ -60,5 +60,3 @@ const ConfirmDeleteDialog = ({
         </Dialog>
     );
 };
-
-export { ConfirmDeleteDialog };

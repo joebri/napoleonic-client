@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-const updateCollectionMutation = gql`
+export const updateCollectionMutation = gql`
     mutation updateCollection(
         $descriptionLong: String!
         $descriptionShort: String!
@@ -19,5 +19,3 @@ const updateCollectionMutation = gql`
         )
     }
 `;
-
-export { updateCollectionMutation };

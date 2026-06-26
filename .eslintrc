@@ -1,5 +1,5 @@
 {
-    "extends": ["react-app", "plugin:react-hooks/recommended"],
+    "extends": ["react-app"],
     "rules": {
         "curly": ["error", "all"],
         "max-lines-per-function": ["error", 500],

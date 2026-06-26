@@ -1,11 +1,9 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
 
 import { Edit } from './Edit';
 import styles from './ItemDetail.module.scss';

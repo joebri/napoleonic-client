@@ -1,3 +1,7 @@
+import { TagTooltip } from '@components/TagTooltip/TagTooltip';
+import { Item } from '@models/Item.model';
+import { ItemMetaData } from '@models/ItemMetaData.model';
+import { Tag } from '@models/Tag.model';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
     Card,
@@ -9,14 +13,10 @@ import {
     Rating,
     Typography,
 } from '@mui/material';
+import { toUiRating } from '@pages/ItemDetail/ItemDetailHelper';
+import { useTagsStateGet } from '@state';
 import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { TagTooltip } from 'components/TagTooltip/TagTooltip';
-
-import { toUiRating } from 'pages/ItemDetail/ItemDetailHelper';
-import { useTagsStateGet } from 'state';
-import { Item, ItemMetaData, Tag } from 'types';
 
 import { ImageMetaData } from './ImageMetaData';
 import styles from './ItemCard.module.scss';
@@ -26,7 +26,7 @@ type ItemCardProps = {
     item: Item;
 };
 
-const ItemCard = ({ item }: ItemCardProps) => {
+export const ItemCard = ({ item }: ItemCardProps) => {
     const navigate = useNavigate();
 
     const availableTags = useTagsStateGet();
@@ -147,13 +147,15 @@ const ItemCard = ({ item }: ItemCardProps) => {
 
             <Menu
                 anchorEl={anchorEl}
-                data-testid="menu"
                 id="basic-menu"
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                }}
+                data-testid="menu"
                 onClose={handleMenuClose}
                 open={open}
+                slotProps={{
+                    list: {
+                        'aria-labelledby': 'basic-button',
+                    },
+                }}
             >
                 <MenuItem onClick={handleViewMenuClick}>View</MenuItem>
                 <MenuItem onClick={handleEditMenuClick}>Edit</MenuItem>
@@ -162,5 +164,3 @@ const ItemCard = ({ item }: ItemCardProps) => {
         </>
     );
 };
-
-export { ItemCard };

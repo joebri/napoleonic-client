@@ -1,3 +1,4 @@
+import { Tag } from '@models/Tag.model';
 import {
     Box,
     Button,
@@ -9,16 +10,14 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { ChangeEvent, useEffect, useState } from 'react';
-
 import {
     useIncludeUnknownYearState,
     useIsFilterOpenState,
     useRatingsState,
     useTagsState,
     useYearRangeState,
-} from 'state';
-import { Tag } from 'types/Tag.type';
+} from '@state';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import styles from './FilterDraw.module.scss';
 
@@ -300,7 +299,9 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                             />
                         </Box>
                     </div>
-                    <Stack gap={1} direction="row">
+                    <Stack
+                        sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}
+                    >
                         <Button
                             variant="contained"
                             onClick={() => handleButtonClick(ActionEnum.Search)}

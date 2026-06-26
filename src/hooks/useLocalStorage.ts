@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { logError } from '../utilities/logError';
 
-function useLocalStorage<T>(key: string, initialValue: T) {
+export function useLocalStorage<T>(key: string, initialValue: T) {
     const moduleName = `${useLocalStorage.name}.ts`;
 
     // State to store our value.
@@ -43,5 +43,3 @@ function useLocalStorage<T>(key: string, initialValue: T) {
 
     return [storedValue, setValue] as const;
 }
-
-export { useLocalStorage };

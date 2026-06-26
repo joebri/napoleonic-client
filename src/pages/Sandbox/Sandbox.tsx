@@ -1,6 +1,5 @@
 import { ApolloSandbox } from '@apollo/sandbox/react';
-
-import styles from 'pages/Sandbox/Sandbox.module.scss';
+import styles from '@pages/Sandbox/Sandbox.module.scss';
 
 function Sandbox() {
     return (

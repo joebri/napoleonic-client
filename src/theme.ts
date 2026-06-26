@@ -14,7 +14,7 @@ declare module '@mui/material/styles' {
     }
 }
 
-const theme = createTheme({
+export const theme = createTheme({
     components: {
         MuiCardHeader: {
             styleOverrides: {
@@ -73,4 +73,3 @@ const theme = createTheme({
 
 export { ThemeProvider } from '@emotion/react';
 export type { Theme } from '@mui/material/styles';
-export { theme };

@@ -1,9 +1,7 @@
+import { Loading } from '@components/Loading/Loading';
+import { ItemMetaData } from '@models/ItemMetaData.model';
 import CodeIcon from '@mui/icons-material/Code';
 import { Button, IconButton } from '@mui/material';
-
-import { Loading } from 'components/Loading/Loading';
-
-import { ItemMetaData } from 'types';
 
 import styles from './ItemCard.module.scss';
 
@@ -12,7 +10,7 @@ type ImageMetaDataProps = {
     onClose: Function;
 };
 
-const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
+export const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
     const handleMetaDataClose = () => {
         onClose();
     };
@@ -61,5 +59,3 @@ const ImageMetaData = ({ metaData, onClose }: ImageMetaDataProps) => {
         </>
     );
 };
-
-export { ImageMetaData };

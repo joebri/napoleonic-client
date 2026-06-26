@@ -1,4 +1,23 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import {
+    HeaderNavigationTagsProps,
+    useNavigationTags,
+} from '@hooks/useNavigationTags';
+import { Item } from '@models/Item.model';
+import {
+    useHeaderTitleStateSet,
+    useIncludeUnknownYearStateGet,
+    usePageNumberState,
+    useRatingsStateGet,
+    useSortFieldStateGet,
+    useTagsStateGet,
+    useYearRangeStateGet,
+} from '@state';
+import { ratingsToArray } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import {
     LegacyRef,
     MutableRefObject,
@@ -8,26 +27,6 @@ import {
     useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import {
-    HeaderNavigationTagsProps,
-    useNavigationTags,
-} from 'hooks/useNavigationTags';
-import {
-    useHeaderTitleStateSet,
-    useIncludeUnknownYearStateGet,
-    usePageNumberState,
-    useRatingsStateGet,
-    useSortFieldStateGet,
-    useTagsStateGet,
-    useYearRangeStateGet,
-} from 'state';
-import { Item } from 'types';
-import { ratingsToArray } from 'utilities/helper';
-import { logError } from 'utilities/logError';
 
 import { readItemsByFilterQuery } from './queries/readItemsByFilterQuery';
 import {
@@ -229,31 +228,35 @@ export const useGallery = (moduleName: string) => {
         tryGetStandardQuery,
     ]);
 
-    const [readItemsByFilter, { error }] = useLazyQuery(
-        readItemsByFilterQuery,
-        {
-            onCompleted: (data) => {
-                itemsRef.current = data.readItemsByFilter.items;
-                const pageCount = Math.ceil(
-                    data.readItemsByFilter.count / PAGE_SIZE
-                );
-                setPageCount(pageCount);
-                setLoadStatus(LoadStatus.LOADED);
-            },
-            onError: (exception) => {
-                logError({
-                    moduleName,
-                    name: 'readItemsByFilter',
-                    exception,
-                    ratings,
-                    sortField: sortField.sort,
-                    tags,
-                    pageNumber,
-                });
-                setLoadStatus(LoadStatus.ERROR);
-            },
-        }
+    const [readItemsByFilter, { data, error }] = useLazyQuery(
+        readItemsByFilterQuery
     );
+
+    useEffect(() => {
+        if (data?.readItemsByFilter) {
+            itemsRef.current = data.readItemsByFilter.items;
+            const pageCount = Math.ceil(
+                data.readItemsByFilter.count / PAGE_SIZE
+            );
+            setPageCount(pageCount);
+            setLoadStatus(LoadStatus.LOADED);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            logError({
+                moduleName,
+                name: 'readItemsByFilter',
+                exception: error,
+                ratings,
+                sortField: sortField.sort,
+                tags,
+                pageNumber,
+            });
+            setLoadStatus(LoadStatus.ERROR);
+        }
+    }, [error, moduleName, pageNumber, ratings, sortField.sort, tags]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Gallery');

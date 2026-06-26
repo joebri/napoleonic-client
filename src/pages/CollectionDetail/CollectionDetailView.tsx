@@ -1,17 +1,15 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { ConfirmDeleteDialog } from '@components/ConfirmDeleteDialog/ConfirmDeleteDialog';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { useNavigate } from 'react-router-dom';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
 
 import styles from './CollectionDetail.module.scss';
 import { View } from './View';
 import { useCollectionDetailView } from './useCollectionDetailView';
 
-const CollectionDetailView = () => {
+export const CollectionDetailView = () => {
     const moduleName = `${CollectionDetailView.name}.tsx`;
     const navigate = useNavigate();
 
@@ -25,7 +23,7 @@ const CollectionDetailView = () => {
         setIsConfirmDeleteDialogVisible,
         setIsMessageVisible,
         tryDelete,
-    } = useCollectionDetailView(moduleName);
+    } = useCollectionDetailView({ moduleName });
 
     const EDIT_PAGE_URI = `/collectionDetailEdit/${collectionId}`;
 
@@ -81,5 +79,3 @@ const CollectionDetailView = () => {
         </>
     );
 };
-
-export { CollectionDetailView };

@@ -1,6 +1,5 @@
+import { LogErrorBaseProps, logError } from '@utilities/logError';
 import { Component, ErrorInfo, ReactNode } from 'react';
-
-import { LogErrorBaseProps, logError } from 'utilities/logError';
 
 import styles from './ErrorBoundary.module.scss';
 
@@ -16,7 +15,7 @@ type LogErrorProps = LogErrorBaseProps & {
     errorInfo: ErrorInfo;
 };
 
-class ErrorBoundary extends Component<Props, State> {
+export class ErrorBoundary extends Component<Props, State> {
     public props: Props;
     public state: State;
 
@@ -52,4 +51,3 @@ class ErrorBoundary extends Component<Props, State> {
         return this.props.children;
     }
 }
-export { ErrorBoundary };

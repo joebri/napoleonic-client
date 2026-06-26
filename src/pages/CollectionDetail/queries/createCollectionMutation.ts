@@ -1,6 +1,21 @@
+import { TypedDocumentNode } from '@apollo/client';
 import gql from 'graphql-tag';
 
-const createCollectionMutation = gql`
+export type CreateCollectionResponse = {
+    createCollectionV2: string;
+};
+
+export type CreateCollectionVariables = {
+    descriptionLong: string;
+    descriptionShort: string;
+    tagName: string;
+    title: string;
+};
+
+export const createCollectionMutation: TypedDocumentNode<
+    CreateCollectionResponse,
+    CreateCollectionVariables
+> = gql`
     mutation createCollection(
         $descriptionLong: String!
         $descriptionShort: String!
@@ -17,5 +32,3 @@ const createCollectionMutation = gql`
         )
     }
 `;
-
-export { createCollectionMutation };

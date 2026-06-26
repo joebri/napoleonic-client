@@ -1,6 +1,9 @@
+import { TagInput } from '@components/TagInput/TagInput';
+import { Item } from '@models/Item.model';
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
-import { Button, InputLabel, Rating, Stack, TextField } from '@mui/material';
+import { Button, InputLabel, Rating, TextField } from '@mui/material';
+import Stack from '@mui/material/Stack';
 import {
     ChangeEvent,
     KeyboardEvent,
@@ -8,10 +11,6 @@ import {
     useEffect,
     useState,
 } from 'react';
-
-import { TagInput } from 'components/TagInput/TagInput';
-
-import { Item } from 'types';
 
 import styles from './ItemDetail.module.scss';
 import { ratingLabels, toItemRating, toUiRating } from './ItemDetailHelper';
@@ -89,97 +88,114 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
 
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Title"
                 margin="normal"
                 name="title"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: {
+                        shrink: true,
+                    },
+                }}
                 value={item.title}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Subtitle"
                 margin="normal"
                 name="descriptionShort"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: {
+                        shrink: true,
+                    },
+                }}
                 value={item.descriptionShort}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Long description"
                 margin="normal"
                 multiline
                 name="descriptionLong"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: {
+                        shrink: true,
+                    },
+                }}
                 value={item.descriptionLong}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Regiment(s)"
                 margin="normal"
                 name="regiments"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: {
+                        shrink: true,
+                    },
+                }}
                 value={item.regiments}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Image url"
                 margin="normal"
                 name="publicId"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: {
+                        shrink: true,
+                    },
+                }}
                 value={item.publicId}
                 variant="standard"
             />
             <TextField
                 fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
                 label="Artist"
                 margin="normal"
                 name="artist"
                 onChange={handleChange}
+                slotProps={{
+                    inputLabel: {
+                        shrink: true,
+                    },
+                }}
                 value={item.artist}
                 variant="standard"
             />
-            <Stack direction={'row'} gap={2}>
+            {/* TODO JSB Change this to CSS */}
+            <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                 <TextField
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Year From"
                     margin="normal"
                     name="yearFrom"
                     onChange={handleChange}
+                    slotProps={{
+                        inputLabel: {
+                            shrink: true,
+                        },
+                    }}
                     value={item.yearFrom}
                     variant="standard"
                 />
                 <TextField
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
                     label="Year To"
                     margin="normal"
                     name="yearTo"
                     onChange={handleChange}
+                    slotProps={{
+                        inputLabel: {
+                            shrink: true,
+                        },
+                    }}
                     value={item.yearTo}
                     variant="standard"
                 />

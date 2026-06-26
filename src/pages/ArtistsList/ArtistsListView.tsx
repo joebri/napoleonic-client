@@ -1,16 +1,14 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { ArtistTag } from '@models/ArtistTag.model';
 import { Button, Chip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { ArtistTag } from 'types';
 
 import styles from './ArtistsList.module.scss';
 import { useArtistsListViewModel } from './useArtistsListViewModel';
 
-const ArtistsList = () => {
+export const ArtistsList = () => {
     const moduleName = `${ArtistsList.name}.tsx`;
     const navigate = useNavigate();
 
@@ -70,5 +68,3 @@ const ArtistsList = () => {
         </div>
     );
 };
-
-export { ArtistsList };

@@ -1,17 +1,16 @@
+import { NavigationTagType } from '@enums/navigationTagType.enum';
+import { Tag } from '@models/Tag.model';
+import { useNavigationTagsState, useTagsStateGet } from '@state';
 import { useCallback } from 'react';
 
-import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useNavigationTagsState, useTagsStateGet } from 'state';
-import { Tag } from 'types';
-
-interface HeaderNavigationTagsProps {
+export type HeaderNavigationTagsProps = {
     id: string;
     names: string[];
     tagType: NavigationTagType;
     title: string;
-}
+};
 
-const useNavigationTags = (): any => {
+export const useNavigationTags = (): any => {
     const tags = useTagsStateGet();
 
     const [navigationTags, setNavigationTags] = useNavigationTagsState();
@@ -203,5 +202,3 @@ const useNavigationTags = (): any => {
         setHeaderNavigationTags,
     };
 };
-
-export { type HeaderNavigationTagsProps, useNavigationTags };

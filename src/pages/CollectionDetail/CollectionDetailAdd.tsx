@@ -1,13 +1,12 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
 
 import styles from './CollectionDetail.module.scss';
 import { Edit } from './Edit';
 import { useCollectionDetailAdd } from './useCollectionDetailAdd';
 
-const CollectionDetailAdd = () => {
+export const CollectionDetailAdd = () => {
     const moduleName = `${CollectionDetailAdd.name}.tsx`;
     const navigate = useNavigate();
 
@@ -17,7 +16,7 @@ const CollectionDetailAdd = () => {
         setIsMessageVisible,
         tryCreate,
         updateFieldValue,
-    } = useCollectionDetailAdd(moduleName);
+    } = useCollectionDetailAdd({ moduleName });
 
     const handleEditCancelClick = () => {
         navigate(`/collections`);
@@ -56,5 +55,3 @@ const CollectionDetailAdd = () => {
         </>
     );
 };
-
-export { CollectionDetailAdd };

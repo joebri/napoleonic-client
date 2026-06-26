@@ -1,24 +1,27 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { NavigationTagType } from 'enums/navigationTagType.enum';
-import { useHelmet } from 'hooks/useHelmet';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
+import { useHelmet } from '@hooks/useHelmet';
 import {
     HeaderNavigationTagsProps,
     useNavigationTags,
-} from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet } from 'state';
-import { Collection } from 'types/Collection.type';
-import { initialisedCollection } from 'utilities/helper';
-import { logError } from 'utilities/logError';
+} from '@hooks/useNavigationTags';
+import { Collection } from '@models/Collection.model';
+import { useHeaderTitleStateSet } from '@state';
+import { initialisedCollection } from '@utilities/helper';
+import { logError } from '@utilities/logError';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { deleteCollectionMutation } from './queries/deleteCollectionMutation';
 import { readCollectionQuery } from './queries/readCollectionQuery';
 
-export const useCollectionDetailView = (moduleName: string) => {
-    let { collectionId } = useParams();
+type CollectionDetailProps = {
+    moduleName: string;
+};
+
+export const useCollectionDetailView = (props: CollectionDetailProps) => {
+    let { collectionId = '' } = useParams();
     const helmet = useHelmet();
 
     const setHeaderTitle = useHeaderTitleStateSet();
@@ -35,9 +38,10 @@ export const useCollectionDetailView = (moduleName: string) => {
 
     const { setHeaderNavigationTags } = useNavigationTags();
 
-    const [readCollection, { error }] = useLazyQuery(readCollectionQuery, {
-        variables: { id: collectionId },
-        onCompleted: (data) => {
+    const [readCollection, { data, error }] = useLazyQuery(readCollectionQuery);
+
+    useEffect(() => {
+        if (data?.readCollection) {
             setCollection(data.readCollection);
 
             setHeaderNavigationTags({
@@ -48,19 +52,20 @@ export const useCollectionDetailView = (moduleName: string) => {
             } as HeaderNavigationTagsProps);
 
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
+        }
+    }, [data, setHeaderNavigationTags]);
+
+    useEffect(() => {
+        if (error) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'readCollection',
-                exception,
+                exception: error,
                 collectionId,
             });
             setLoadStatus(LoadStatus.ERROR);
-        },
-    });
-
-    const [deleteCollection] = useMutation(deleteCollectionMutation);
+        }
+    }, [collectionId, error, props.moduleName]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Collection');
@@ -73,10 +78,12 @@ export const useCollectionDetailView = (moduleName: string) => {
     useEffect(() => {
         const loadForm = () => {
             setLoadStatus(LoadStatus.LOADING);
-            readCollection();
+            readCollection({ variables: { id: collectionId } });
         };
         loadForm();
     }, [collectionId, readCollection]);
+
+    const [deleteCollection] = useMutation(deleteCollectionMutation);
 
     const tryDelete = async () => {
         try {
@@ -85,11 +92,11 @@ export const useCollectionDetailView = (moduleName: string) => {
                     id: collectionId,
                 },
             });
-        } catch (exception) {
+        } catch (error) {
             logError({
-                moduleName,
+                moduleName: props.moduleName,
                 name: 'handleDeleteConfirmed',
-                exception,
+                exception: error,
                 message: 'Delete failed.',
                 collectionId,
             });

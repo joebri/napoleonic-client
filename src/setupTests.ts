@@ -1,18 +1,17 @@
 // import * as matchers from '@testing-library/jest-dom/matchers';
-import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
-import dotenv from 'dotenv';
-import { MutableSnapshot } from 'recoil';
-import { afterEach, vi } from 'vitest';
-
+import { Tag } from '@models/Tag.model';
 import {
     includeUnknownYearAtom,
     isFilterOpenAtom,
     ratingsAtom,
     tagsAtom,
     yearRangeAtom,
-} from 'state';
-import { Tag } from 'types';
+} from '@state';
+import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/react';
+import dotenv from 'dotenv';
+import { MutableSnapshot } from 'recoil';
+import { afterEach, vi } from 'vitest';
 
 // import { enableFetchMocks } from 'jest-fetch-mock';
 // enableFetchMocks();
@@ -53,7 +52,7 @@ type MockState = {
     yearRange?: number[];
 };
 
-function createMockState({
+export function createMockState({
     includeUnknownYear = false,
     ratings = { high: false, medium: false, low: false },
     tags = [
@@ -74,5 +73,3 @@ function createMockState({
     };
     return mockState;
 }
-
-export { createMockState };

@@ -38,11 +38,11 @@ const CollectionDetailAdd = lazy(() =>
         default: module.CollectionDetailAdd,
     }))
 );
-const CollectionDetailEdit = lazy(() =>
-    import('@pages/CollectionDetail/CollectionDetailEdit').then((module) => ({
-        default: module.CollectionDetailEdit,
-    }))
-);
+// const CollectionDetailEdit = lazy(() =>
+//     import('@pages/CollectionDetail/CollectionDetailEdit').then((module) => ({
+//         default: module.CollectionDetailEdit,
+//     }))
+// );
 const CollectionDetailView = lazy(() =>
     import('@pages/CollectionDetail/CollectionDetailView').then((module) => ({
         default: module.CollectionDetailView,
@@ -71,10 +71,10 @@ export const Home = () => {
             return;
         }
 
-        if (action === ActionEnum.ShowBattles) {
-            navigate(`/battles`);
-            return;
-        }
+        // if (action === ActionEnum.ShowBattles) {
+        //     navigate(`/battles`);
+        //     return;
+        // }
 
         if (action === ActionEnum.ShowCollections) {
             navigate(`/collections`);
@@ -127,14 +127,14 @@ export const Home = () => {
                             </Suspense>
                         }
                     />
-                    <Route
+                    {/* <Route
                         path="battles"
                         element={
                             <Suspense fallback={<Loading />}>
                                 <AuthenticationGuard component={BattlesList} />
                             </Suspense>
                         }
-                    />
+                    /> */}
                     <Route
                         path="regiments"
                         element={
@@ -173,7 +173,7 @@ export const Home = () => {
                             </Suspense>
                         }
                     />
-                    <Route
+                    {/* <Route
                         path="collectionDetailEdit/:collectionId"
                         element={
                             <Suspense fallback={<Loading />}>
@@ -182,7 +182,7 @@ export const Home = () => {
                                 />
                             </Suspense>
                         }
-                    />
+                    /> */}
                     <Route
                         path="collectionDetailAdd/"
                         element={

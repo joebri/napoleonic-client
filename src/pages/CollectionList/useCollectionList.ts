@@ -1,16 +1,19 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { Collection } from '@models/Collection.model';
+import { useHeaderTitleStateSet } from '@state';
+import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { useHeaderTitleStateSet } from 'state';
-import { Collection } from 'types';
-import { logError } from 'utilities/logError';
 
 import { readCollectionsQuery } from './queries/readCollectionsQuery';
 
-export const useCollectionList = (moduleName: string) => {
+type CollectionListProps = {
+    moduleName: string;
+};
+
+export const useCollectionList = (props: CollectionListProps) => {
     const helmet = useHelmet();
     const setHeaderTitle = useHeaderTitleStateSet();
 
@@ -21,16 +24,26 @@ export const useCollectionList = (moduleName: string) => {
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 
-    const [readCollections, { error }] = useLazyQuery(readCollectionsQuery, {
-        onCompleted: (data) => {
+    const [readCollections, { data, error }] =
+        useLazyQuery(readCollectionsQuery);
+
+    useEffect(() => {
+        if (data?.readCollections) {
             setCollections(data.readCollections);
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
-            logError({ moduleName, name: 'readCollections', exception });
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            logError({
+                moduleName: props.moduleName,
+                name: 'readCollections',
+                exception: error,
+            });
             setLoadStatus(LoadStatus.ERROR);
-        },
-    });
+        }
+    }, [error, props.moduleName]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Collections');

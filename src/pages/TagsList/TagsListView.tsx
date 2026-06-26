@@ -1,12 +1,11 @@
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { ItemTag } from '@models/ItemTag.model';
+import { Tag } from '@models/Tag.model';
 import { Button, Chip, Typography } from '@mui/material';
+import { useTagsState } from '@state/tags.state';
 import { useNavigate } from 'react-router-dom';
-
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useTagsState } from 'state/tags.state';
-import { ItemTag, Tag } from 'types';
 
 import styles from './TagsList.module.scss';
 import { useTagsListViewModel } from './useTagsListViewModel';

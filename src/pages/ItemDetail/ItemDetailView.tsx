@@ -1,11 +1,9 @@
+import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { ConfirmDeleteDialog } from '@components/ConfirmDeleteDialog/ConfirmDeleteDialog';
+import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
+import { Loading } from '@components/Loading/Loading';
+import { LoadStatus } from '@enums/loadStatus.enum';
 import { useNavigate } from 'react-router-dom';
-
-import { AppSnackBar } from 'components/AppSnackBar/AppSnackBar';
-import { ConfirmDeleteDialog } from 'components/ConfirmDeleteDialog/ConfirmDeleteDialog';
-import { ErrorHandler } from 'components/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/Loading/Loading';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
 
 import styles from './ItemDetail.module.scss';
 import { View } from './View';

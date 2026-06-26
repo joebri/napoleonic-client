@@ -1,13 +1,12 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { LoadStatus } from '@enums/loadStatus.enum';
+import { useHelmet } from '@hooks/useHelmet';
+import { useNavigationTags } from '@hooks/useNavigationTags';
+import { Item } from '@models/Item.model';
+import { initialisedItem } from '@utilities/helper';
+import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-
-import { LoadStatus } from 'enums/loadStatus.enum';
-import { useHelmet } from 'hooks/useHelmet';
-import { useNavigationTags } from 'hooks/useNavigationTags';
-import { Item } from 'types';
-import { initialisedItem } from 'utilities/helper';
-import { logError } from 'utilities/logError';
 
 import { deleteItemMutation } from './queries/deleteItemMutation';
 import { readItemQuery } from './queries/readItemQuery';
@@ -18,7 +17,7 @@ export type ItemDetailDeleteProps = {
 };
 
 export const useItemDetailView = (props: ItemDetailDeleteProps) => {
-    const { itemId } = useParams();
+    const { itemId = '' } = useParams();
     const helmet = useHelmet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
@@ -31,24 +30,26 @@ export const useItemDetailView = (props: ItemDetailDeleteProps) => {
 
     const { enableLastNavigationTag } = useNavigationTags();
 
-    const [deleteItem] = useMutation(deleteItemMutation);
+    const [readItem, { data, error }] = useLazyQuery(readItemQuery);
 
-    const [readItem, { error }] = useLazyQuery(readItemQuery, {
-        variables: { id: itemId },
-        onCompleted: (data) => {
+    useEffect(() => {
+        if (data?.readItem) {
             setItem(data.readItem);
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
             logError({
                 moduleName: props.moduleName,
                 name: 'readItem',
-                exception,
+                exception: error,
                 itemId,
             });
             setLoadStatus(LoadStatus.ERROR);
-        },
-    });
+        }
+    }, [error, itemId, props.moduleName]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Item');
@@ -61,11 +62,13 @@ export const useItemDetailView = (props: ItemDetailDeleteProps) => {
     useEffect(() => {
         const loadForm = () => {
             setLoadStatus(LoadStatus.LOADING);
-            readItem();
+            readItem({ variables: { id: itemId } });
         };
 
         loadForm();
     }, [itemId, readItem]);
+
+    const [deleteItem] = useMutation(deleteItemMutation);
 
     const tryDelete = async () => {
         try {
@@ -75,11 +78,11 @@ export const useItemDetailView = (props: ItemDetailDeleteProps) => {
                 },
             });
             props.onCompletedDelete();
-        } catch (exception) {
+        } catch (error) {
             logError({
                 moduleName: props.moduleName,
                 name: 'handleDeleteConfirmed',
-                exception,
+                exception: error,
                 message: 'Delete failed.',
                 itemId,
             });
