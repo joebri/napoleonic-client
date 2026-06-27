@@ -3,7 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from '@mui/material/styles';
 import { Home } from '@pages/Home/Home';
 import { HelmetProvider as CustomHelmetProvider } from '@providers/HelmetProvider';
-import { AuthProvider, GraphQLProvider } from '@providers/index';
+import { GraphQLProvider } from '@providers/index';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -37,27 +37,25 @@ const root = ReactDOM.createRoot(
 root.render(
     <StrictMode>
         <BrowserRouter>
-            <AuthProvider>
-                <GraphQLProvider>
-                    <HelmetProvider context={{}}>
-                        <Helmet>
-                            <title>Uniformology: Napoleonic</title>
-                        </Helmet>
-                        <CssBaseline />
-                        <ErrorBoundary>
-                            <ThemeProvider theme={theme}>
-                                <RecoilRoot>
-                                    <CustomHelmetProvider>
-                                        <StyledEngineProvider injectFirst>
-                                            <Home />
-                                        </StyledEngineProvider>
-                                    </CustomHelmetProvider>
-                                </RecoilRoot>
-                            </ThemeProvider>
-                        </ErrorBoundary>
-                    </HelmetProvider>
-                </GraphQLProvider>
-            </AuthProvider>
+            <GraphQLProvider>
+                <HelmetProvider context={{}}>
+                    <Helmet>
+                        <title>Uniformology: Napoleonic</title>
+                    </Helmet>
+                    <CssBaseline />
+                    <ErrorBoundary>
+                        <ThemeProvider theme={theme}>
+                            <RecoilRoot>
+                                <CustomHelmetProvider>
+                                    <StyledEngineProvider injectFirst>
+                                        <Home />
+                                    </StyledEngineProvider>
+                                </CustomHelmetProvider>
+                            </RecoilRoot>
+                        </ThemeProvider>
+                    </ErrorBoundary>
+                </HelmetProvider>
+            </GraphQLProvider>
         </BrowserRouter>
     </StrictMode>
 );

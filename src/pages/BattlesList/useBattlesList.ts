@@ -2,6 +2,7 @@ import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
+import { BattleCount } from '@models/BattleCount.model';
 import { BattleTag } from '@models/BattleTag.model';
 import { useHeaderTitleStateSet, useRatingsStateGet } from '@state';
 import { ratingsToArray } from '@utilities/helper';
@@ -22,21 +23,32 @@ export const useBattlesList = (moduleName: string) => {
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [battles, setBattles] = useState<BattleTag[]>([]);
+    const [battles, setBattles] = useState<BattleCount[]>([]);
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 
-    const [readBattleCounts, { error }] = useLazyQuery(readBattleCountsQuery, {
-        onCompleted: (data) => {
+    const [readBattleCounts, { data, error }] = useLazyQuery(
+        readBattleCountsQuery
+    );
+
+    useEffect(() => {
+        if (data?.readBattleCounts) {
             setBattles(data.readBattleCounts);
             setLoadStatus(LoadStatus.LOADED);
-        },
-        onError: (exception) => {
-            logError({ moduleName, name: 'readBattleCounts', exception });
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            logError({
+                moduleName,
+                name: 'readBattleCounts',
+                exception: error,
+            });
             setLoadStatus(LoadStatus.ERROR);
-        },
-    });
+        }
+    }, [error, moduleName]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Battles');

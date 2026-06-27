@@ -1,7 +1,5 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CollectionsIcon from '@mui/icons-material/Collections';
-import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -15,7 +13,6 @@ export const MenuMain = () => {
     const navigate = useNavigate();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const { logout } = useAuth0();
 
     const open = Boolean(anchorEl);
 
@@ -45,12 +42,6 @@ export const MenuMain = () => {
     const handleSettingsClick = () => {
         setAnchorEl(null);
         navigate(`/settings`);
-    };
-
-    const handleLogout = () => {
-        logout({
-            logoutParams: { returnTo: import.meta.env.VITE_APP_AUTH0_LOGIN },
-        });
     };
 
     return (
@@ -92,10 +83,6 @@ export const MenuMain = () => {
                 <MenuItem onClick={handleSettingsClick}>
                     <SettingsOutlinedIcon className={styles.icon} />
                     Settings
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                    <LogoutIcon className={styles.icon} />
-                    Logout
                 </MenuItem>
             </Menu>
         </>

@@ -1,4 +1,3 @@
-import { AuthenticationGuard } from '@components/AuthenticationGuard/AuthenticationGuard';
 import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import {
     ActionEnum,
@@ -7,14 +6,13 @@ import {
 import { Loading } from '@components/Loading/Loading';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { LoadStatus } from '@enums/loadStatus.enum';
+import { CollectionDetailEdit } from '@pages/CollectionDetail/CollectionDetailEdit';
 import { CollectionList } from '@pages/CollectionList/CollectionList';
 import { Gallery } from '@pages/Gallery/Gallery';
 import { ItemDetailAdd } from '@pages/ItemDetail/ItemDetailAdd';
 import { ItemDetailEdit } from '@pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from '@pages/ItemDetail/ItemDetailView';
-import { Login } from '@pages/Login/Login';
 import { NotFound } from '@pages/NotFound/NotFound';
-import { Sandbox } from '@pages/Sandbox/Sandbox';
 import { Settings } from '@pages/Settings/Settings';
 import { TagsListView } from '@pages/TagsList/TagsListView';
 import { Suspense, lazy } from 'react';
@@ -71,10 +69,10 @@ export const Home = () => {
             return;
         }
 
-        // if (action === ActionEnum.ShowBattles) {
-        //     navigate(`/battles`);
-        //     return;
-        // }
+        if (action === ActionEnum.ShowBattles) {
+            navigate(`/battles`);
+            return;
+        }
 
         if (action === ActionEnum.ShowCollections) {
             navigate(`/collections`);
@@ -109,13 +107,11 @@ export const Home = () => {
             <div className={styles.content}>
                 <FilterDrawer onActionSelect={handleFilterDrawAction} />
                 <Routes>
-                    <Route path="login" element={<Login />} />
-                    <Route path="/" element={<Login />} />
                     <Route
                         path="artists"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard component={ArtistsList} />
+                                <ArtistsList />
                             </Suspense>
                         }
                     />
@@ -123,25 +119,23 @@ export const Home = () => {
                         path="gallery"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard component={Gallery} />
+                                <Gallery />
                             </Suspense>
                         }
                     />
-                    {/* <Route
+                    <Route
                         path="battles"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard component={BattlesList} />
+                                <BattlesList />
                             </Suspense>
                         }
-                    /> */}
+                    />
                     <Route
                         path="regiments"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={RegimentsList}
-                                />
+                                <RegimentsList />
                             </Suspense>
                         }
                     />
@@ -149,7 +143,7 @@ export const Home = () => {
                         path="settings"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard component={Settings} />
+                                <Settings />
                             </Suspense>
                         }
                     />
@@ -157,9 +151,7 @@ export const Home = () => {
                         path="collections"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={CollectionList}
-                                />
+                                <CollectionList />
                             </Suspense>
                         }
                     />
@@ -167,29 +159,23 @@ export const Home = () => {
                         path="collectionDetailView/:collectionId"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={CollectionDetailView}
-                                />
+                                <CollectionDetailView />
                             </Suspense>
                         }
                     />
-                    {/* <Route
+                    <Route
                         path="collectionDetailEdit/:collectionId"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={CollectionDetailEdit}
-                                />
+                                <CollectionDetailEdit />
                             </Suspense>
                         }
-                    /> */}
+                    />
                     <Route
                         path="collectionDetailAdd/"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={CollectionDetailAdd}
-                                />
+                                <CollectionDetailAdd />
                             </Suspense>
                         }
                     />
@@ -197,9 +183,7 @@ export const Home = () => {
                         path="itemDetailView/:itemId"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={ItemDetailView}
-                                />
+                                <ItemDetailView />
                             </Suspense>
                         }
                     />
@@ -207,9 +191,7 @@ export const Home = () => {
                         path="itemDetailEdit/:itemId"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={ItemDetailEdit}
-                                />
+                                <ItemDetailEdit />
                             </Suspense>
                         }
                     />
@@ -217,9 +199,7 @@ export const Home = () => {
                         path="itemDetailAdd/"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard
-                                    component={ItemDetailAdd}
-                                />
+                                <ItemDetailAdd />
                             </Suspense>
                         }
                     />
@@ -227,13 +207,12 @@ export const Home = () => {
                         path="allTags/"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <AuthenticationGuard component={TagsListView} />
+                                <TagsListView />
                             </Suspense>
                         }
                     />
 
                     <Route path="loading" element={<Loading />} />
-                    <Route path="sandbox" element={<Sandbox />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </div>

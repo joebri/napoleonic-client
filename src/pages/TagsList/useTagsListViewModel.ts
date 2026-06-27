@@ -5,7 +5,7 @@ import { useNavigationTags } from '@hooks/useNavigationTags';
 import { ItemTag } from '@models/ItemTag.model';
 import { TagCount } from '@models/TagCount.model';
 import { logError } from '@utilities/logError';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useHeaderTitleStateSet, useSortFieldStateGet } from '../../state';
 import { readItemTagCountsQuery } from './queries/readItemTagCountsQuery';
@@ -24,10 +24,15 @@ export const useTagsListViewModel = (moduleName: string) => {
         LoadStatus.LOADING
     );
     const [itemTags, setItemTags] = useState<ItemTag[]>([]);
+    const sortField = useSortFieldStateGet();
+
+    const sortedItemTags = useMemo(() => {
+        return sortField.allTagsSort === 'tagName'
+            ? itemTags.toSorted((a, b) => a.name.localeCompare(b.name))
+            : itemTags.toSorted((a, b) => b.count - a.count);
+    }, [itemTags, sortField.allTagsSort]);
 
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
-
-    const sortField = useSortFieldStateGet();
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 
@@ -41,10 +46,11 @@ export const useTagsListViewModel = (moduleName: string) => {
 
     useEffect(() => {
         if (data?.readItemTagCounts) {
-            const sortedItemTags = data.readItemTagCounts.toSorted(
-                (a: TagCount, b: TagCount) => a.name.localeCompare(b.name)
-            );
-            setItemTags(sortedItemTags);
+            const initialTags = data.readItemTagCounts.map((tag: TagCount) => ({
+                ...tag,
+                isSelected: false,
+            }));
+            setItemTags(initialTags);
             setLoadStatus(LoadStatus.LOADED);
         }
     }, [data]);
@@ -59,14 +65,6 @@ export const useTagsListViewModel = (moduleName: string) => {
             setLoadStatus(LoadStatus.ERROR);
         }
     }, [error, moduleName]);
-
-    useEffect(() => {
-        const sortedItemTags =
-            sortField.allTagsSort === 'tagName'
-                ? itemTags.toSorted((a, b) => a.name.localeCompare(b.name))
-                : itemTags.toSorted((a, b) => b.count - a.count);
-        setItemTags(sortedItemTags);
-    }, [itemTags, sortField]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Tags');
@@ -88,20 +86,23 @@ export const useTagsListViewModel = (moduleName: string) => {
     };
 
     const updateSelectedItemTags = (index: number) => {
-        let newItemTags: ItemTag[] = itemTags.map((itemTag) => {
-            return { ...itemTag };
-        });
-        newItemTags[index].isSelected = !newItemTags[index].isSelected;
-        setItemTags(newItemTags);
+        setItemTags((prevTags) => {
+            const updatedTags = prevTags.map((itemTag, idx) =>
+                idx === index
+                    ? { ...itemTag, isSelected: !itemTag.isSelected }
+                    : itemTag
+            );
+            const isAnySelected = updatedTags.some(
+                (itemTag) => itemTag.isSelected
+            );
+            setIsSearchEnabled(isAnySelected);
 
-        const isAnySelected = newItemTags.some((itemTag: ItemTag) => {
-            return itemTag.isSelected;
+            return updatedTags;
         });
-        setIsSearchEnabled(isAnySelected);
     };
 
     return {
-        itemTags,
+        itemTags: sortedItemTags,
         error,
         getSelectedItemTags,
         isSearchEnabled,

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './CollectionList.module.scss';
 import { useCollectionList } from './useCollectionList';
 
-const CollectionList = () => {
+export const CollectionList = () => {
     const moduleName = `${CollectionList.name}.tsx`;
     const navigate = useNavigate();
 
@@ -44,5 +44,3 @@ const CollectionList = () => {
         </div>
     );
 };
-
-export { CollectionList };

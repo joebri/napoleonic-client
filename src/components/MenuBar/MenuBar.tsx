@@ -1,7 +1,5 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { MenuMain } from '@components/MenuMain/MenuMain';
 import { MenuSort } from '@components/MenuSort/MenuSort';
-import { Profile } from '@components/Profile/Profile';
 import { NavigationTag } from '@models/NavigationTag.model';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -24,7 +22,6 @@ import styles from './MenuBar.module.scss';
 
 export const MenuBar = () => {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth0();
 
     const headerTitle = useHeaderTitleStateGet();
     const navigationTags = useNavigationTagsStateGet();
@@ -72,26 +69,20 @@ export const MenuBar = () => {
                 </Stack>
 
                 <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-                    {isAuthenticated && (
-                        <>
-                            <MenuMain />
+                    <MenuMain />
 
-                            <MenuSort />
+                    <MenuSort />
 
-                            <IconButton
-                                aria-label="menu"
-                                color="inherit"
-                                edge="start"
-                                onClick={handleFilterClick}
-                                size="small"
-                            >
-                                <SearchIcon className={styles.icon} />
-                                Search
-                            </IconButton>
-
-                            <Profile />
-                        </>
-                    )}
+                    <IconButton
+                        aria-label="menu"
+                        color="inherit"
+                        edge="start"
+                        onClick={handleFilterClick}
+                        size="small"
+                    >
+                        <SearchIcon className={styles.icon} />
+                        Search
+                    </IconButton>
                 </Stack>
             </Toolbar>
         </AppBar>
