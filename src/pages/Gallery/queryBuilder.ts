@@ -124,7 +124,7 @@ export const buildTagsQueryParams = ({
 }: buildTagsQueryParamsProps): QueryParams => {
     let tagNames: string[] = [];
     if (queryTags) {
-        tagNames = queryTags.split(',');
+        tagNames = queryTags.split('||');
     } else {
         tagNames = tags
             .filter((tag: Tag) => {

@@ -18,7 +18,7 @@ import { useLocation } from 'react-router-dom';
 
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
-export const useArtistsListViewModel = (moduleName: string) => {
+export const useArtistsList = (moduleName: string) => {
     const location = useLocation();
     const helmet = useHelmet();
 

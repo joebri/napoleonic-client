@@ -1,33 +1,34 @@
 import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
-import { ArtistTag } from '@models/ArtistTag.model';
+import { TagCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import styles from './ArtistsList.module.scss';
-import { useArtistsListViewModel } from './useArtistsListViewModel';
+import styles from './TagsList.module.scss';
+import { useTagsList } from './useTagsList';
 
-export const ArtistsList = () => {
-    const moduleName = `${ArtistsList.name}.tsx`;
+export const TagsList = () => {
+    const moduleName = `${TagsList.name}.tsx`;
     const navigate = useNavigate();
 
     const {
-        artists,
+        tagCounts,
         error,
-        getSelectedArtists,
         isSearchEnabled,
         loadStatus,
-        updateSelectedArtists,
-    } = useArtistsListViewModel(moduleName);
+        updateSelectedTagNames,
+        getSelectedTagCountNames,
+        selectedTagNames,
+    } = useTagsList(moduleName);
 
-    const handleChipClick = (index: number) => {
-        updateSelectedArtists(index);
+    const handleChipClick = (name: string) => {
+        updateSelectedTagNames(name);
     };
 
     const handleSearchClick = () => {
-        const selected = getSelectedArtists();
-        navigate(`/gallery?artists=${selected}`);
+        const selected = getSelectedTagCountNames();
+        navigate(`/gallery?tags=${selected}`);
     };
 
     if (loadStatus === LoadStatus.LOADING) {
@@ -36,24 +37,28 @@ export const ArtistsList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
-    if (artists.length === 0) {
+    if (tagCounts.length === 0) {
         return (
             <Typography className={styles.noItems} variant="h5">
-                No Artists available.
+                No Tags available.
             </Typography>
         );
     }
     return (
         <div className={styles.container}>
-            {artists.map((tag: ArtistTag, index: number) => (
+            {tagCounts.map((tagCount: TagCount, index: number) => (
                 <Chip
                     color="primary"
                     key={index}
-                    label={`${tag.name || 'Unknown'} (${tag.count})`}
+                    label={`${tagCount.name || 'Unknown'} (${tagCount.count})`}
                     onClick={() => {
-                        handleChipClick(index);
+                        handleChipClick(tagCount.name);
                     }}
-                    variant={tag.isSelected ? undefined : 'outlined'}
+                    variant={
+                        selectedTagNames.has(tagCount.name)
+                            ? undefined
+                            : 'outlined'
+                    }
                 />
             ))}
             <Button

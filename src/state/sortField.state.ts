@@ -1,36 +1,26 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const sortFieldAtom = atom({
-    key: 'sortField',
-    default: {
-        sort: 'title',
-        allTagsSort: 'tagName',
-    },
+export enum AllTagsSortOrder {
+    Name,
+    Count,
+}
+
+export const sortFieldAtom = atom({
+    sort: 'title',
+    allTagsSort: AllTagsSortOrder.Count,
 });
 
-const useSortFieldState = () => {
-    const state = useRecoilState(sortFieldAtom);
+export const useSortFieldState = () => {
+    const state = useAtom(sortFieldAtom);
     return state;
 };
 
-const useSortFieldStateGet = () => {
-    const value = useRecoilValue(sortFieldAtom);
+export const useSortFieldStateGet = () => {
+    const value = useAtomValue(sortFieldAtom);
     return value;
 };
 
-const useSortFieldStateSet = () => {
-    const state = useSetRecoilState(sortFieldAtom);
+export const useSortFieldStateSet = () => {
+    const state = useSetAtom(sortFieldAtom);
     return state;
-};
-
-export {
-    sortFieldAtom,
-    useSortFieldState,
-    useSortFieldStateGet,
-    useSortFieldStateSet,
 };

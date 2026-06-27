@@ -1,33 +1,18 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const pageNumberAtom = atom({
-    key: 'pageNumber',
-    default: 1,
-});
+export const pageNumberAtom = atom(1);
 
-const usePageNumberState = () => {
-    const state = useRecoilState(pageNumberAtom);
+export const usePageNumberState = () => {
+    const state = useAtom(pageNumberAtom);
     return state;
 };
 
-const usePageNumberStateGet = () => {
-    const value = useRecoilValue(pageNumberAtom);
+export const usePageNumberStateGet = () => {
+    const value = useAtomValue(pageNumberAtom);
     return value;
 };
 
-const usePageNumberStateSet = () => {
-    const state = useSetRecoilState(pageNumberAtom);
+export const usePageNumberStateSet = () => {
+    const state = useSetAtom(pageNumberAtom);
     return state;
-};
-
-export {
-    pageNumberAtom,
-    usePageNumberState,
-    usePageNumberStateGet,
-    usePageNumberStateSet,
 };

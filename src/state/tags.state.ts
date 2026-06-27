@@ -1,29 +1,19 @@
 import { Tag } from '@models/Tag.model';
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const tagsAtom = atom({
-    key: 'tags',
-    default: [] as Tag[],
-});
+export const tagsAtom = atom([] as Tag[]);
 
-const useTagsState = () => {
-    const state = useRecoilState(tagsAtom);
+export const useTagsState = () => {
+    const state = useAtom(tagsAtom);
     return state;
 };
 
-const useTagsStateGet = () => {
-    const value = useRecoilValue(tagsAtom);
+export const useTagsStateGet = () => {
+    const value = useAtomValue(tagsAtom);
     return value;
 };
 
-const useTagsStateSet = () => {
-    const value = useSetRecoilState(tagsAtom);
+export const useTagsStateSet = () => {
+    const value = useSetAtom(tagsAtom);
     return value;
 };
-
-export { tagsAtom, useTagsState, useTagsStateGet, useTagsStateSet };

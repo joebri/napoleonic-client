@@ -1,4 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
+import { HelmetProvider as CustomHelmetProvider } from '@providers/HelmetProvider';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error';
@@ -7,10 +8,8 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { MutableSnapshot, RecoilRoot } from 'recoil';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { HelmetProvider as CustomHelmetProvider } from 'providers/HelmetProvider';
-import { createMockState } from 'setupTests';
-
-import { ArtistsList } from '../ArtistsListView';
+import { createMockState } from '../../../setupTests';
+import { ArtistsList } from '../ArtistsList';
 import { readArtistCountsQuery } from '../queries/readArtistCountsQuery';
 
 interface MockMemoryRouterProps {

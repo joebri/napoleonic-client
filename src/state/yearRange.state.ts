@@ -1,33 +1,18 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const yearRangeAtom = atom({
-    key: 'yearRange',
-    default: [1790, 1815],
-});
+export const yearRangeAtom = atom([1790, 1815]);
 
-const useYearRangeState = () => {
-    const state = useRecoilState(yearRangeAtom);
+export const useYearRangeState = () => {
+    const state = useAtom(yearRangeAtom);
     return state;
 };
 
-const useYearRangeStateGet = () => {
-    const value = useRecoilValue(yearRangeAtom);
+export const useYearRangeStateGet = () => {
+    const value = useAtomValue(yearRangeAtom);
     return value;
 };
 
-const useYearRangeStateSet = () => {
-    const value = useSetRecoilState(yearRangeAtom);
+export const useYearRangeStateSet = () => {
+    const value = useSetAtom(yearRangeAtom);
     return value;
-};
-
-export {
-    yearRangeAtom,
-    useYearRangeState,
-    useYearRangeStateGet,
-    useYearRangeStateSet,
 };

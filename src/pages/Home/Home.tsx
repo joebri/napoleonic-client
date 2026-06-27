@@ -14,7 +14,7 @@ import { ItemDetailEdit } from '@pages/ItemDetail/ItemDetailEdit';
 import { ItemDetailView } from '@pages/ItemDetail/ItemDetailView';
 import { NotFound } from '@pages/NotFound/NotFound';
 import { Settings } from '@pages/Settings/Settings';
-import { TagsListView } from '@pages/TagsList/TagsListView';
+import { TagsList } from '@pages/TagsList/TagsList';
 import { Suspense, lazy } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ import styles from './Home.module.scss';
 import { useHome } from './useHome';
 
 const ArtistsList = lazy(() =>
-    import('@pages/ArtistsList/ArtistsListView').then((module) => ({
+    import('@pages/ArtistsList/ArtistsList').then((module) => ({
         default: module.ArtistsList,
     }))
 );
@@ -207,7 +207,7 @@ export const Home = () => {
                         path="allTags/"
                         element={
                             <Suspense fallback={<Loading />}>
-                                <TagsListView />
+                                <TagsList />
                             </Suspense>
                         }
                     />

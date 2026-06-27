@@ -39,6 +39,22 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    // Rule for the selected state
+                    '&.Mui-selected': {
+                        backgroundColor: blueGrey[50],
+                        color: blueGrey[900],
+                        borderLeft: `4px solid ${blueGrey[500]}`, // Adds a nice vertical visual indicator
+                    },
+                    // Rule for hovering over the selected item
+                    '&.Mui-selected:hover': {
+                        backgroundColor: blueGrey[100],
+                    },
+                },
+            },
+        },
         MuiTypography: {
             variants: [
                 {

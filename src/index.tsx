@@ -8,7 +8,6 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
 
 import './fonts/Tangerine/Tangerine-Regular.ttf';
 import './index.scss';
@@ -45,13 +44,11 @@ root.render(
                     <CssBaseline />
                     <ErrorBoundary>
                         <ThemeProvider theme={theme}>
-                            <RecoilRoot>
-                                <CustomHelmetProvider>
-                                    <StyledEngineProvider injectFirst>
-                                        <Home />
-                                    </StyledEngineProvider>
-                                </CustomHelmetProvider>
-                            </RecoilRoot>
+                            <CustomHelmetProvider>
+                                <StyledEngineProvider injectFirst>
+                                    <Home />
+                                </StyledEngineProvider>
+                            </CustomHelmetProvider>
                         </ThemeProvider>
                     </ErrorBoundary>
                 </HelmetProvider>

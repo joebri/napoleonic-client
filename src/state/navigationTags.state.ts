@@ -1,35 +1,19 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { NavigationTag } from '@models/NavigationTag.model';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-import { NavigationTag } from 'types';
+export const navigationTagsAtom = atom([] as NavigationTag[]);
 
-const navigationTagsAtom = atom({
-    key: 'navigationTags',
-    default: [] as NavigationTag[],
-});
-
-const useNavigationTagsState = () => {
-    const state = useRecoilState(navigationTagsAtom);
+export const useNavigationTagsState = () => {
+    const state = useAtom(navigationTagsAtom);
     return state;
 };
 
-const useNavigationTagsStateGet = () => {
-    const value = useRecoilValue(navigationTagsAtom);
+export const useNavigationTagsStateGet = () => {
+    const value = useAtomValue(navigationTagsAtom);
     return value;
 };
 
-const useNavigationTagsStateSet = () => {
-    const state = useSetRecoilState(navigationTagsAtom);
+export const useNavigationTagsStateSet = () => {
+    const state = useSetAtom(navigationTagsAtom);
     return state;
-};
-
-export {
-    navigationTagsAtom,
-    useNavigationTagsState,
-    useNavigationTagsStateGet,
-    useNavigationTagsStateSet,
 };

@@ -1,27 +1,22 @@
-import { atom, useRecoilState, useRecoilValue } from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const ratingsAtom = atom({
-    key: 'ratings',
-    default: {
-        high: true,
-        medium: true,
-        low: false,
-    },
+export const ratingsAtom = atom({
+    high: true,
+    medium: true,
+    low: false,
 });
 
-const useRatingsState = () => {
-    const state = useRecoilState(ratingsAtom);
+export const useRatingsState = () => {
+    const state = useAtom(ratingsAtom);
     return state;
 };
 
-const useRatingsStateGet = () => {
-    const value = useRecoilValue(ratingsAtom);
+export const useRatingsStateGet = () => {
+    const value = useAtomValue(ratingsAtom);
     return value;
 };
 
-const useRatingsStateSet = () => {
-    const state = useRecoilState(ratingsAtom);
+export const useRatingsStateSet = () => {
+    const state = useSetAtom(ratingsAtom);
     return state;
 };
-
-export { ratingsAtom, useRatingsState, useRatingsStateGet, useRatingsStateSet };

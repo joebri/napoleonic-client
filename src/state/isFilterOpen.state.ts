@@ -1,33 +1,18 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const isFilterOpenAtom = atom({
-    key: 'isFilterOpen',
-    default: false,
-});
+export const isFilterOpenAtom = atom(false);
 
-const useIsFilterOpenState = () => {
-    const state = useRecoilState(isFilterOpenAtom);
+export const useIsFilterOpenState = () => {
+    const state = useAtom(isFilterOpenAtom);
     return state;
 };
 
-const useIsFilterOpenStateGet = () => {
-    const value = useRecoilValue(isFilterOpenAtom);
+export const useIsFilterOpenStateGet = () => {
+    const value = useAtomValue(isFilterOpenAtom);
     return value;
 };
 
-const useIsFilterOpenStateSet = () => {
-    const state = useSetRecoilState(isFilterOpenAtom);
+export const useIsFilterOpenStateSet = () => {
+    const state = useSetAtom(isFilterOpenAtom);
     return state;
-};
-
-export {
-    isFilterOpenAtom,
-    useIsFilterOpenState,
-    useIsFilterOpenStateGet,
-    useIsFilterOpenStateSet,
 };

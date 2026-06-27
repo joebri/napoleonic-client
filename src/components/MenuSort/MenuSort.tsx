@@ -1,6 +1,7 @@
 import SortIcon from '@mui/icons-material/Sort';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { useSortFieldState } from '@state';
+import { AllTagsSortOrder } from '@state/sortField.state';
 import { MouseEvent, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -24,6 +25,9 @@ export const MenuSort = () => {
 
     const handleItemSelected = (selectedSortField: string) => {
         setSortField((currentState) => {
+            if (currentState.sort === selectedSortField) {
+                return currentState;
+            }
             return {
                 ...currentState,
                 sort: selectedSortField,
@@ -32,8 +36,11 @@ export const MenuSort = () => {
         setAnchorEl(null);
     };
 
-    const handleAllTagsItemSelected = (selectedSortField: string) => {
+    const handleAllTagsItemSelected = (selectedSortField: AllTagsSortOrder) => {
         setSortField((currentState) => {
+            if (currentState.allTagsSort === selectedSortField) {
+                return currentState;
+            }
             return {
                 ...currentState,
                 allTagsSort: selectedSortField,
@@ -69,14 +76,22 @@ export const MenuSort = () => {
                     }}
                 >
                     <MenuItem
-                        onClick={() => handleAllTagsItemSelected('tagName')}
-                        selected={sortField.sort === 'tagName'}
+                        onClick={() =>
+                            handleAllTagsItemSelected(AllTagsSortOrder.Name)
+                        }
+                        selected={
+                            sortField.allTagsSort === AllTagsSortOrder.Name
+                        }
                     >
                         Tag Name
                     </MenuItem>
                     <MenuItem
-                        onClick={() => handleAllTagsItemSelected('tagCount')}
-                        selected={sortField.sort === 'tagCount'}
+                        onClick={() =>
+                            handleAllTagsItemSelected(AllTagsSortOrder.Count)
+                        }
+                        selected={
+                            sortField.allTagsSort === AllTagsSortOrder.Count
+                        }
                     >
                         Tag Count
                     </MenuItem>

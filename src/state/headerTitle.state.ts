@@ -1,33 +1,18 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const headerTitleAtom = atom({
-    key: 'headerTitle',
-    default: '',
-});
+export const headerTitleAtom = atom('');
 
-const useHeaderTitleState = () => {
-    const state = useRecoilState(headerTitleAtom);
+export const useHeaderTitleState = () => {
+    const state = useAtom(headerTitleAtom);
     return state;
 };
 
-const useHeaderTitleStateGet = () => {
-    const value = useRecoilValue(headerTitleAtom);
+export const useHeaderTitleStateGet = () => {
+    const value = useAtomValue(headerTitleAtom);
     return value;
 };
 
-const useHeaderTitleStateSet = () => {
-    const value = useSetRecoilState(headerTitleAtom);
+export const useHeaderTitleStateSet = () => {
+    const value = useSetAtom(headerTitleAtom);
     return value;
-};
-
-export {
-    headerTitleAtom,
-    useHeaderTitleState,
-    useHeaderTitleStateGet,
-    useHeaderTitleStateSet,
 };

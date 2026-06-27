@@ -2,35 +2,41 @@ import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
-import { ItemTag } from '@models/ItemTag.model';
 import { TagCount } from '@models/TagCount.model';
+import { AllTagsSortOrder } from '@state/sortField.state';
 import { logError } from '@utilities/logError';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useHeaderTitleStateSet, useSortFieldStateGet } from '../../state';
+import {
+    useHeaderTitleStateSet,
+    useSortFieldState,
+    useSortFieldStateGet,
+} from '../../state';
 import { readItemTagCountsQuery } from './queries/readItemTagCountsQuery';
 
-export const useTagsListViewModel = (moduleName: string) => {
+export const useTagsList = (moduleName: string) => {
     // const location = useLocation();
     const helmet = useHelmet();
+    const setHeaderTitle = useHeaderTitleStateSet();
 
     // const includeUnknownYear = useIncludeUnknownYearStateGet();
     // const ratings = useRatingsStateGet();
-    const setHeaderTitle = useHeaderTitleStateSet();
     // const tags = useTagsStateGet();
     // const yearRange = useYearRangeStateGet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [itemTags, setItemTags] = useState<ItemTag[]>([]);
-    const sortField = useSortFieldStateGet();
 
-    const sortedItemTags = useMemo(() => {
-        return sortField.allTagsSort === 'tagName'
-            ? itemTags.toSorted((a, b) => a.name.localeCompare(b.name))
-            : itemTags.toSorted((a, b) => b.count - a.count);
-    }, [itemTags, sortField.allTagsSort]);
+    const [tagCounts, setTagCounts] = useState<TagCount[]>([]);
+    const [sortField, setSortField] = useSortFieldState();
+    const [selectedTagNames, setSelectedTagNames] = useState(new Set());
+
+    const sortedTagCounts = useMemo(() => {
+        return sortField.allTagsSort === AllTagsSortOrder.Name
+            ? tagCounts.toSorted((a, b) => a.name.localeCompare(b.name))
+            : tagCounts.toSorted((a, b) => b.count - a.count);
+    }, [sortField.allTagsSort, tagCounts]);
 
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
@@ -50,10 +56,16 @@ export const useTagsListViewModel = (moduleName: string) => {
                 ...tag,
                 isSelected: false,
             }));
-            setItemTags(initialTags);
+            setTagCounts(initialTags);
+            setSortField((prevSortField) => {
+                return {
+                    ...prevSortField,
+                    allTagsSort: AllTagsSortOrder.Count,
+                };
+            });
             setLoadStatus(LoadStatus.LOADED);
         }
-    }, [data]);
+    }, [data, setSortField]);
 
     useEffect(() => {
         if (error) {
@@ -75,38 +87,38 @@ export const useTagsListViewModel = (moduleName: string) => {
         clearHeaderNavigationTags();
     }, [clearHeaderNavigationTags, setHeaderTitle]);
 
-    const getSelectedItemTags = () => {
+    const getSelectedTagCountNames = () => {
         const selected = encodeURIComponent(
-            itemTags
-                .filter((tag: ItemTag) => tag.isSelected)
-                .map((tag: ItemTag) => tag.name)
+            tagCounts
+                .filter((tag: TagCount) => selectedTagNames.has(tag.name))
+                .map((tag: TagCount) => tag.name)
                 .join('||')
         );
         return selected;
     };
 
-    const updateSelectedItemTags = (index: number) => {
-        setItemTags((prevTags) => {
-            const updatedTags = prevTags.map((itemTag, idx) =>
-                idx === index
-                    ? { ...itemTag, isSelected: !itemTag.isSelected }
-                    : itemTag
-            );
-            const isAnySelected = updatedTags.some(
-                (itemTag) => itemTag.isSelected
-            );
-            setIsSearchEnabled(isAnySelected);
+    const updateSelectedTagNames = (name: string) => {
+        setSelectedTagNames((prevModifiedTagNames) => {
+            const nextModifiedTagNames = new Set(prevModifiedTagNames);
+            if (nextModifiedTagNames.has(name)) {
+                nextModifiedTagNames.delete(name);
+            } else {
+                nextModifiedTagNames.add(name);
+            }
 
-            return updatedTags;
+            setIsSearchEnabled(nextModifiedTagNames.size > 0);
+
+            return nextModifiedTagNames;
         });
     };
 
     return {
-        itemTags: sortedItemTags,
+        tagCounts: sortedTagCounts,
         error,
-        getSelectedItemTags,
+        getSelectedTagCountNames,
         isSearchEnabled,
         loadStatus,
-        updateSelectedItemTags,
+        updateSelectedTagNames,
+        selectedTagNames,
     };
 };

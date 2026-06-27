@@ -1,33 +1,18 @@
-import {
-    atom,
-    useRecoilState,
-    useRecoilValue,
-    useSetRecoilState,
-} from 'recoil';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const includeUnknownYearAtom = atom({
-    key: 'includeUnknownYear',
-    default: true,
-});
+export const includeUnknownYearAtom = atom(true);
 
-const useIncludeUnknownYearState = () => {
-    const state = useRecoilState(includeUnknownYearAtom);
+export const useIncludeUnknownYearState = () => {
+    const state = useAtom(includeUnknownYearAtom);
     return state;
 };
 
-const useIncludeUnknownYearStateGet = () => {
-    const value = useRecoilValue(includeUnknownYearAtom);
+export const useIncludeUnknownYearStateGet = () => {
+    const value = useAtomValue(includeUnknownYearAtom);
     return value;
 };
 
-const useIncludeUnknownYearStateSet = () => {
-    const state = useSetRecoilState(includeUnknownYearAtom);
+export const useIncludeUnknownYearStateSet = () => {
+    const state = useSetAtom(includeUnknownYearAtom);
     return state;
-};
-
-export {
-    includeUnknownYearAtom,
-    useIncludeUnknownYearState,
-    useIncludeUnknownYearStateGet,
-    useIncludeUnknownYearStateSet,
 };
