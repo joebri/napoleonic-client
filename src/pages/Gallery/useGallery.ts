@@ -278,6 +278,12 @@ export const useGallery = (moduleName: string) => {
                 return;
             }
 
+            const now = new Date();
+            const seconds =
+                now.getHours() * 3600 +
+                now.getMinutes() * 60 +
+                now.getSeconds();
+
             readItemsByFilter({
                 variables: {
                     artists: queryDetails.artists,
@@ -291,6 +297,7 @@ export const useGallery = (moduleName: string) => {
                     tags: queryDetails.tagNames,
                     yearRange: queryDetails.yearRange,
                     includeUnknownYear: queryDetails.includeUnknownYear,
+                    cacheBreaker: seconds,
                 },
             });
         };

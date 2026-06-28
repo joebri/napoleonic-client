@@ -16,12 +16,10 @@ import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 
 export const useRegimentList = (moduleName: string) => {
-    const location = useLocation();
     const helmet = useHelmet();
 
     const { clearHeaderNavigationTags } = useNavigationTags();
@@ -106,7 +104,6 @@ export const useRegimentList = (moduleName: string) => {
             },
         });
     }, [
-        // location.key,
         ratings,
         filterTags,
         yearRange,

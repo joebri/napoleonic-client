@@ -5,11 +5,7 @@ import { initialisedCollection } from '@utilities/helper';
 import { logError } from '@utilities/logError';
 import { useEffect, useState } from 'react';
 
-import {
-    CreateCollectionResponse,
-    CreateCollectionVariables,
-    createCollectionMutation,
-} from './queries/createCollectionMutation';
+import { createCollectionMutation } from './queries/createCollectionMutation';
 
 export type CollectionDetailAddProps = {
     moduleName: string;

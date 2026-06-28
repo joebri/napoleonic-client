@@ -1,25 +1,8 @@
-import { FilterTag } from '@models/FilterTag.model';
-import {
-    Box,
-    Button,
-    Checkbox,
-    Chip,
-    Drawer,
-    FormControlLabel,
-    Slider,
-    Stack,
-    Typography,
-} from '@mui/material';
-import {
-    useIncludeUnknownYearState,
-    useIsFilterOpenState,
-    useRatingsState,
-    useTagsState,
-    useYearRangeState,
-} from '@state';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { Drawer } from '@mui/material';
+import { useIsFilterOpenState } from '@state';
 
 import styles from './FilterDraw.module.scss';
+import { FilterDrawerContent } from './FilterDrawContent';
 
 export enum ActionEnum {
     Search,
@@ -30,125 +13,15 @@ export enum ActionEnum {
     ShowAllTags,
 }
 
-type TagProps = {
-    onClick: Function;
-    tag: FilterTag;
-};
-
-const TagButton = ({ onClick, tag }: TagProps) => {
-    return (
-        <Chip
-            color="primary"
-            label={tag.name}
-            onClick={() => {
-                onClick(tag);
-            }}
-            variant={tag.isSelected ? undefined : 'outlined'}
-        />
-    );
-};
-
 type FilterDrawerProps = {
     onActionSelect: Function;
 };
 
 export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
-    const [includeUnknownYear, setIncludeUnknownYear] =
-        useIncludeUnknownYearState();
     const [isFilterOpen, setIsFilterOpen] = useIsFilterOpenState();
-    const [ratings, setRatings] = useRatingsState();
-    const [tags, setTags] = useTagsState();
-    const [yearRange, setYearRange] = useYearRangeState();
-
-    const [localTags, setLocalTags] = useState<FilterTag[]>([]);
-
-    const [localRatings, setLocalRatings] = useState({
-        high: false,
-        medium: false,
-        low: false,
-    });
-
-    const [localIsAllYears, setLocalIsAllYears] = useState(true);
-
-    const [localYearRange, setLocalYearRange] = useState<number[]>([
-        1790, 1815,
-    ]);
-
-    const [localIncludeUnknownYear, setLocalIncludeUnknownYear] =
-        useState<boolean>(true);
-
-    useEffect(() => {
-        setLocalTags(tags);
-    }, [tags]);
-
-    useEffect(() => {
-        setLocalRatings(ratings);
-    }, [ratings]);
-
-    useEffect(() => {
-        setLocalYearRange(yearRange);
-    }, [yearRange]);
-
-    useEffect(() => {
-        setLocalIncludeUnknownYear(includeUnknownYear);
-    }, [includeUnknownYear]);
-
-    const handleTagClick = (selectedTag: FilterTag) => {
-        const updatedTags = localTags.map((tag: FilterTag) => {
-            if (tag.name === selectedTag.name) {
-                return {
-                    ...tag,
-                    isSelected: !tag.isSelected,
-                };
-            }
-            return tag;
-        });
-        setLocalTags(updatedTags);
-    };
 
     const handleDrawerClose = () => {
         setIsFilterOpen(false);
-    };
-
-    const handleButtonClick = (action: ActionEnum) => {
-        const updatedTags = localTags.map((tag: FilterTag) => {
-            return {
-                ...tag,
-                isSelected: tag.group === 'Collection' ? false : tag.isSelected,
-            };
-        });
-
-        setTags(updatedTags);
-        setRatings(localRatings);
-        setYearRange(localIsAllYears ? [1700, 1900] : localYearRange);
-        setIncludeUnknownYear(localIncludeUnknownYear);
-        setIsFilterOpen(false);
-
-        onActionSelect(action);
-    };
-
-    const handleRatingChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setLocalRatings({
-            ...localRatings,
-            [event.target.name]: event.target.checked,
-        });
-    };
-
-    const handleYearChange = (_: Event, newValue: number | number[]) => {
-        setLocalYearRange(newValue as number[]);
-    };
-
-    const handleAllYearsChange = () => {
-        if (localIsAllYears) {
-            setLocalYearRange([1790, 1815]);
-        }
-        setLocalIsAllYears(!localIsAllYears);
-    };
-
-    const handleIncludeUnknownYearChange = (
-        event: ChangeEvent<HTMLInputElement>
-    ) => {
-        setLocalIncludeUnknownYear(event.target.checked);
     };
 
     return (
@@ -158,209 +31,12 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
             open={isFilterOpen}
             onClose={handleDrawerClose}
         >
-            <div className={styles.container}>
-                <div className={styles.subContainerTop}>
-                    <div className={styles.section}>
-                        <Typography variant="h5">Nationality</Typography>
-                        <Stack className={styles.tagGroup} direction={'row'}>
-                            {localTags
-                                .filter(
-                                    (tag: FilterTag) => tag.group === 'Nation'
-                                )
-                                .sort((a: FilterTag, b: FilterTag) => {
-                                    if (a.name === b.name) {
-                                        return 0;
-                                    }
-                                    return a.name > b.name ? 1 : -1;
-                                })
-                                .map((tag: FilterTag, index: number) => (
-                                    <TagButton
-                                        key={index}
-                                        onClick={handleTagClick}
-                                        tag={tag}
-                                    />
-                                ))}
-                        </Stack>
-                    </div>
-                    <div className={styles.section}>
-                        <Typography variant="h5">Type</Typography>
-                        <Stack className={styles.tagGroup} direction={'row'}>
-                            {localTags
-                                .filter(
-                                    (tag: FilterTag) => tag.group === 'Type'
-                                )
-                                .map((tag: FilterTag, index: number) => (
-                                    <TagButton
-                                        key={index}
-                                        onClick={handleTagClick}
-                                        tag={tag}
-                                    />
-                                ))}
-                        </Stack>
-                    </div>
-                    <div className={styles.section}>
-                        <Typography variant="h5">Sub Type</Typography>
-                        <Stack className={styles.tagGroup} direction={'row'}>
-                            {localTags
-                                .filter(
-                                    (tag: FilterTag) => tag.group === 'SubType'
-                                )
-                                .map((tag: FilterTag, index: number) => (
-                                    <TagButton
-                                        key={index}
-                                        onClick={handleTagClick}
-                                        tag={tag}
-                                    />
-                                ))}
-                        </Stack>
-                    </div>
-                    <div className={styles.section}>
-                        <Typography variant="h5">Rating</Typography>
-
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={localRatings.high}
-                                    onChange={handleRatingChange}
-                                    name="high"
-                                />
-                            }
-                            label="High"
-                        />
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={localRatings.medium}
-                                    onChange={handleRatingChange}
-                                    name="medium"
-                                />
-                            }
-                            label="Medium"
-                        />
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={localRatings.low}
-                                    onChange={handleRatingChange}
-                                    name="low"
-                                />
-                            }
-                            label="Low"
-                        />
-                    </div>
-                    <div className={styles.section}>
-                        <Stack direction={'row'}>
-                            <Typography variant="h5">Years </Typography>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={localIsAllYears}
-                                        onChange={handleAllYearsChange}
-                                    />
-                                }
-                                className={styles.yearsCheckbox}
-                                label="All?"
-                            />
-                            {!localIsAllYears && (
-                                <>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={
-                                                    localIncludeUnknownYear
-                                                }
-                                                onChange={
-                                                    handleIncludeUnknownYearChange
-                                                }
-                                            />
-                                        }
-                                        className={styles.yearsCheckbox}
-                                        label="Include unknown?"
-                                    />
-                                    <Typography
-                                        variant="h5"
-                                        className={styles.years}
-                                        data-testid="year-range"
-                                    >
-                                        {localYearRange[0]} -{' '}
-                                        {localYearRange[1]}
-                                    </Typography>
-                                </>
-                            )}
-                        </Stack>
-
-                        <Box className={styles.sliderContainer}>
-                            <Slider
-                                className={
-                                    localIsAllYears
-                                        ? styles.sliderHidden
-                                        : undefined
-                                }
-                                getAriaLabel={() => 'Temperature range'}
-                                min={1750}
-                                max={1820}
-                                onChange={handleYearChange}
-                                value={localYearRange}
-                                valueLabelDisplay="auto"
-                            />
-                        </Box>
-                    </div>
-                    <Stack
-                        sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}
-                    >
-                        <Button
-                            variant="contained"
-                            onClick={() => handleButtonClick(ActionEnum.Search)}
-                        >
-                            Search
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={() =>
-                                handleButtonClick(ActionEnum.ShowArtists)
-                            }
-                        >
-                            Show Artists
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={() =>
-                                handleButtonClick(ActionEnum.ShowRegiments)
-                            }
-                        >
-                            Show Regiments
-                        </Button>
-                    </Stack>
-                </div>
-                <div className={styles.subContainerBottom}>
-                    <Button
-                        variant="contained"
-                        onClick={() =>
-                            handleButtonClick(ActionEnum.ShowCollections)
-                        }
-                    >
-                        Show Collections
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        onClick={() =>
-                            handleButtonClick(ActionEnum.ShowBattles)
-                        }
-                    >
-                        Show Battles
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        onClick={() =>
-                            handleButtonClick(ActionEnum.ShowAllTags)
-                        }
-                    >
-                        Show All Tags
-                    </Button>
-                </div>
-            </div>
+            {isFilterOpen && (
+                <FilterDrawerContent
+                    key={String(isFilterOpen)}
+                    onActionSelect={onActionSelect}
+                />
+            )}
         </Drawer>
     );
 };

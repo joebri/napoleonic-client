@@ -16,12 +16,10 @@ import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
 import { useDebugValue, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 export const useArtistsList = (moduleName: string) => {
-    const location = useLocation();
     const helmet = useHelmet();
 
     const setHeaderTitle = useHeaderTitleStateSet();
@@ -108,14 +106,7 @@ export const useArtistsList = (moduleName: string) => {
                 includeUnknownYear,
             },
         });
-    }, [
-        // location.key,
-        ratings,
-        filterTags,
-        readArtistCounts,
-        yearRange,
-        includeUnknownYear,
-    ]);
+    }, [ratings, filterTags, readArtistCounts, yearRange, includeUnknownYear]);
 
     const getSelectedArtistNames = () => {
         const selected = encodeURIComponent(

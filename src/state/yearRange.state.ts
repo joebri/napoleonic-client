@@ -1,6 +1,6 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-export const yearRangeAtom = atom([1790, 1815]);
+export const yearRangeAtom = atom([1700, 1900]);
 
 export const useYearRangeState = () => {
     const state = useAtom(yearRangeAtom);

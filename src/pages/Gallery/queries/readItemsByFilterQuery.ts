@@ -21,6 +21,7 @@ export type ReadItemsByFilterVariables = {
     tags: string[];
     yearRange: number[];
     includeUnknownYear: boolean;
+    cacheBreaker: number;
 };
 
 export const readItemsByFilterQuery: TypedDocumentNode<
@@ -39,6 +40,7 @@ export const readItemsByFilterQuery: TypedDocumentNode<
         $tags: [String!]!
         $yearRange: [Int!]!
         $includeUnknownYear: Boolean!
+        $cacheBreaker: Int!
     ) {
         readItemsByFilter(
             input: {
@@ -53,6 +55,7 @@ export const readItemsByFilterQuery: TypedDocumentNode<
                 sortSequence: $sortSequence
                 yearRange: $yearRange
                 includeUnknownYear: $includeUnknownYear
+                cacheBreaker: $cacheBreaker
             }
         ) {
             count
