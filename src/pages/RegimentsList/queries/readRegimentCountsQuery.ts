@@ -1,5 +1,5 @@
 import { TypedDocumentNode } from '@apollo/client';
-import { RegimentCount } from '@models/RegimentCount.model';
+import { TagCount as RegimentCount } from '@models/TagCount.model';
 import gql from 'graphql-tag';
 
 export type ReadRegimentCountsResponse = {

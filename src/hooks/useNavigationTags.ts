@@ -1,5 +1,5 @@
 import { NavigationTagType } from '@enums/navigationTagType.enum';
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
 import { useNavigationTagsState, useTagsStateGet } from '@state';
 import { useCallback } from 'react';
 
@@ -142,18 +142,18 @@ export const useNavigationTags = (): any => {
     );
 
     const setGalleryNavigationTags = useCallback(() => {
-        const tagNames = tags
-            .filter((tag: Tag) => {
+        const filterTagNames = tags
+            .filter((tag: FilterTag) => {
                 return tag.isSelected;
             })
-            .map((tag: Tag) => tag.name)
+            .map((tag: FilterTag) => tag.name)
             .join(', ');
 
-        if (tagNames) {
+        if (filterTagNames) {
             setNavigationTags([
                 {
                     isNavigationTag: false,
-                    title: tagNames,
+                    title: filterTagNames,
                     type: NavigationTagType.GALLERY,
                     url: '/gallery',
                 },

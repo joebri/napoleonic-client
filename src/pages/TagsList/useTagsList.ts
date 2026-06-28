@@ -3,19 +3,14 @@ import { LoadStatus } from '@enums/loadStatus.enum';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
 import { TagCount } from '@models/TagCount.model';
-import { AllTagsSortOrder } from '@state/sortField.state';
+import { useHeaderTitleStateSet, useSortFieldState } from '@state';
+import { TagsSortOrder } from '@state/sortField.state';
 import { logError } from '@utilities/logError';
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-    useHeaderTitleStateSet,
-    useSortFieldState,
-    useSortFieldStateGet,
-} from '../../state';
 import { readItemTagCountsQuery } from './queries/readItemTagCountsQuery';
 
 export const useTagsList = (moduleName: string) => {
-    // const location = useLocation();
     const helmet = useHelmet();
     const setHeaderTitle = useHeaderTitleStateSet();
 
@@ -33,7 +28,7 @@ export const useTagsList = (moduleName: string) => {
     const [selectedTagNames, setSelectedTagNames] = useState(new Set());
 
     const sortedTagCounts = useMemo(() => {
-        return sortField.allTagsSort === AllTagsSortOrder.Name
+        return sortField.allTagsSort === TagsSortOrder.Name
             ? tagCounts.toSorted((a, b) => a.name.localeCompare(b.name))
             : tagCounts.toSorted((a, b) => b.count - a.count);
     }, [sortField.allTagsSort, tagCounts]);
@@ -52,15 +47,11 @@ export const useTagsList = (moduleName: string) => {
 
     useEffect(() => {
         if (data?.readItemTagCounts) {
-            const initialTags = data.readItemTagCounts.map((tag: TagCount) => ({
-                ...tag,
-                isSelected: false,
-            }));
-            setTagCounts(initialTags);
+            setTagCounts(data.readItemTagCounts);
             setSortField((prevSortField) => {
                 return {
                     ...prevSortField,
-                    allTagsSort: AllTagsSortOrder.Count,
+                    allTagsSort: TagsSortOrder.Count,
                 };
             });
             setLoadStatus(LoadStatus.LOADED);

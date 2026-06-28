@@ -1,7 +1,7 @@
 import { TagTooltip } from '@components/TagTooltip/TagTooltip';
+import { FilterTag } from '@models/FilterTag.model';
 import { Item } from '@models/Item.model';
 import { ItemMetaData } from '@models/ItemMetaData.model';
-import { Tag } from '@models/Tag.model';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
     Card,
@@ -43,10 +43,10 @@ export const ItemCard = ({ item }: ItemCardProps) => {
         }
 
         const nationTags = availableTags
-            .filter((tag: Tag) => {
+            .filter((tag: FilterTag) => {
                 return tag.group === 'Nation';
             })
-            .map((tag: Tag) => tag.name);
+            .map((tag: FilterTag) => tag.name);
 
         const tags = item.tags
             .filter((tag) => nationTags.includes(tag))

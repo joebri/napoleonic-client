@@ -1,4 +1,4 @@
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
 import { Autocomplete, Chip, TextField } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useTagsStateGet } from '@state';
@@ -17,7 +17,7 @@ export const TagInput = ({
 }: TagInputProps) => {
     const availableTags = useTagsStateGet();
 
-    const availableTagNames = availableTags.map((tag: Tag) => {
+    const availableTagNames = availableTags.map((tag: FilterTag) => {
         return tag.name;
     });
 

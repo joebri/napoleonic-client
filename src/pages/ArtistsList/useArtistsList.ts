@@ -2,18 +2,20 @@ import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
-import { ArtistCount } from '@models/ArtistCount.model';
-import { Tag as FilterTag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
+import { TagCount as ArtistCount } from '@models/TagCount.model';
 import {
     useHeaderTitleStateSet,
     useIncludeUnknownYearStateGet,
     useRatingsStateGet,
+    useSortFieldState,
     useTagsStateGet,
     useYearRangeStateGet,
 } from '@state';
+import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
-import { useDebugValue, useEffect, useState } from 'react';
+import { useDebugValue, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
@@ -22,9 +24,10 @@ export const useArtistsList = (moduleName: string) => {
     const location = useLocation();
     const helmet = useHelmet();
 
+    const setHeaderTitle = useHeaderTitleStateSet();
+
     const includeUnknownYear = useIncludeUnknownYearStateGet();
     const ratings = useRatingsStateGet();
-    const setHeaderTitle = useHeaderTitleStateSet();
     const filterTags = useTagsStateGet();
     const yearRange = useYearRangeStateGet();
 
@@ -35,9 +38,17 @@ export const useArtistsList = (moduleName: string) => {
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [artists, setArtists] = useState<ArtistCount[]>([]);
+    const [artistCounts, setArtistCounts] = useState<ArtistCount[]>([]);
+    const [sortField, setSortField] = useSortFieldState();
+    const [selectedArtistNames, setSelectedArtistNames] = useState(new Set());
 
-    const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
+    const sortedArtistCounts = useMemo(() => {
+        return sortField.artistTagsSort === TagsSortOrder.Name
+            ? artistCounts.toSorted((a, b) => a.name.localeCompare(b.name))
+            : artistCounts.toSorted((a, b) => b.count - a.count);
+    }, [sortField.artistTagsSort, artistCounts]);
+
+    const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
     const { clearHeaderNavigationTags } = useNavigationTags();
 
@@ -47,10 +58,16 @@ export const useArtistsList = (moduleName: string) => {
 
     useEffect(() => {
         if (data?.readArtistCounts) {
-            setArtists(data.readArtistCounts);
+            setArtistCounts(data.readArtistCounts);
+            setSortField((prevSortField) => {
+                return {
+                    ...prevSortField,
+                    allTagsSort: TagsSortOrder.Count,
+                };
+            });
             setLoadStatus(LoadStatus.LOADED);
         }
-    }, [data]);
+    }, [data, setSortField]);
 
     useEffect(() => {
         if (error) {
@@ -82,6 +99,7 @@ export const useArtistsList = (moduleName: string) => {
             .map((tag: FilterTag) => {
                 return tag.name;
             });
+
         readArtistCounts({
             variables: {
                 ratings: selectedRatings,
@@ -91,7 +109,7 @@ export const useArtistsList = (moduleName: string) => {
             },
         });
     }, [
-        location.key,
+        // location.key,
         ratings,
         filterTags,
         readArtistCounts,
@@ -99,35 +117,40 @@ export const useArtistsList = (moduleName: string) => {
         includeUnknownYear,
     ]);
 
-    const getSelectedArtists = () => {
+    const getSelectedArtistNames = () => {
         const selected = encodeURIComponent(
-            artists
-                .filter((artist: ArtistCount) => artist.isSelected)
+            artistCounts
+                .filter((artist: ArtistCount) =>
+                    selectedArtistNames.has(artist.name)
+                )
                 .map((artist: ArtistCount) => artist.name)
                 .join('||')
         );
         return selected;
     };
 
-    const updateSelectedArtists = (index: number) => {
-        let updatedArtists: ArtistCount[] = artists.map((artist) => {
-            return { ...artist };
-        });
-        updatedArtists[index].isSelected = !updatedArtists[index].isSelected;
-        setArtists(updatedArtists);
+    const updateSelectedArtists = (name: string) => {
+        setSelectedArtistNames((previous) => {
+            const next = new Set(previous);
+            if (next.has(name)) {
+                next.delete(name);
+            } else {
+                next.add(name);
+            }
 
-        const isAnySelected = updatedArtists.some((artist: ArtistCount) => {
-            return artist.isSelected;
+            setIsSearchEnabled(next.size > 0);
+
+            return next;
         });
-        setIsSearchEnabled(isAnySelected);
     };
 
     return {
-        artists,
+        artistCounts: sortedArtistCounts,
         error,
-        getSelectedArtists,
+        getSelectedArtistNames,
         isSearchEnabled,
         loadStatus,
+        selectedArtistNames,
         updateSelectedArtists,
     };
 };

@@ -2,12 +2,16 @@ import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
-import { BattleCount } from '@models/BattleCount.model';
-import { BattleTag } from '@models/BattleTag.model';
-import { useHeaderTitleStateSet, useRatingsStateGet } from '@state';
+import { TagCount as BattleCount } from '@models/TagCount.model';
+import {
+    useHeaderTitleStateSet,
+    useRatingsStateGet,
+    useSortFieldState,
+} from '@state';
+import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { readBattleCountsQuery } from './queries/readBattleCountsQuery';
@@ -18,15 +22,24 @@ export const useBattlesList = (moduleName: string) => {
     const navigate = useNavigate();
 
     const setHeaderTitle = useHeaderTitleStateSet();
+    const { clearHeaderNavigationTags } = useNavigationTags();
     const ratings = useRatingsStateGet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [battles, setBattles] = useState<BattleCount[]>([]);
-    const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
+    const [battleCounts, setBattleCounts] = useState<BattleCount[]>([]);
+    const [sortField, setSortField] = useSortFieldState();
 
-    const { clearHeaderNavigationTags } = useNavigationTags();
+    const [selectedBattleNames, setSelectedBattleNames] = useState(new Set());
+
+    const sortedBattleCounts = useMemo(() => {
+        return sortField.battleTagsSort === TagsSortOrder.Name
+            ? battleCounts.toSorted((a, b) => a.name.localeCompare(b.name))
+            : battleCounts.toSorted((a, b) => b.count - a.count);
+    }, [sortField.battleTagsSort, battleCounts]);
+
+    const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     const [readBattleCounts, { data, error }] = useLazyQuery(
         readBattleCountsQuery
@@ -34,10 +47,16 @@ export const useBattlesList = (moduleName: string) => {
 
     useEffect(() => {
         if (data?.readBattleCounts) {
-            setBattles(data.readBattleCounts);
+            setBattleCounts(data.readBattleCounts);
+            setSortField((prevSortField) => {
+                return {
+                    ...prevSortField,
+                    battleTagsSort: TagsSortOrder.Count,
+                };
+            });
             setLoadStatus(LoadStatus.LOADED);
         }
-    }, [data]);
+    }, [data, setSortField]);
 
     useEffect(() => {
         if (error) {
@@ -69,41 +88,46 @@ export const useBattlesList = (moduleName: string) => {
         });
     }, [location.key, ratings, readBattleCounts]);
 
-    const updateSelectedBattles = (index: number) => {
-        let newBattles: BattleTag[] = battles.map((battle) => {
-            return { ...battle };
-        });
-        newBattles[index].isSelected = !newBattles[index].isSelected;
-        setBattles(newBattles);
+    const updateSelectedBattles = (name: string) => {
+        setSelectedBattleNames((previous) => {
+            const next = new Set(previous);
+            if (next.has(name)) {
+                next.delete(name);
+            } else {
+                next.add(name);
+            }
 
-        const isAnySelected = newBattles.some((battle: BattleTag) => {
-            return battle.isSelected;
+            setIsSearchEnabled(next.size > 0);
+
+            return next;
         });
-        setIsSearchEnabled(isAnySelected);
     };
 
-    const getSelected = () => {
+    const getSelectedBattleNames = () => {
         const selected = encodeURIComponent(
-            battles
-                .filter((battle: BattleTag) => battle.isSelected)
-                .map((battle) => battle.name)
+            battleCounts
+                .filter((battle: BattleCount) =>
+                    selectedBattleNames.has(battle.name)
+                )
+                .map((battle: BattleCount) => battle.name)
                 .join('||')
         );
         return selected;
     };
 
     const showSelectedBattles = () => {
-        const selected = getSelected();
+        const selected = getSelectedBattleNames();
         navigate(`/gallery?battles=${selected}`);
     };
 
     return {
-        battles,
+        battleCounts: sortedBattleCounts,
         error,
-        getSelected,
+        getSelectedBattleNames,
         isSearchEnabled,
         loadStatus,
         showSelectedBattles,
         updateSelectedBattles,
+        selectedBattleNames,
     };
 };

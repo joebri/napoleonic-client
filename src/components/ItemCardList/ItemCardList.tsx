@@ -2,8 +2,8 @@ import { ItemCard } from '@components/ItemCard/ItemCard';
 import { Typography } from '@mui/material';
 import { useTagsStateGet } from '@state';
 
+import { FilterTag } from '../../models/FilterTag.model';
 import { Item } from '../../models/Item.model';
-import { Tag } from '../../models/Tag.model';
 import styles from './ItemCardList.module.scss';
 
 export type ItemCardListProps = {
@@ -23,7 +23,7 @@ export const ItemCardList = ({ items }: ItemCardListProps) => {
         );
     }
 
-    const isAnyTagSelected = tags.some((tag: Tag) => tag.isSelected);
+    const isAnyTagSelected = tags.some((tag: FilterTag) => tag.isSelected);
     if (isAnyTagSelected) {
         return (
             <Typography className={styles.noItems} variant="h5">

@@ -1,5 +1,5 @@
 import { TypedDocumentNode } from '@apollo/client';
-import { ArtistCount } from '@models/ArtistCount.model';
+import { TagCount as ArtistCount } from '@models/TagCount.model';
 import gql from 'graphql-tag';
 
 export type ReadArtistCountsResponse = {

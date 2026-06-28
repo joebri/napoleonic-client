@@ -1,5 +1,5 @@
 // import * as matchers from '@testing-library/jest-dom/matchers';
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
 import {
     includeUnknownYearAtom,
     isFilterOpenAtom,
@@ -48,7 +48,7 @@ afterEach(() => {
 type MockState = {
     includeUnknownYear?: boolean;
     ratings?: any;
-    tags?: Tag[];
+    tags?: FilterTag[];
     yearRange?: number[];
 };
 
@@ -61,7 +61,7 @@ export function createMockState({
             isSelected: false,
             name: 'France',
         },
-    ] as Tag[],
+    ] as FilterTag[],
     yearRange = [] as number[],
 }: MockState) {
     const mockState = ({ set }: MutableSnapshot) => {

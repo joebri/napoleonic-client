@@ -1,9 +1,9 @@
 import { TypedDocumentNode } from '@apollo/client';
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
 import gql from 'graphql-tag';
 
 export type ReadTagsResponse = {
-    readTags: Tag[];
+    readTags: FilterTag[];
 };
 
 export type ReadTagsVariables = {};

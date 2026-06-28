@@ -1,7 +1,7 @@
 import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
-import { BattleTag } from '@models/BattleTag.model';
+import { TagCount as BattleCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
 
 import styles from './BattlesList.module.scss';
@@ -11,16 +11,17 @@ export const BattlesList = () => {
     const moduleName = `${BattlesList.name}.tsx`;
 
     const {
-        battles,
+        battleCounts,
         error,
         isSearchEnabled,
         loadStatus,
         showSelectedBattles,
+        selectedBattleNames,
         updateSelectedBattles,
     } = useBattlesList(moduleName);
 
-    const handleChipClick = (index: number) => {
-        updateSelectedBattles(index);
+    const handleChipClick = (name: string) => {
+        updateSelectedBattles(name);
     };
 
     const handleSearchClick = () => {
@@ -33,7 +34,7 @@ export const BattlesList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
-    if (battles.length === 0) {
+    if (battleCounts.length === 0) {
         return (
             <Typography className={styles.noItems} variant="h5">
                 No Battles available.
@@ -43,15 +44,19 @@ export const BattlesList = () => {
 
     return (
         <div className={styles.container}>
-            {battles.map((battle: BattleTag, index: number) => (
+            {battleCounts.map((battle: BattleCount, index: number) => (
                 <Chip
                     color="primary"
                     key={index}
                     label={`${battle.name || 'Unknown'} (${battle.count})`}
                     onClick={() => {
-                        handleChipClick(index);
+                        handleChipClick(battle.name);
                     }}
-                    variant={battle.isSelected ? undefined : 'outlined'}
+                    variant={
+                        selectedBattleNames.has(battle.name)
+                            ? undefined
+                            : 'outlined'
+                    }
                 />
             ))}
             <Button

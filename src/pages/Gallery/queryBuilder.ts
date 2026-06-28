@@ -1,4 +1,4 @@
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
 
 type QueryParams = {
     artists: string[];
@@ -14,7 +14,7 @@ interface buildArtistsQueryParamsProps {
     includeUnknownYear: boolean;
     queryArtists: string;
     selectedRatings: number[];
-    tags: Tag[];
+    tags: FilterTag[];
     yearRange: number[];
 }
 
@@ -22,14 +22,14 @@ interface buildRegimentsQueryParamsProps {
     includeUnknownYear: boolean;
     queryRegiments: string;
     selectedRatings: number[];
-    tags: Tag[];
+    tags: FilterTag[];
 }
 
 interface buildTagsQueryParamsProps {
     includeUnknownYear: boolean;
     queryTags: string | null;
     selectedRatings: number[];
-    tags: Tag[];
+    tags: FilterTag[];
     yearRange: number[];
 }
 
@@ -42,10 +42,10 @@ export const buildArtistsQueryParams = ({
 }: buildArtistsQueryParamsProps): QueryParams => {
     const artists = queryArtists.split('||');
     const tagNames = tags
-        .filter((tag: Tag) => {
+        .filter((tag: FilterTag) => {
             return tag.isSelected === true;
         })
-        .map((tag: Tag) => tag.name);
+        .map((tag: FilterTag) => tag.name);
     return {
         artists,
         battles: [],
@@ -100,10 +100,10 @@ export const buildRegimentsQueryParams = ({
 }: buildRegimentsQueryParamsProps): QueryParams => {
     const regiments = queryRegiments.split('||');
     const tagNames = tags
-        .filter((tag: Tag) => {
+        .filter((tag: FilterTag) => {
             return tag.isSelected === true;
         })
-        .map((tag: Tag) => tag.name);
+        .map((tag: FilterTag) => tag.name);
     return {
         artists: [],
         battles: [],
@@ -127,10 +127,10 @@ export const buildTagsQueryParams = ({
         tagNames = queryTags.split('||');
     } else {
         tagNames = tags
-            .filter((tag: Tag) => {
+            .filter((tag: FilterTag) => {
                 return tag.isSelected === true;
             })
-            .map((tag: Tag) => tag.name);
+            .map((tag: FilterTag) => tag.name);
     }
     return {
         artists: [],

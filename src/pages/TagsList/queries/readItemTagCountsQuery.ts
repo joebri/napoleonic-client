@@ -1,9 +1,9 @@
 import { TypedDocumentNode } from '@apollo/client';
-import { ItemTag } from '@models/ItemTag.model';
+import { TagCount } from '@models/TagCount.model';
 import gql from 'graphql-tag';
 
 export const readItemTagCountsQuery: TypedDocumentNode<
-    { readItemTagCounts: ItemTag[] },
+    { readItemTagCounts: TagCount[] },
     {}
 > = gql`
     query readItemTagCounts {

@@ -1,6 +1,6 @@
-export type Tag = {
+export type FilterTag = {
     group: string;
     isSelected: boolean;
-    name: string;
     itemId: string | null;
+    name: string;
 };

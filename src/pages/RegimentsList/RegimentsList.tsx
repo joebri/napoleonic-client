@@ -1,33 +1,34 @@
 import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
-import { RegimentTag } from '@models/RegimentTag.model';
+import { TagCount as RegimentCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import styles from './RegimentsList.module.scss';
 import { useRegimentList } from './useRegimentList';
 
-const RegimentsList = () => {
+export const RegimentsList = () => {
     const moduleName = `${RegimentsList.name}.tsx`;
     const navigate = useNavigate();
 
     const {
         error,
-        getSelectedRegiments,
+        getSelectedRegimentNames,
         isSearchEnabled,
         loadStatus,
-        regiments,
+        regimentCounts,
+        selectedRegimentNames,
         updateSelectedRegiments,
     } = useRegimentList(moduleName);
 
-    const handleChipClick = (index: number) => {
-        updateSelectedRegiments(index);
+    const handleChipClick = (name: string) => {
+        updateSelectedRegiments(name);
     };
 
     const handleSearchClick = () => {
-        const selected = getSelectedRegiments();
-        navigate(`/gallery?regiments=${selected.join('||')}`);
+        const selected = getSelectedRegimentNames();
+        navigate(`/gallery?regiments=${selected}`);
     };
 
     if (loadStatus === LoadStatus.LOADING) {
@@ -36,7 +37,7 @@ const RegimentsList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
-    if (regiments.length === 0) {
+    if (regimentCounts.length === 0) {
         return (
             <Typography className={styles.noItems} variant="h5">
                 No Regiments available.
@@ -46,15 +47,19 @@ const RegimentsList = () => {
 
     return (
         <div className={styles.container}>
-            {regiments.map((regiment: RegimentTag, index: number) => (
+            {regimentCounts.map((regiment: RegimentCount, index: number) => (
                 <Chip
                     color="primary"
                     label={`${regiment.name || 'Unknown'} (${regiment.count})`}
                     key={index}
                     onClick={() => {
-                        handleChipClick(index);
+                        handleChipClick(regiment.name);
                     }}
-                    variant={regiment.isSelected ? undefined : 'outlined'}
+                    variant={
+                        selectedRegimentNames.has(regiment.name)
+                            ? undefined
+                            : 'outlined'
+                    }
                 />
             ))}
             <Button
@@ -68,5 +73,3 @@ const RegimentsList = () => {
         </div>
     );
 };
-
-export { RegimentsList };

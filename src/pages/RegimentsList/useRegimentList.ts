@@ -2,18 +2,20 @@ import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
-import { RegimentCount } from '@models/RegimentCount.model';
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
+import { TagCount as RegimentCount } from '@models/TagCount.model';
 import {
     useHeaderTitleStateSet,
     useIncludeUnknownYearStateGet,
     useRatingsStateGet,
+    useSortFieldState,
     useTagsStateGet,
     useYearRangeStateGet,
 } from '@state';
+import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
@@ -27,13 +29,24 @@ export const useRegimentList = (moduleName: string) => {
 
     const includeUnknownYear = useIncludeUnknownYearStateGet();
     const ratings = useRatingsStateGet();
-    const tags = useTagsStateGet();
+    const filterTags = useTagsStateGet();
     const yearRange = useYearRangeStateGet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
         LoadStatus.LOADING
     );
-    const [regiments, setRegiments] = useState<RegimentCount[]>([]);
+    const [regimentCounts, setRegimentCounts] = useState<RegimentCount[]>([]);
+    const [sortField, setSortField] = useSortFieldState();
+    const [selectedRegimentNames, setSelectedRegimentNames] = useState(
+        new Set()
+    );
+
+    const sortedRegimentCounts = useMemo(() => {
+        return sortField.regimentTagsSort === TagsSortOrder.Name
+            ? regimentCounts.toSorted((a, b) => a.name.localeCompare(b.name))
+            : regimentCounts.toSorted((a, b) => b.count - a.count);
+    }, [sortField.regimentTagsSort, regimentCounts]);
+
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
     useEffect(() => {
@@ -51,15 +64,16 @@ export const useRegimentList = (moduleName: string) => {
 
     useEffect(() => {
         if (data?.readRegimentCounts) {
-            const regiments: RegimentCount[] = data.readRegimentCounts.map(
-                (regiment: RegimentCount) => {
-                    return { ...regiment, isSelected: false };
-                }
-            );
-            setRegiments(regiments);
+            setSortField((previous) => {
+                return {
+                    ...previous,
+                    allTagsSort: TagsSortOrder.Count,
+                };
+            });
+            setRegimentCounts(data?.readRegimentCounts);
             setLoadStatus(LoadStatus.LOADED);
         }
-    }, [data]);
+    }, [data, setSortField]);
 
     useEffect(() => {
         if (error) {
@@ -75,58 +89,65 @@ export const useRegimentList = (moduleName: string) => {
     useEffect(() => {
         const selectedRatings = ratingsToArray(ratings);
 
-        const tagNames = tags
-            .filter((tag: Tag) => {
+        const filterTagNames = filterTags
+            .filter((tag: FilterTag) => {
                 return tag.isSelected;
             })
-            .map((tag: Tag) => {
+            .map((tag: FilterTag) => {
                 return tag.name;
             });
 
         readRegimentCounts({
             variables: {
                 ratings: selectedRatings,
-                tags: tagNames,
+                tags: filterTagNames,
                 yearRange,
                 includeUnknownYear,
             },
         });
     }, [
-        location.key,
+        // location.key,
         ratings,
-        tags,
+        filterTags,
         yearRange,
         includeUnknownYear,
         readRegimentCounts,
     ]);
 
-    const updateSelectedRegiments = (index: number) => {
-        let newRegiments: RegimentCount[] = [...regiments];
-        newRegiments[index].isSelected = !newRegiments[index].isSelected;
-
-        const isAnySelected = newRegiments.some((regiment: RegimentCount) => {
-            return regiment.isSelected;
-        });
-
-        setIsSearchEnabled(isAnySelected);
-        setRegiments(newRegiments);
+    const getSelectedRegimentNames = () => {
+        const selected = encodeURIComponent(
+            regimentCounts
+                .filter((regiment: RegimentCount) =>
+                    selectedRegimentNames.has(regiment.name)
+                )
+                .map((regiment: RegimentCount) => regiment.name)
+                .join('||')
+        );
+        return selected;
     };
 
-    const getSelectedRegiments = () => {
-        const selected = regiments
-            .filter((regiment: RegimentCount) => regiment.isSelected)
-            .map((regiment: RegimentCount) =>
-                encodeURIComponent(regiment.name)
-            );
-        return selected;
+    const updateSelectedRegiments = (name: string) => {
+        setSelectedRegimentNames((previous) => {
+            const next = new Set(previous);
+            if (next.has(name)) {
+                next.delete(name);
+            } else {
+                next.add(name);
+            }
+
+            setIsSearchEnabled(next.size > 0);
+
+            return next;
+        });
     };
 
     return {
         error,
-        getSelectedRegiments,
+        getSelectedRegimentNames,
         isSearchEnabled,
         loadStatus,
-        regiments,
+        regimentCounts: sortedRegimentCounts,
+        selectedRegimentNames,
         updateSelectedRegiments,
     };
 };

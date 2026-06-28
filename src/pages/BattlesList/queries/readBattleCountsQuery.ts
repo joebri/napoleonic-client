@@ -1,5 +1,5 @@
 import { TypedDocumentNode } from '@apollo/client';
-import { BattleCount } from '@models/BattleCount.model';
+import { TagCount as BattleCount } from '@models/TagCount.model';
 import gql from 'graphql-tag';
 
 export type ReadBattleCountsResponse = {

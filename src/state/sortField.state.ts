@@ -1,13 +1,21 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-export enum AllTagsSortOrder {
+export enum ItemTagsSortOrder {
+    Title = 'title',
+    Image = 'image',
+}
+
+export enum TagsSortOrder {
     Name,
     Count,
 }
 
 export const sortFieldAtom = atom({
-    sort: 'title',
-    allTagsSort: AllTagsSortOrder.Count,
+    itemTagsSort: ItemTagsSortOrder.Title,
+    allTagsSort: TagsSortOrder.Count,
+    artistTagsSort: TagsSortOrder.Count,
+    battleTagsSort: TagsSortOrder.Count,
+    regimentTagsSort: TagsSortOrder.Count,
 });
 
 export const useSortFieldState = () => {

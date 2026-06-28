@@ -1,4 +1,4 @@
-import { Tag } from '@models/Tag.model';
+import { FilterTag } from '@models/FilterTag.model';
 import {
     Box,
     Button,
@@ -32,7 +32,7 @@ export enum ActionEnum {
 
 type TagProps = {
     onClick: Function;
-    tag: Tag;
+    tag: FilterTag;
 };
 
 const TagButton = ({ onClick, tag }: TagProps) => {
@@ -60,7 +60,7 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     const [tags, setTags] = useTagsState();
     const [yearRange, setYearRange] = useYearRangeState();
 
-    const [localTags, setLocalTags] = useState<Tag[]>([]);
+    const [localTags, setLocalTags] = useState<FilterTag[]>([]);
 
     const [localRatings, setLocalRatings] = useState({
         high: false,
@@ -93,8 +93,8 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
         setLocalIncludeUnknownYear(includeUnknownYear);
     }, [includeUnknownYear]);
 
-    const handleTagClick = (selectedTag: Tag) => {
-        const updatedTags = localTags.map((tag: Tag) => {
+    const handleTagClick = (selectedTag: FilterTag) => {
+        const updatedTags = localTags.map((tag: FilterTag) => {
             if (tag.name === selectedTag.name) {
                 return {
                     ...tag,
@@ -111,7 +111,7 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
     };
 
     const handleButtonClick = (action: ActionEnum) => {
-        const updatedTags = localTags.map((tag: Tag) => {
+        const updatedTags = localTags.map((tag: FilterTag) => {
             return {
                 ...tag,
                 isSelected: tag.group === 'Collection' ? false : tag.isSelected,
@@ -164,14 +164,16 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                         <Typography variant="h5">Nationality</Typography>
                         <Stack className={styles.tagGroup} direction={'row'}>
                             {localTags
-                                .filter((tag: Tag) => tag.group === 'Nation')
-                                .sort((a: Tag, b: Tag) => {
+                                .filter(
+                                    (tag: FilterTag) => tag.group === 'Nation'
+                                )
+                                .sort((a: FilterTag, b: FilterTag) => {
                                     if (a.name === b.name) {
                                         return 0;
                                     }
                                     return a.name > b.name ? 1 : -1;
                                 })
-                                .map((tag: Tag, index: number) => (
+                                .map((tag: FilterTag, index: number) => (
                                     <TagButton
                                         key={index}
                                         onClick={handleTagClick}
@@ -184,8 +186,10 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                         <Typography variant="h5">Type</Typography>
                         <Stack className={styles.tagGroup} direction={'row'}>
                             {localTags
-                                .filter((tag: Tag) => tag.group === 'Type')
-                                .map((tag: Tag, index: number) => (
+                                .filter(
+                                    (tag: FilterTag) => tag.group === 'Type'
+                                )
+                                .map((tag: FilterTag, index: number) => (
                                     <TagButton
                                         key={index}
                                         onClick={handleTagClick}
@@ -198,8 +202,10 @@ export const FilterDrawer = ({ onActionSelect }: FilterDrawerProps) => {
                         <Typography variant="h5">Sub Type</Typography>
                         <Stack className={styles.tagGroup} direction={'row'}>
                             {localTags
-                                .filter((tag: Tag) => tag.group === 'SubType')
-                                .map((tag: Tag, index: number) => (
+                                .filter(
+                                    (tag: FilterTag) => tag.group === 'SubType'
+                                )
+                                .map((tag: FilterTag, index: number) => (
                                     <TagButton
                                         key={index}
                                         onClick={handleTagClick}

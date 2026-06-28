@@ -250,13 +250,13 @@ export const useGallery = (moduleName: string) => {
                 name: 'readItemsByFilter',
                 exception: error,
                 ratings,
-                sortField: sortField.sort,
+                sortField: sortField.itemTagsSort,
                 tags,
                 pageNumber,
             });
             setLoadStatus(LoadStatus.ERROR);
         }
-    }, [error, moduleName, pageNumber, ratings, sortField.sort, tags]);
+    }, [error, moduleName, pageNumber, ratings, sortField.itemTagsSort, tags]);
 
     useEffect(() => {
         helmet.setTitle('Uniformology: Gallery');
@@ -277,6 +277,7 @@ export const useGallery = (moduleName: string) => {
                 setLoadStatus(LoadStatus.LOADED);
                 return;
             }
+
             readItemsByFilter({
                 variables: {
                     artists: queryDetails.artists,
@@ -285,7 +286,7 @@ export const useGallery = (moduleName: string) => {
                     pageSize: PAGE_SIZE,
                     ratings: queryDetails.ratings,
                     regiments: queryDetails.regiments,
-                    sort: sortField.sort,
+                    sort: sortField.itemTagsSort.toString(),
                     sortSequence: 'asc',
                     tags: queryDetails.tagNames,
                     yearRange: queryDetails.yearRange,

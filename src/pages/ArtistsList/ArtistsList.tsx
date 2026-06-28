@@ -1,7 +1,7 @@
 import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
-import { ArtistTag } from '@models/ArtistTag.model';
+import { TagCount as ArtistCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,20 +13,21 @@ export const ArtistsList = () => {
     const navigate = useNavigate();
 
     const {
-        artists,
+        artistCounts,
         error,
-        getSelectedArtists,
+        getSelectedArtistNames,
         isSearchEnabled,
         loadStatus,
+        selectedArtistNames,
         updateSelectedArtists,
     } = useArtistsList(moduleName);
 
-    const handleChipClick = (index: number) => {
-        updateSelectedArtists(index);
+    const handleChipClick = (name: string) => {
+        updateSelectedArtists(name);
     };
 
     const handleSearchClick = () => {
-        const selected = getSelectedArtists();
+        const selected = getSelectedArtistNames();
         navigate(`/gallery?artists=${selected}`);
     };
 
@@ -36,7 +37,7 @@ export const ArtistsList = () => {
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
-    if (artists.length === 0) {
+    if (artistCounts.length === 0) {
         return (
             <Typography className={styles.noItems} variant="h5">
                 No Artists available.
@@ -45,15 +46,19 @@ export const ArtistsList = () => {
     }
     return (
         <div className={styles.container}>
-            {artists.map((tag: ArtistTag, index: number) => (
+            {artistCounts.map((artist: ArtistCount, index: number) => (
                 <Chip
                     color="primary"
                     key={index}
-                    label={`${tag.name || 'Unknown'} (${tag.count})`}
+                    label={`${artist.name || 'Unknown'} (${artist.count})`}
                     onClick={() => {
-                        handleChipClick(index);
+                        handleChipClick(artist.name);
                     }}
-                    variant={tag.isSelected ? undefined : 'outlined'}
+                    variant={
+                        selectedArtistNames.has(artist.name)
+                            ? undefined
+                            : 'outlined'
+                    }
                 />
             ))}
             <Button
