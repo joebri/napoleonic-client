@@ -2,7 +2,8 @@ import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { Collection } from '@models/Collection.model';
-import { Button } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
+import { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styles from './CollectionList.module.scss';
@@ -20,6 +21,15 @@ export const CollectionList = () => {
         navigate(`/collectionDetailView/${collection.id}`);
     };
 
+    const handleSelectionChange = (
+        _: SyntheticEvent,
+        collection: Collection | null
+    ) => {
+        if (collection) {
+            navigate(`/collectionDetailView/${collection.id}`);
+        }
+    };
+
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
     }
@@ -29,16 +39,31 @@ export const CollectionList = () => {
 
     return (
         <div className={styles.container}>
-            {collections.map((collection: Collection, index: number) => (
+            <Autocomplete
+                className={styles.filter}
+                getOptionLabel={(collection) => collection.title || ''}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                onChange={handleSelectionChange}
+                options={collections}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Search or select a collection"
+                    />
+                )}
+                value={null}
+            />
+
+            {collections.map((collection: Collection) => (
                 <Button
-                    key={index}
+                    key={collection.id}
                     onClick={() => {
                         handleSearchClick(collection);
                     }}
                     title={collection.tagName}
                     variant="contained"
                 >
-                    {`${collection.title}`}
+                    {collection.title}
                 </Button>
             ))}
         </div>
