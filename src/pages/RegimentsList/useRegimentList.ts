@@ -1,7 +1,11 @@
 import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
 import { useHelmet } from '@hooks/useHelmet';
-import { useNavigationTags } from '@hooks/useNavigationTags';
+import {
+    HeaderNavigationTagsProps,
+    useNavigationTags,
+} from '@hooks/useNavigationTags';
 import { FilterTag } from '@models/FilterTag.model';
 import { TagCount as RegimentCount } from '@models/TagCount.model';
 import {
@@ -16,13 +20,16 @@ import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { readRegimentCountsQuery } from './queries/readRegimentCountsQuery';
 
 export const useRegimentList = (moduleName: string) => {
     const helmet = useHelmet();
+    const { clearHeaderNavigationTags, setHeaderNavigationTags } =
+        useNavigationTags();
+    const navigate = useNavigate();
 
-    const { clearHeaderNavigationTags } = useNavigationTags();
     const setHeaderTitle = useHeaderTitleStateSet();
 
     const includeUnknownYear = useIncludeUnknownYearStateGet();
@@ -112,14 +119,11 @@ export const useRegimentList = (moduleName: string) => {
     ]);
 
     const getSelectedRegimentNames = () => {
-        const selected = encodeURIComponent(
-            regimentCounts
-                .filter((regiment: RegimentCount) =>
-                    selectedRegimentNames.has(regiment.name)
-                )
-                .map((regiment: RegimentCount) => regiment.name)
-                .join('||')
-        );
+        const selected = regimentCounts
+            .filter((regiment: RegimentCount) =>
+                selectedRegimentNames.has(regiment.name)
+            )
+            .map((regiment: RegimentCount) => regiment.name);
         return selected;
     };
 
@@ -138,9 +142,25 @@ export const useRegimentList = (moduleName: string) => {
         });
     };
 
+    const showSelectedRegiments = () => {
+        const regimentNames = getSelectedRegimentNames();
+
+        setHeaderNavigationTags({
+            id: '',
+            names: regimentNames,
+            tagType: NavigationTagType.Regiments,
+            title: regimentNames.join(' / '),
+        } as HeaderNavigationTagsProps);
+
+        const encodedRegimentNames = encodeURIComponent(
+            regimentNames.join('||')
+        );
+        navigate(`/gallery?regiments=${encodedRegimentNames}`);
+    };
+
     return {
         error,
-        getSelectedRegimentNames,
+        showSelectedRegiments,
         isSearchEnabled,
         loadStatus,
         regimentCounts: sortedRegimentCounts,

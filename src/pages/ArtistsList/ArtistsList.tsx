@@ -3,19 +3,17 @@ import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { TagCount as ArtistCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 import styles from './ArtistsList.module.scss';
 import { useArtistsList } from './useArtistsList';
 
 export const ArtistsList = () => {
     const moduleName = `${ArtistsList.name}.tsx`;
-    const navigate = useNavigate();
 
     const {
         artistCounts,
         error,
-        getSelectedArtistNames,
+        showSelectedArtists,
         isSearchEnabled,
         loadStatus,
         selectedArtistNames,
@@ -27,8 +25,7 @@ export const ArtistsList = () => {
     };
 
     const handleSearchClick = () => {
-        const selected = getSelectedArtistNames();
-        navigate(`/gallery?artists=${selected}`);
+        showSelectedArtists();
     };
 
     if (loadStatus === LoadStatus.LOADING) {

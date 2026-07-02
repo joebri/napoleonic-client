@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { usePageNumberStateSet, useTagsState } from '@state';
 import { logError } from '@utilities/logError';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { readTagsQuery } from './queries/readTagsQuery';
@@ -39,12 +39,22 @@ export const useHome = (moduleName: string) => {
         getTags();
     }, [getTags]);
 
-    const resetSearchParams = () => {
-        searchParams.delete('artists');
-        searchParams.delete('regiments');
-        searchParams.delete('tags');
-        setSearchParams(searchParams);
-    };
+    const resetSearchParams = useCallback(() => {
+        const hasFilters =
+            searchParams.has('artists') ||
+            searchParams.has('battles') ||
+            searchParams.has('regiments') ||
+            searchParams.has('tags');
+
+        if (hasFilters) {
+            const currentParams = new URLSearchParams(searchParams);
+            currentParams.delete('artists');
+            currentParams.delete('battles');
+            currentParams.delete('regiments');
+            currentParams.delete('tags');
+            setSearchParams(currentParams);
+        }
+    }, [searchParams, setSearchParams]);
 
     return {
         error,

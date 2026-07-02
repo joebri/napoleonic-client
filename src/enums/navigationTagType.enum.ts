@@ -1,8 +1,9 @@
 export enum NavigationTagType {
-    ARTISTS,
-    BATTLES,
-    COLLECTION,
-    COLLECTIONS,
-    GALLERY,
-    REGIMENTS,
+    Artists,
+    Battles,
+    Collection,
+    Collections,
+    Gallery,
+    Regiments,
+    AllTags,
 }

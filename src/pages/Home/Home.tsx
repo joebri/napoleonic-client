@@ -15,7 +15,7 @@ import { ItemDetailView } from '@pages/ItemDetail/ItemDetailView';
 import { NotFound } from '@pages/NotFound/NotFound';
 import { Settings } from '@pages/Settings/Settings';
 import { TagsList } from '@pages/TagsList/TagsList';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect, useRef } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import styles from './Home.module.scss';
@@ -56,10 +56,19 @@ const RegimentsList = lazy(() =>
 
 export const Home = () => {
     const moduleName = `${Home.name}.tsx`;
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
     const { error, loadStatus, resetSearchParams, setPageNumber } =
         useHome(moduleName);
+
+    const isInitialMount = useRef(true);
+
+    useEffect(() => {
+        if (isInitialMount.current) {
+            resetSearchParams();
+            isInitialMount.current = false;
+        }
+    }, [resetSearchParams]);
 
     const handleFilterDrawAction = (action: ActionEnum) => {
         setPageNumber(1);

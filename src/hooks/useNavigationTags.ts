@@ -40,13 +40,13 @@ export const useNavigationTags = (): any => {
                 {
                     isNavigationTag: true,
                     title: 'Artists',
-                    type: NavigationTagType.ARTISTS,
+                    type: NavigationTagType.Artists,
                     url: '/artists',
                 },
                 {
                     isNavigationTag: false,
                     title: artistNamesTitle,
-                    type: NavigationTagType.ARTISTS,
+                    type: NavigationTagType.Artists,
                     url: `/gallery?artists=${artistNamesQuery}`,
                 },
             ]);
@@ -63,13 +63,13 @@ export const useNavigationTags = (): any => {
                 {
                     isNavigationTag: true,
                     title: 'Battles',
-                    type: NavigationTagType.BATTLES,
+                    type: NavigationTagType.Battles,
                     url: '/battles',
                 },
                 {
                     isNavigationTag: false,
                     title: battleNamesTitle,
-                    type: NavigationTagType.BATTLES,
+                    type: NavigationTagType.Battles,
                     url: `/gallery?battles=${battleNamesQuery}`,
                 },
             ]);
@@ -86,13 +86,13 @@ export const useNavigationTags = (): any => {
                 {
                     isNavigationTag: true,
                     title: 'Regiments',
-                    type: NavigationTagType.REGIMENTS,
+                    type: NavigationTagType.Regiments,
                     url: '/regiments',
                 },
                 {
                     isNavigationTag: false,
                     title: regimentNamesTitle,
-                    type: NavigationTagType.REGIMENTS,
+                    type: NavigationTagType.Regiments,
                     url: `/gallery/?regiments=${regimentNamesQuery}`,
                 },
             ]);
@@ -113,7 +113,7 @@ export const useNavigationTags = (): any => {
                     isNavigationTag: true,
                     name: collectionNamesTitle,
                     title: title || '',
-                    type: NavigationTagType.COLLECTION,
+                    type: NavigationTagType.Collection,
                     url: `/collectionDetailView/${collectionId}`,
                 },
             ]);
@@ -127,13 +127,13 @@ export const useNavigationTags = (): any => {
                 {
                     isNavigationTag: true,
                     title: 'Collections',
-                    type: NavigationTagType.COLLECTIONS,
+                    type: NavigationTagType.Collections,
                     url: '/collections',
                 },
                 {
                     isNavigationTag: false,
                     title: collectionTitle,
-                    type: NavigationTagType.COLLECTIONS,
+                    type: NavigationTagType.Collections,
                     url: '',
                 },
             ]);
@@ -154,7 +154,7 @@ export const useNavigationTags = (): any => {
                 {
                     isNavigationTag: false,
                     title: filterTagNames,
-                    type: NavigationTagType.GALLERY,
+                    type: NavigationTagType.Gallery,
                     url: '/gallery',
                 },
             ]);
@@ -163,30 +163,57 @@ export const useNavigationTags = (): any => {
         }
     }, [setNavigationTags, tags]);
 
+    const setAllTagsNavigationTags = useCallback(
+        (tagNames: string[]) => {
+            const tagNamesTitle = tagNames.join(' / ');
+            const tagNamesQuery = encodeURIComponent(tagNames.join('||'));
+
+            setNavigationTags([
+                {
+                    isNavigationTag: true,
+                    title: 'All Tags',
+                    type: NavigationTagType.AllTags,
+                    url: '/allTags',
+                },
+                {
+                    isNavigationTag: false,
+                    title: tagNamesTitle,
+                    type: NavigationTagType.AllTags,
+                    url: `/gallery?tags=${tagNamesQuery}`,
+                },
+            ]);
+        },
+        [setNavigationTags]
+    );
+
     const setHeaderNavigationTags = useCallback(
         ({ id, names, tagType, title }: HeaderNavigationTagsProps) => {
             switch (tagType) {
-                case NavigationTagType.GALLERY:
+                case NavigationTagType.Gallery:
                     setGalleryNavigationTags();
                     break;
-                case NavigationTagType.ARTISTS:
+                case NavigationTagType.Artists:
                     setArtistsNavigationTags(names);
                     break;
-                case NavigationTagType.BATTLES:
+                case NavigationTagType.Battles:
                     setBattlesNavigationTags(names);
                     break;
-                case NavigationTagType.REGIMENTS:
+                case NavigationTagType.Regiments:
                     setRegimentsNavigationTags(names);
                     break;
-                case NavigationTagType.COLLECTION:
+                case NavigationTagType.Collection:
                     setCollectionNavigationTags(id, names, title);
                     break;
-                case NavigationTagType.COLLECTIONS:
+                case NavigationTagType.Collections:
                     setCollectionsNavigationTags(names[0]);
+                    break;
+                case NavigationTagType.AllTags:
+                    setAllTagsNavigationTags(names);
                     break;
             }
         },
         [
+            setAllTagsNavigationTags,
             setArtistsNavigationTags,
             setBattlesNavigationTags,
             setCollectionNavigationTags,

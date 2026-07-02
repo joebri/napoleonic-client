@@ -64,17 +64,8 @@ export const useGallery = (moduleName: string) => {
 
     const tryGetArtistsQuery = useCallback(
         (selectedRatings: number[]) => {
-            if (searchParams.get('artists')) {
-                const queryArtists = searchParams.get('artists') || '';
-                const artistNames = queryArtists.split('||');
-
-                setHeaderNavigationTags({
-                    id: '',
-                    names: artistNames,
-                    tagType: NavigationTagType.ARTISTS,
-                    title: artistNames.join(' / '),
-                } as HeaderNavigationTagsProps);
-
+            const queryArtists = searchParams.get('artists');
+            if (queryArtists) {
                 return buildArtistsQueryParams({
                     includeUnknownYear,
                     queryArtists,
@@ -84,47 +75,23 @@ export const useGallery = (moduleName: string) => {
                 });
             }
         },
-        [
-            includeUnknownYear,
-            searchParams,
-            setHeaderNavigationTags,
-            tags,
-            yearRange,
-        ]
+        [includeUnknownYear, searchParams, tags, yearRange]
     );
 
     const tryGetBattlesQuery = useCallback(
         (selectedRatings: number[]) => {
             const queryBattles = searchParams.get('battles');
             if (queryBattles) {
-                const battleNames = queryBattles.split('||');
-
-                setHeaderNavigationTags({
-                    id: '',
-                    names: battleNames,
-                    tagType: NavigationTagType.BATTLES,
-                    title: battleNames.join(' / '),
-                } as HeaderNavigationTagsProps);
-
                 return buildBattlesQueryParams(queryBattles, selectedRatings);
             }
         },
-        [searchParams, setHeaderNavigationTags]
+        [searchParams]
     );
 
     const tryGetRegimentsQuery = useCallback(
         (selectedRatings: number[]) => {
             const queryRegiments = searchParams.get('regiments');
             if (queryRegiments) {
-                const regimentNames = queryRegiments.split('||');
-
-                setHeaderNavigationTags({
-                    id: '',
-                    names: regimentNames,
-                    tagType: NavigationTagType.REGIMENTS,
-                    title: regimentNames.join(' / '),
-                } as HeaderNavigationTagsProps);
-
                 return buildRegimentsQueryParams({
                     includeUnknownYear,
                     queryRegiments,
@@ -133,7 +100,7 @@ export const useGallery = (moduleName: string) => {
                 });
             }
         },
-        [includeUnknownYear, searchParams, setHeaderNavigationTags, tags]
+        [includeUnknownYear, searchParams, tags]
     );
 
     const tryGetCollectionQuery = useCallback(
@@ -146,7 +113,7 @@ export const useGallery = (moduleName: string) => {
                 setHeaderNavigationTags({
                     id: queryCollectionData[2],
                     names: [queryCollectionData[0]],
-                    tagType: NavigationTagType.COLLECTION,
+                    tagType: NavigationTagType.Collection,
                     title: queryCollectionData[1],
                 } as HeaderNavigationTagsProps);
 
@@ -162,13 +129,6 @@ export const useGallery = (moduleName: string) => {
 
     const tryGetStandardQuery = useCallback(
         (selectedRatings: number[]) => {
-            setHeaderNavigationTags({
-                id: '',
-                names: [],
-                tagType: NavigationTagType.GALLERY,
-                title: '',
-            } as HeaderNavigationTagsProps);
-
             const queryTags = searchParams.get('tags');
 
             const queryParams = buildTagsQueryParams({
@@ -183,13 +143,7 @@ export const useGallery = (moduleName: string) => {
                 return queryParams;
             }
         },
-        [
-            includeUnknownYear,
-            searchParams,
-            setHeaderNavigationTags,
-            tags,
-            yearRange,
-        ]
+        [includeUnknownYear, searchParams, tags, yearRange]
     );
 
     const getQueryDetails = useCallback(() => {
@@ -278,6 +232,15 @@ export const useGallery = (moduleName: string) => {
                 return;
             }
 
+            if (searchParams.size === 0) {
+                setHeaderNavigationTags({
+                    id: '',
+                    names: [],
+                    tagType: NavigationTagType.Gallery,
+                    title: '',
+                } as HeaderNavigationTagsProps);
+            }
+
             const now = new Date();
             const seconds =
                 now.getHours() * 3600 +
@@ -304,7 +267,15 @@ export const useGallery = (moduleName: string) => {
 
         loadForm(pageNumber);
         document.getElementById('scrollableView')?.scrollTo({ top: 0 });
-    }, [getQueryDetails, pageNumber, readItemsByFilter, sortField, tags]);
+    }, [
+        getQueryDetails,
+        pageNumber,
+        readItemsByFilter,
+        searchParams.size,
+        setHeaderNavigationTags,
+        sortField,
+        tags,
+    ]);
 
     const changePageNumber = (keyCode: string) => {
         if (keyCode !== 'Enter') {

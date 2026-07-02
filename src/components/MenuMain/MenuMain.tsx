@@ -1,3 +1,4 @@
+import { useNavigationTags } from '@hooks/useNavigationTags';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -11,6 +12,7 @@ import styles from './MenuMain.module.scss';
 
 export const MenuMain = () => {
     const navigate = useNavigate();
+    const { clearHeaderNavigationTags } = useNavigationTags();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -26,6 +28,7 @@ export const MenuMain = () => {
 
     const handleGalleryClick = () => {
         setAnchorEl(null);
+        clearHeaderNavigationTags();
         navigate(`/gallery`);
     };
 

@@ -1,7 +1,11 @@
 import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
 import { useHelmet } from '@hooks/useHelmet';
-import { useNavigationTags } from '@hooks/useNavigationTags';
+import {
+    HeaderNavigationTagsProps,
+    useNavigationTags,
+} from '@hooks/useNavigationTags';
 import { FilterTag } from '@models/FilterTag.model';
 import { TagCount as ArtistCount } from '@models/TagCount.model';
 import {
@@ -16,11 +20,13 @@ import { TagsSortOrder } from '@state/sortField.state';
 import { ratingsToArray } from '@utilities/helper';
 import { logError } from '@utilities/logError';
 import { useDebugValue, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { readArtistCountsQuery } from './queries/readArtistCountsQuery';
 
 export const useArtistsList = (moduleName: string) => {
     const helmet = useHelmet();
+    const navigate = useNavigate();
 
     const setHeaderTitle = useHeaderTitleStateSet();
 
@@ -48,7 +54,8 @@ export const useArtistsList = (moduleName: string) => {
 
     const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
-    const { clearHeaderNavigationTags } = useNavigationTags();
+    const { clearHeaderNavigationTags, setHeaderNavigationTags } =
+        useNavigationTags();
 
     const [readArtistCounts, { data, error }] = useLazyQuery(
         readArtistCountsQuery
@@ -109,14 +116,12 @@ export const useArtistsList = (moduleName: string) => {
     }, [ratings, filterTags, readArtistCounts, yearRange, includeUnknownYear]);
 
     const getSelectedArtistNames = () => {
-        const selected = encodeURIComponent(
-            artistCounts
-                .filter((artist: ArtistCount) =>
-                    selectedArtistNames.has(artist.name)
-                )
-                .map((artist: ArtistCount) => artist.name)
-                .join('||')
-        );
+        const selected = artistCounts
+            .filter((artist: ArtistCount) =>
+                selectedArtistNames.has(artist.name)
+            )
+            .map((artist: ArtistCount) => artist.name);
+
         return selected;
     };
 
@@ -135,10 +140,24 @@ export const useArtistsList = (moduleName: string) => {
         });
     };
 
+    const showSelectedArtists = () => {
+        const artistNames = getSelectedArtistNames();
+
+        setHeaderNavigationTags({
+            id: '',
+            names: artistNames,
+            tagType: NavigationTagType.Artists,
+            title: artistNames.join(' / '),
+        } as HeaderNavigationTagsProps);
+
+        const encodedArtistNames = encodeURIComponent(artistNames.join('||'));
+        navigate(`/gallery?artists=${encodedArtistNames}`);
+    };
+
     return {
         artistCounts: sortedArtistCounts,
         error,
-        getSelectedArtistNames,
+        showSelectedArtists,
         isSearchEnabled,
         loadStatus,
         selectedArtistNames,

@@ -1,17 +1,24 @@
 import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
 import { useHelmet } from '@hooks/useHelmet';
-import { useNavigationTags } from '@hooks/useNavigationTags';
+import {
+    HeaderNavigationTagsProps,
+    useNavigationTags,
+} from '@hooks/useNavigationTags';
 import { TagCount } from '@models/TagCount.model';
 import { useHeaderTitleStateSet, useSortFieldState } from '@state';
 import { TagsSortOrder } from '@state/sortField.state';
 import { logError } from '@utilities/logError';
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { readItemTagCountsQuery } from './queries/readItemTagCountsQuery';
 
 export const useTagsList = (moduleName: string) => {
     const helmet = useHelmet();
+    const navigate = useNavigate();
+
     const setHeaderTitle = useHeaderTitleStateSet();
 
     // const includeUnknownYear = useIncludeUnknownYearStateGet();
@@ -35,7 +42,8 @@ export const useTagsList = (moduleName: string) => {
 
     const [isSearchEnabled, setIsSearchEnabled] = useState<boolean>(false);
 
-    const { clearHeaderNavigationTags } = useNavigationTags();
+    const { clearHeaderNavigationTags, setHeaderNavigationTags } =
+        useNavigationTags();
 
     const [readItemTagCounts, { data, error }] = useLazyQuery(
         readItemTagCountsQuery
@@ -79,12 +87,9 @@ export const useTagsList = (moduleName: string) => {
     }, [clearHeaderNavigationTags, setHeaderTitle]);
 
     const getSelectedTagCountNames = () => {
-        const selected = encodeURIComponent(
-            tagCounts
-                .filter((tag: TagCount) => selectedTagNames.has(tag.name))
-                .map((tag: TagCount) => tag.name)
-                .join('||')
-        );
+        const selected = tagCounts
+            .filter((tag: TagCount) => selectedTagNames.has(tag.name))
+            .map((tag: TagCount) => tag.name);
         return selected;
     };
 
@@ -103,10 +108,24 @@ export const useTagsList = (moduleName: string) => {
         });
     };
 
+    const showSelectedTags = () => {
+        const tagNames = getSelectedTagCountNames();
+
+        setHeaderNavigationTags({
+            id: '',
+            names: tagNames,
+            tagType: NavigationTagType.AllTags,
+            title: tagNames.join(' / '),
+        } as HeaderNavigationTagsProps);
+
+        const encodedTagNames = encodeURIComponent(tagNames.join('||'));
+        navigate(`/gallery?tags=${encodedTagNames}`);
+    };
+
     return {
         tagCounts: sortedTagCounts,
         error,
-        getSelectedTagCountNames,
+        showSelectedTags,
         isSearchEnabled,
         loadStatus,
         updateSelectedTagNames,

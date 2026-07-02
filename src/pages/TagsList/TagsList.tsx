@@ -3,14 +3,12 @@ import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { TagCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 import styles from './TagsList.module.scss';
 import { useTagsList } from './useTagsList';
 
 export const TagsList = () => {
     const moduleName = `${TagsList.name}.tsx`;
-    const navigate = useNavigate();
 
     const {
         tagCounts,
@@ -18,7 +16,7 @@ export const TagsList = () => {
         isSearchEnabled,
         loadStatus,
         updateSelectedTagNames,
-        getSelectedTagCountNames,
+        showSelectedTags,
         selectedTagNames,
     } = useTagsList(moduleName);
 
@@ -27,8 +25,7 @@ export const TagsList = () => {
     };
 
     const handleSearchClick = () => {
-        const selected = getSelectedTagCountNames();
-        navigate(`/gallery?tags=${selected}`);
+        showSelectedTags();
     };
 
     if (loadStatus === LoadStatus.LOADING) {

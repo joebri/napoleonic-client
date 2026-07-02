@@ -1,6 +1,7 @@
 import { ItemCard } from '@components/ItemCard/ItemCard';
 import { Typography } from '@mui/material';
 import { useTagsStateGet } from '@state';
+import { useSearchParams } from 'react-router-dom';
 
 import { FilterTag } from '../../models/FilterTag.model';
 import { Item } from '../../models/Item.model';
@@ -12,6 +13,7 @@ export type ItemCardListProps = {
 
 export const ItemCardList = ({ items }: ItemCardListProps) => {
     const tags = useTagsStateGet();
+    const [searchParams] = useSearchParams();
 
     if (items?.length > 0) {
         return (
@@ -24,7 +26,9 @@ export const ItemCardList = ({ items }: ItemCardListProps) => {
     }
 
     const isAnyTagSelected = tags.some((tag: FilterTag) => tag.isSelected);
-    if (isAnyTagSelected) {
+    const isSearchQueryAvailable = searchParams.size > 0;
+
+    if (isAnyTagSelected || isSearchQueryAvailable) {
         return (
             <Typography className={styles.noItems} variant="h5">
                 No Items available.

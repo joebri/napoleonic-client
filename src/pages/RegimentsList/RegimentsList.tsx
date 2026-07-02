@@ -3,18 +3,16 @@ import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { TagCount as RegimentCount } from '@models/TagCount.model';
 import { Button, Chip, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 import styles from './RegimentsList.module.scss';
 import { useRegimentList } from './useRegimentList';
 
 export const RegimentsList = () => {
     const moduleName = `${RegimentsList.name}.tsx`;
-    const navigate = useNavigate();
 
     const {
         error,
-        getSelectedRegimentNames,
+        showSelectedRegiments,
         isSearchEnabled,
         loadStatus,
         regimentCounts,
@@ -27,8 +25,7 @@ export const RegimentsList = () => {
     };
 
     const handleSearchClick = () => {
-        const selected = getSelectedRegimentNames();
-        navigate(`/gallery?regiments=${selected}`);
+        showSelectedRegiments();
     };
 
     if (loadStatus === LoadStatus.LOADING) {

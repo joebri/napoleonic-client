@@ -1,7 +1,11 @@
 import { useLazyQuery } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
+import { NavigationTagType } from '@enums/navigationTagType.enum';
 import { useHelmet } from '@hooks/useHelmet';
-import { useNavigationTags } from '@hooks/useNavigationTags';
+import {
+    HeaderNavigationTagsProps,
+    useNavigationTags,
+} from '@hooks/useNavigationTags';
 import { TagCount as BattleCount } from '@models/TagCount.model';
 import {
     useHeaderTitleStateSet,
@@ -22,7 +26,8 @@ export const useBattlesList = (moduleName: string) => {
     const navigate = useNavigate();
 
     const setHeaderTitle = useHeaderTitleStateSet();
-    const { clearHeaderNavigationTags } = useNavigationTags();
+    const { clearHeaderNavigationTags, setHeaderNavigationTags } =
+        useNavigationTags();
     const ratings = useRatingsStateGet();
 
     const [loadStatus, setLoadStatus] = useState<LoadStatus>(
@@ -104,20 +109,27 @@ export const useBattlesList = (moduleName: string) => {
     };
 
     const getSelectedBattleNames = () => {
-        const selected = encodeURIComponent(
-            battleCounts
-                .filter((battle: BattleCount) =>
-                    selectedBattleNames.has(battle.name)
-                )
-                .map((battle: BattleCount) => battle.name)
-                .join('||')
-        );
+        const selected = battleCounts
+            .filter((battle: BattleCount) =>
+                selectedBattleNames.has(battle.name)
+            )
+            .map((battle: BattleCount) => battle.name);
+
         return selected;
     };
 
     const showSelectedBattles = () => {
-        const selected = getSelectedBattleNames();
-        navigate(`/gallery?battles=${selected}`);
+        const battleNames = getSelectedBattleNames();
+
+        setHeaderNavigationTags({
+            id: '',
+            names: battleNames,
+            tagType: NavigationTagType.Battles,
+            title: battleNames.join(' / '),
+        } as HeaderNavigationTagsProps);
+
+        const encodedBattleNames = encodeURIComponent(battleNames.join('||'));
+        navigate(`/gallery?battles=${encodedBattleNames}`);
     };
 
     return {
