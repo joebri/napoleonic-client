@@ -2,6 +2,7 @@ import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
 import { ErrorHandler } from '@components/ErrorHandler/ErrorHandler';
 import { Loading } from '@components/Loading/Loading';
 import { LoadStatus } from '@enums/loadStatus.enum';
+import { Item } from '@models/Item.model';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ import {
     useItemDetailEdit,
 } from './useItemDetailEdit';
 
-const ItemDetailEdit = () => {
+export const ItemDetailEdit = () => {
     const moduleName = `${ItemDetailEdit.name}.tsx`;
     const navigate = useNavigate();
 
@@ -29,23 +30,18 @@ const ItemDetailEdit = () => {
         loadStatus,
         setIsMessageVisible,
         tryUpdate,
-        updateFieldValue,
     } = useItemDetailEdit({
         moduleName,
         onCompletedEdit,
     } as ItemDetailEditProps);
-
-    const handleEditChange = (field: string, value: string | number) => {
-        updateFieldValue(field, value);
-    };
 
     const handleEditCancelClick = () => {
         loadForm();
         navigate(`/itemDetailView/${itemId}`);
     };
 
-    const handleEditSaveClick = () => {
-        tryUpdate();
+    const handleEditSaveClick = (item: Item) => {
+        tryUpdate(item);
     };
 
     const handleMessageClose = () => {
@@ -55,6 +51,7 @@ const ItemDetailEdit = () => {
     if (loadStatus === LoadStatus.LOADING) {
         return <Loading />;
     }
+
     if (loadStatus === LoadStatus.ERROR) {
         return <ErrorHandler error={error} />;
     }
@@ -66,18 +63,14 @@ const ItemDetailEdit = () => {
                 <Edit
                     item={item}
                     onCancel={handleEditCancelClick}
-                    onChange={handleEditChange}
                     onSave={handleEditSaveClick}
                 />
             </div>
-
             <AppSnackBar
                 message="Unable to update item. Please try again."
                 onClose={handleMessageClose}
                 open={isMessageVisible}
-            ></AppSnackBar>
+            />
         </>
     );
 };
-
-export { ItemDetailEdit };

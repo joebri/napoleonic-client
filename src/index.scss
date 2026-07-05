@@ -1,55 +1,58 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family:
+        source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 blockquote {
-  background: #f9f9f9;
-  border-left: 10px solid #ccc;
-  margin: 1.5em 10px;
-  padding: 0.5em 10px;
-  quotes: '\201C''\201D''\2018''\2019';
-
-  &:before {
-    color: #ccc;
-    content: open-quote;
-    font-size: 4em;
-    line-height: 0.1em;
-    vertical-align: -0.4em;
-  }
-  p {
-    display: inline;
-    font-style: italic;
-  }
-  cite {
-    display: block;
-    margin-top: 0.5rem;
-    text-align: end;
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: '\201C' '\201D' '\2018' '\2019';
 
     &:before {
-      content: '\2013';
-      margin-right: 0.25rem;
+        color: #ccc;
+        content: open-quote;
+        font-size: 4em;
+        line-height: 0.1em;
+        vertical-align: -0.4em;
     }
-  }
+    p {
+        display: inline;
+        font-style: italic;
+    }
+    cite {
+        display: block;
+        margin-top: 0.5rem;
+        text-align: end;
+
+        &:before {
+            content: '\2013';
+            margin-right: 0.25rem;
+        }
+    }
 }
 
 @font-face {
-  font-family: 'TangerineBold';
-  src: local('TangerineBold'),
-    url('./fonts/Tangerine/Tangerine-Bold.ttf') format('truetype');
-  font-weight: bold;
+    font-family: 'TangerineBold';
+    src:
+        local('TangerineBold'),
+        url('./fonts/Tangerine/Tangerine-Bold.ttf') format('truetype');
+    font-weight: bold;
 }
 @font-face {
-  font-family: 'Tangerine';
-  src: local('Tangerine'),
-    url('./fonts/Tangerine/Tangerine-Regular.ttf') format('truetype');
+    font-family: 'Tangerine';
+    src:
+        local('Tangerine'),
+        url('./fonts/Tangerine/Tangerine-Regular.ttf') format('truetype');
 }

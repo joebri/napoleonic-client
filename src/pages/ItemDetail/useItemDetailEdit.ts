@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { LoadStatus } from '@enums/loadStatus.enum';
 import { Rating } from '@enums/rating.enum';
-import { useConfirmExit } from '@hooks/useConfirmExit';
+// import { useConfirmExit } from '@hooks/useConfirmExit';
 import { useHelmet } from '@hooks/useHelmet';
 import { useNavigationTags } from '@hooks/useNavigationTags';
 import { Item } from '@models/Item.model';
@@ -28,9 +28,6 @@ export const useItemDetailEdit = (props: ItemDetailEditProps) => {
     );
     const [item, setItem] = useState<Item>(initialisedItem);
     const [isMessageVisible, setIsMessageVisible] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
-
-    useConfirmExit(isDirty);
 
     const [readItem, { data, error }] = useLazyQuery(readItemQuery);
 
@@ -67,7 +64,8 @@ export const useItemDetailEdit = (props: ItemDetailEditProps) => {
 
     const [updateItem] = useMutation(updateItemMutation);
 
-    const tryUpdate = () => {
+    const tryUpdate = (item: Item) => {
+        setItem(item);
         try {
             updateItem({
                 variables: {
@@ -96,14 +94,6 @@ export const useItemDetailEdit = (props: ItemDetailEditProps) => {
         }
     };
 
-    const updateFieldValue = (field: string, value: string | number) => {
-        setItem((priorItem: Item) => ({
-            ...priorItem,
-            [field]: value,
-        }));
-        setIsDirty(true);
-    };
-
     useEffect(() => {
         helmet.setTitle('Uniformology: Edit Item');
     }, [helmet]);
@@ -121,6 +111,5 @@ export const useItemDetailEdit = (props: ItemDetailEditProps) => {
         loadStatus,
         setIsMessageVisible,
         tryUpdate,
-        updateFieldValue,
     };
 };

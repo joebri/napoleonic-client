@@ -1,4 +1,5 @@
 import { AppSnackBar } from '@components/AppSnackBar/AppSnackBar';
+import { Item } from '@models/Item.model';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +7,7 @@ import { Edit } from './Edit';
 import styles from './ItemDetail.module.scss';
 import { type ItemDetailAddProps, useItemDetailAdd } from './useItemDetailAdd';
 
-const ItemDetailAdd = () => {
+export const ItemDetailAdd = () => {
     const moduleName = `${ItemDetailAdd.name}.tsx`;
     const navigate = useNavigate();
 
@@ -14,24 +15,15 @@ const ItemDetailAdd = () => {
         navigate(`/itemDetailView/${itemId}`);
     };
 
-    const {
-        isMessageVisible,
-        item,
-        setIsMessageVisible,
-        tryCreateItem,
-        updateFieldValue,
-    } = useItemDetailAdd({ moduleName, onCompletedAdd } as ItemDetailAddProps);
-
-    const handleEditChange = (field: string, value: string | number) => {
-        updateFieldValue(field, value);
-    };
+    const { isMessageVisible, item, setIsMessageVisible, tryCreateItem } =
+        useItemDetailAdd({ moduleName, onCompletedAdd } as ItemDetailAddProps);
 
     const handleEditCancelClick = () => {
         navigate(`/gallery`);
     };
 
-    const handleEditSaveClick = () => {
-        tryCreateItem();
+    const handleEditSaveClick = (item: Item) => {
+        tryCreateItem(item);
     };
 
     const handleMessageClose = () => {
@@ -45,7 +37,6 @@ const ItemDetailAdd = () => {
                 <Edit
                     item={item}
                     onCancel={handleEditCancelClick}
-                    onChange={handleEditChange}
                     onSave={handleEditSaveClick}
                 />
             </div>
@@ -58,5 +49,3 @@ const ItemDetailAdd = () => {
         </>
     );
 };
-
-export { ItemDetailAdd };

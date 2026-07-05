@@ -1,0 +1,198 @@
+$color-primary: var(--mui-palette-primary-main, #1976d2);
+$color-text-icon: var(--mui-palette-text-secondary, rgba(0, 0, 0, 0.54));
+
+$bg-white: #ffffff;
+$bg-toolbar: #f5f5f5;
+$border-light: #e0e0e0;
+$border-table: #cccccc;
+$table-resize-blue: #3b82f6;
+
+$bg-hover-inactive: rgba(0, 0, 0, 0.04);
+$bg-active-state: rgba(0, 0, 0, 0.08);
+$bg-hover-active: rgba(0, 0, 0, 0.12);
+$border-active: rgba(0, 0, 0, 0.23);
+
+$transition-standard: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+.root {
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+.label {
+    transform: none !important;
+    font-size: 0.75rem !important;
+    margin-bottom: 4px;
+    font-family: 'Roboto', sans-serif;
+
+    &.Mui-focused {
+        color: $color-primary;
+    }
+}
+
+.editorContainer {
+    border-radius: 8px;
+    overflow: hidden;
+
+    &.hasLabel {
+        margin-top: 0px;
+    }
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    background-color: $bg-toolbar;
+    border-bottom: 1px solid $border-light;
+    align-items: center;
+}
+
+.linkButton {
+    border: 1px solid;
+    border-color: $border-light;
+    border-radius: 4px;
+    height: 34px;
+    width: 34px;
+}
+
+.colorButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid;
+    border-color: $border-light;
+    border-radius: 4px;
+    height: 34px;
+    width: 34px;
+    cursor: pointer;
+    background-color: transparent;
+    transition: $transition-standard;
+
+    &:hover {
+        background-color: $bg-hover-inactive;
+    }
+
+    &.is-active {
+        border-color: $border-active;
+        background-color: $bg-active-state;
+
+        &:hover {
+            background-color: $bg-hover-active;
+        }
+    }
+}
+
+.colourButtonIcon {
+    color: $color-text-icon;
+    font-size: 1.25rem;
+
+    &.isActive {
+        color: $color-primary;
+    }
+}
+
+.tableButton {
+    border: 1px solid;
+    border-color: $border-light;
+    border-radius: 4px;
+    height: 34px;
+    width: 34px;
+}
+
+.editorContainer {
+    min-height: 300px;
+    padding: 16px;
+    background-color: $bg-white;
+
+    :global(.tiptap) {
+        outline: none;
+        min-height: 300px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+
+        p {
+            margin: 0 0 1em 0;
+        }
+        h1 {
+            font-size: 2rem;
+            margin: 0.6em 0;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin: 0.6em 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        td,
+        th {
+            min-width: 1em;
+            border: 1px solid $border-table;
+            padding: 8px 12px;
+            vertical-align: top;
+            box-sizing: border-box;
+            position: relative;
+            & > * {
+                margin: 0;
+            }
+        }
+
+        th {
+            font-weight: bold;
+            text-align: left;
+            background-color: $bg-toolbar;
+        }
+
+        :global(.selectedCell) {
+            &::after {
+                z-index: 2;
+                position: absolute;
+                content: '';
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                background: rgba(200, 200, 255, 0.4);
+                pointer-events: none;
+            }
+        }
+
+        :global(.column-resize-handle) {
+            position: absolute;
+            right: -2px;
+            top: 0;
+            bottom: -2px;
+            width: 4px;
+            background-color: $table-resize-blue;
+            cursor: col-resize;
+            z-index: 10;
+        }
+    }
+
+    :global(.editor-link) {
+        color: $color-primary;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}
+
+.tableToolbar {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background-color: $bg-white;
+    border: 1px solid;
+    border-color: $border-light;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}

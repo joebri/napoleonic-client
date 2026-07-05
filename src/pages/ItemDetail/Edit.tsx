@@ -1,4 +1,6 @@
+import { RichTextEditor } from '@components/RichTextEditor/RichTextEditor';
 import { TagInput } from '@components/TagInput/TagInput';
+import { useConfirmExit } from '@hooks/useConfirmExit';
 import { Item } from '@models/Item.model';
 import BackspaceOutlinedIcon from '@mui/icons-material/Backspace';
 import SaveIcon from '@mui/icons-material/Save';
@@ -15,34 +17,57 @@ import {
 import styles from './ItemDetail.module.scss';
 import { ratingLabels, toItemRating, toUiRating } from './ItemDetailHelper';
 
-interface EditProps {
+type EditProps = {
     item: Item;
-    onCancel: Function;
-    onChange: Function;
-    onSave: Function;
-}
+    onCancel: () => void;
+    onSave: (updatedItem: Item) => void;
+};
 
-export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
+export const Edit = ({ item, onCancel, onSave }: EditProps) => {
+    const [formState, setFormState] = useState<Item>({ ...item });
     const [isDirty, setIsDirty] = useState(false);
     const [ratingHovered, setRatingHovered] = useState(-1);
     const [rating, setRating] = useState(2);
 
+    useConfirmExit(isDirty);
+
     useEffect(() => {
+        setFormState({ ...item });
         setRating(toUiRating(item.rating));
-    }, [item.rating]);
+    }, [item]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        onChange(event.target.name, event.target.value);
+        const { name, value } = event.target;
+        setFormState((previous) => ({
+            ...previous,
+            [name]: value,
+        }));
+        setIsDirty(true);
+    };
+
+    const handleLongDescriptionChange = (html: string) => {
+        setFormState((previous) => ({
+            ...previous,
+            descriptionLong: html,
+        }));
         setIsDirty(true);
     };
 
     const handleTagsChange = (tags: string[]) => {
-        onChange('tags', tags);
+        setFormState((previous) => ({
+            ...previous,
+            tags: tags,
+        }));
         setIsDirty(true);
     };
 
     const handleRatingChange = (_: SyntheticEvent, value: number | null) => {
-        onChange('rating', toItemRating(value));
+        const calculatedRating = toItemRating(value);
+        setRating(toUiRating(calculatedRating));
+        setFormState((previous) => ({
+            ...previous,
+            rating: calculatedRating,
+        }));
         setIsDirty(true);
     };
 
@@ -51,13 +76,13 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
     };
 
     const handleSaveClick = () => {
-        onSave();
+        onSave(formState);
     };
 
     const handleOnKeyDown = (event: KeyboardEvent) => {
         if (event.ctrlKey && event.code === 'KeyS') {
-            onSave();
             event.preventDefault();
+            onSave(formState);
         }
     };
 
@@ -92,12 +117,8 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
                 margin="normal"
                 name="title"
                 onChange={handleChange}
-                slotProps={{
-                    inputLabel: {
-                        shrink: true,
-                    },
-                }}
-                value={item.title}
+                slotProps={{ inputLabel: { shrink: true } }}
+                value={formState.title || ''}
                 variant="standard"
             />
             <TextField
@@ -106,41 +127,25 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
                 margin="normal"
                 name="descriptionShort"
                 onChange={handleChange}
-                slotProps={{
-                    inputLabel: {
-                        shrink: true,
-                    },
-                }}
-                value={item.descriptionShort}
+                slotProps={{ inputLabel: { shrink: true } }}
+                value={formState.descriptionShort || ''}
                 variant="standard"
             />
-            <TextField
-                fullWidth
-                label="Long description"
-                margin="normal"
-                multiline
-                name="descriptionLong"
-                onChange={handleChange}
-                slotProps={{
-                    inputLabel: {
-                        shrink: true,
-                    },
-                }}
-                value={item.descriptionLong}
-                variant="standard"
+
+            <RichTextEditor
+                initialContent={formState.descriptionLong}
+                label="Long Description"
+                onChange={handleLongDescriptionChange}
             />
+
             <TextField
                 fullWidth
                 label="Regiment(s)"
                 margin="normal"
                 name="regiments"
                 onChange={handleChange}
-                slotProps={{
-                    inputLabel: {
-                        shrink: true,
-                    },
-                }}
-                value={item.regiments}
+                slotProps={{ inputLabel: { shrink: true } }}
+                value={formState.regiments || ''}
                 variant="standard"
             />
             <TextField
@@ -149,12 +154,8 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
                 margin="normal"
                 name="publicId"
                 onChange={handleChange}
-                slotProps={{
-                    inputLabel: {
-                        shrink: true,
-                    },
-                }}
-                value={item.publicId}
+                slotProps={{ inputLabel: { shrink: true } }}
+                value={formState.publicId || ''}
                 variant="standard"
             />
             <TextField
@@ -163,27 +164,19 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
                 margin="normal"
                 name="artist"
                 onChange={handleChange}
-                slotProps={{
-                    inputLabel: {
-                        shrink: true,
-                    },
-                }}
-                value={item.artist}
+                slotProps={{ inputLabel: { shrink: true } }}
+                value={formState.artist || ''}
                 variant="standard"
             />
-            {/* TODO JSB Change this to CSS */}
+
             <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                 <TextField
                     label="Year From"
                     margin="normal"
                     name="yearFrom"
                     onChange={handleChange}
-                    slotProps={{
-                        inputLabel: {
-                            shrink: true,
-                        },
-                    }}
-                    value={item.yearFrom}
+                    slotProps={{ inputLabel: { shrink: true } }}
+                    value={formState.yearFrom || ''}
                     variant="standard"
                 />
                 <TextField
@@ -191,12 +184,8 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
                     margin="normal"
                     name="yearTo"
                     onChange={handleChange}
-                    slotProps={{
-                        inputLabel: {
-                            shrink: true,
-                        },
-                    }}
-                    value={item.yearTo}
+                    slotProps={{ inputLabel: { shrink: true } }}
+                    value={formState.yearTo || ''}
                     variant="standard"
                 />
             </Stack>
@@ -204,7 +193,6 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
             <InputLabel className={styles.ratingLabel}>Rating</InputLabel>
             <div className={styles.rating}>
                 <Rating
-                    defaultValue={2}
                     max={3}
                     name="rating"
                     onChange={handleRatingChange}
@@ -226,7 +214,7 @@ export const Edit = ({ item, onCancel, onChange, onSave }: EditProps) => {
                 <TagInput
                     isEdit
                     onChange={handleTagsChange}
-                    tagNames={item.tags}
+                    tagNames={formState.tags || []}
                 />
             </div>
         </div>

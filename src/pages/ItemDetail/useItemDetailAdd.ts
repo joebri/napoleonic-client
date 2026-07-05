@@ -47,7 +47,8 @@ export const useItemDetailAdd = (props: ItemDetailAddProps) => {
 
     const [createItem] = useMutation(createItemMutation);
 
-    const tryCreateItem = async () => {
+    const tryCreateItem = async (item: Item) => {
+        setItem(item);
         try {
             const response = await createItem({
                 variables: {
@@ -65,7 +66,6 @@ export const useItemDetailAdd = (props: ItemDetailAddProps) => {
             });
 
             if (response.data?.createItem) {
-                console.log('response.data', response.data);
                 props.onCompletedAdd(response.data.createItem);
             }
         } catch (error) {
@@ -79,18 +79,10 @@ export const useItemDetailAdd = (props: ItemDetailAddProps) => {
         }
     };
 
-    const updateFieldValue = (field: string, value: string | number) => {
-        setItem((priorItem: Item) => ({
-            ...priorItem,
-            [field]: value,
-        }));
-    };
-
     return {
         isMessageVisible,
         item,
         setIsMessageVisible,
         tryCreateItem,
-        updateFieldValue,
     };
 };

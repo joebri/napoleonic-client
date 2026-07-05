@@ -2,7 +2,7 @@ import { TagInput } from '@components/TagInput/TagInput';
 import { Item } from '@models/Item.model';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import { Button, Rating, Typography } from '@mui/material';
+import { Box, Button, Rating, Typography } from '@mui/material';
 import { getLocalImage } from '@utilities/imageService';
 import { useEffect, useState } from 'react';
 
@@ -11,11 +11,11 @@ import { ratingLabels, toUiRating } from './ItemDetailHelper';
 
 interface ViewProps {
     item: Item;
-    onDelete: Function;
-    onEdit: Function;
+    onDelete: () => void;
+    onEdit: () => void;
 }
 
-const View = ({ item, onDelete, onEdit }: ViewProps) => {
+export const View = ({ item, onDelete, onEdit }: ViewProps) => {
     const [rating, setRating] = useState(0);
 
     useEffect(() => {
@@ -57,8 +57,43 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
             {item.descriptionShort && (
                 <Typography variant="h3">{item.descriptionShort}</Typography>
             )}
+
             {item.descriptionLong && (
-                <p dangerouslySetInnerHTML={{ __html: item.descriptionLong }} />
+                <Box
+                    sx={{
+                        '& table': {
+                            borderCollapse: 'collapse',
+                            tableLayout: 'fixed',
+                            width: '100%',
+                            margin: '1rem 0',
+                            overflow: 'hidden',
+                        },
+                        '& td, & th': {
+                            minWidth: '1em',
+                            border: '1px solid #ccc',
+                            padding: '8px 12px',
+                            verticalAlign: 'top',
+                            boxSizing: 'border-box',
+                        },
+                        '& th': {
+                            fontWeight: 'bold',
+                            textAlign: 'left',
+                            backgroundColor: '#f5f5f5',
+                        },
+                        '& h2': {
+                            marginBlockEnd: 0,
+                        },
+                        '& h2 + p': {
+                            marginBlockStart: 0.2,
+                        },
+                    }}
+                >
+                    <p
+                        dangerouslySetInnerHTML={{
+                            __html: item.descriptionLong,
+                        }}
+                    />
+                </Box>
             )}
             <div className={styles.containerImage}>
                 {item.publicId && (
@@ -109,5 +144,3 @@ const View = ({ item, onDelete, onEdit }: ViewProps) => {
         </div>
     );
 };
-
-export { View };
