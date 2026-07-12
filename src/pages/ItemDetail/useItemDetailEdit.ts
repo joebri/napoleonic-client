@@ -76,7 +76,9 @@ export const useItemDetailEdit = (props: ItemDetailEditProps) => {
                     publicId: item.publicId?.trim(),
                     rating: parseInt(item.rating.toString()),
                     regiments: item.regiments?.trim() || '',
-                    tags: item.tags,
+                    tags: item.tags.map((tag) => {
+                        return tag.trim();
+                    }),
                     title: item.title?.trim(),
                     yearFrom: item.yearFrom?.trim(),
                     yearTo: item.yearTo?.trim(),

@@ -58,6 +58,30 @@ export const View = ({ item, onDelete, onEdit }: ViewProps) => {
                 <Typography variant="h3">{item.descriptionShort}</Typography>
             )}
 
+            <div className={styles.containerImage}>
+                {item.publicId && (
+                    <>
+                        <div>
+                            <img
+                                alt=""
+                                className={styles.image}
+                                src={getLocalImage(item.publicId)}
+                                title={item.publicId}
+                            />
+                        </div>
+                        {item.artist && (
+                            <Typography
+                                className={styles.artist}
+                                variant="body2"
+                                color="text.secondary"
+                            >
+                                {item.artist}
+                            </Typography>
+                        )}
+                    </>
+                )}
+            </div>
+
             {item.descriptionLong && (
                 <Box
                     sx={{
@@ -89,35 +113,14 @@ export const View = ({ item, onDelete, onEdit }: ViewProps) => {
                     }}
                 >
                     <p
+                        className={styles.viewerContent}
                         dangerouslySetInnerHTML={{
                             __html: item.descriptionLong,
                         }}
                     />
                 </Box>
             )}
-            <div className={styles.containerImage}>
-                {item.publicId && (
-                    <>
-                        <div>
-                            <img
-                                alt=""
-                                className={styles.image}
-                                src={getLocalImage(item.publicId)}
-                                title={item.publicId}
-                            />
-                        </div>
-                        {item.artist && (
-                            <Typography
-                                className={styles.artist}
-                                variant="body2"
-                                color="text.secondary"
-                            >
-                                {item.artist}
-                            </Typography>
-                        )}
-                    </>
-                )}
-            </div>
+
             {item.regiments && (
                 <p>
                     <label>Regiment(s):</label>

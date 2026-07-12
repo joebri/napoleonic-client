@@ -3,6 +3,7 @@ import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import ImageIcon from '@mui/icons-material/Image';
 import LinkIcon from '@mui/icons-material/Link';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import TitleIcon from '@mui/icons-material/Title';
@@ -20,6 +21,7 @@ import {
 } from '@mui/material';
 import { BubbleMenu as BubbleMenuExtension } from '@tiptap/extension-bubble-menu';
 import { Color } from '@tiptap/extension-color';
+import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import {
     Table,
@@ -32,6 +34,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useRef } from 'react';
 
+import { ImageToolBar } from './ImageToolBar';
 import styles from './RichTextEditor.module.scss';
 import { TableToolBar } from './TableToolBar';
 
@@ -47,7 +50,6 @@ export const RichTextEditor = (props: EditorProps) => {
     const editor = useEditor({
         extensions: [
             StarterKit,
-            BubbleMenuExtension,
             TextStyle,
             Color,
             Link.configure({
@@ -60,10 +62,12 @@ export const RichTextEditor = (props: EditorProps) => {
             TableRow,
             TableCell,
             TableHeader,
-            BubbleMenuExtension.configure({
-                pluginKey: 'tableBubbleMenu',
-                shouldShow: ({ editor }) => editor.isActive('table'),
+            Image.configure({
+                HTMLAttributes: {
+                    style: 'max-width: 100%;',
+                },
             }),
+            BubbleMenuExtension,
         ],
         content: props.initialContent,
 
@@ -92,6 +96,14 @@ export const RichTextEditor = (props: EditorProps) => {
     if (!editor) {
         return null;
     }
+
+    const addImage = () => {
+        const url = window.prompt('Enter the image URL');
+
+        if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+        }
+    };
 
     const addTable = () => {
         editor
@@ -233,6 +245,20 @@ export const RichTextEditor = (props: EditorProps) => {
                         </IconButton>
                     </Tooltip>
 
+                    {/* Image Trigger Button */}
+                    <Tooltip title="Insert Image">
+                        <IconButton
+                            className={styles.imageButton}
+                            color={
+                                editor.isActive('link') ? 'primary' : 'default'
+                            }
+                            onClick={addImage}
+                            size="small"
+                        >
+                            <ImageIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+
                     {/* Color Palette Control */}
                     <Tooltip title="Text Color">
                         <Box
@@ -274,10 +300,16 @@ export const RichTextEditor = (props: EditorProps) => {
                     className={`${styles.editorContainer} tiptap-editor-wrapper`}
                 >
                     {editor && (
-                        <TableToolBar
-                            containerRef={editorWrapperRef}
-                            editor={editor}
-                        />
+                        <>
+                            <ImageToolBar
+                                containerRef={editorWrapperRef}
+                                editor={editor}
+                            />
+                            <TableToolBar
+                                containerRef={editorWrapperRef}
+                                editor={editor}
+                            />
+                        </>
                     )}
                     <EditorContent editor={editor} />
                 </Box>

@@ -49,7 +49,8 @@ $transition-standard: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
     align-items: center;
 }
 
-.linkButton {
+.linkButton,
+.imageButton {
     border: 1px solid;
     border-color: $border-light;
     border-radius: 4px;

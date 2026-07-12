@@ -2,6 +2,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import { Box, IconButton, Paper, Tooltip } from '@mui/material';
+import { NodeSelection } from '@tiptap/pm/state';
 import { Editor } from '@tiptap/react';
 import { BubbleMenu } from '@tiptap/react/menus';
 
@@ -17,6 +18,52 @@ export const TableToolBar = ({ containerRef, editor }: TableToolBarProps) => {
         <BubbleMenu
             appendTo={containerRef.current || undefined}
             editor={editor}
+            // 1. Give it a distinct plugin key to pair it perfectly with this component
+            pluginKey="tableBubbleMenu"
+            // 2. Put the strict visibility parameters directly into the component's hook
+            shouldShow={({ editor, state, view }) => {
+                const { selection } = state;
+
+                // Block menu if selection is explicitly a NodeSelection on an image
+                if (
+                    selection instanceof NodeSelection &&
+                    selection.node.type.name === 'image'
+                ) {
+                    return false;
+                }
+
+                // Block menu if general image selection is active
+                if (editor.isActive('image')) {
+                    return false;
+                }
+
+                // Deep Ancestry Check: Check every depth level from the current position up.
+                // If we hit an image node BEFORE hitting table layout nodes, HIDE the menu.
+                const depth = selection.$anchor.depth;
+                for (let i = depth; i > 0; i--) {
+                    const nodeAtDepth = selection.$anchor.node(i);
+                    if (nodeAtDepth && nodeAtDepth.type.name === 'image') {
+                        return false;
+                    }
+                }
+
+                // Fail-safe browser DOM element selector check
+                const domSelection = window.getSelection();
+                if (domSelection && domSelection.anchorNode) {
+                    const el = domSelection.anchorNode as HTMLElement;
+                    if (
+                        el.nodeName === 'IMG' ||
+                        (el.querySelector && el.querySelector('img')) ||
+                        (el.parentElement &&
+                            el.parentElement.nodeName === 'IMG')
+                    ) {
+                        return false;
+                    }
+                }
+
+                // Only display if the cursor is in a table structure and the editor window is targeted
+                return editor.isActive('table') && view.hasFocus();
+            }}
         >
             <Paper className={styles.tableToolbar} elevation={3}>
                 {/* Row Actions */}
